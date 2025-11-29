@@ -193,6 +193,16 @@ See [MIGRATION-PLAN.md](./MIGRATION-PLAN.md) for the complete migration strategy
 - `npm run analyze:content` - Analyze exported content
 - `npm run download:media` - Download media files
 
+## Deployment
+
+This project is configured for automatic deployments on Vercel:
+
+- **Production**: Deploys automatically on push to `main` branch
+- **Preview**: Deploys automatically for pull requests and other branches
+- **Environment Variables**: Configured in Vercel dashboard
+
+See Vercel dashboard for deployment status and logs.
+
 ## License
 
 Private project
