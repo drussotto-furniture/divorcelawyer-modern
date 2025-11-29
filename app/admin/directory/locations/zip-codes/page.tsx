@@ -62,9 +62,20 @@ export default async function ZipCodesPage({ searchParams }: PageProps) {
 
   const totalPages = Math.ceil((count || 0) / pageSize)
 
+  // Transform data to match expected type (convert null to undefined)
+  const transformedZipCodes = (zipCodes || []).map((zipCode: any) => ({
+    ...zipCode,
+    cities: zipCode.cities
+      ? {
+          ...zipCode.cities,
+          states: zipCode.cities.states || undefined,
+        }
+      : undefined,
+  }))
+
   return (
     <ZipCodesClient
-      zipCodes={zipCodes || []}
+      zipCodes={transformedZipCodes}
       currentPage={page}
       totalPages={totalPages}
       totalCount={count || 0}
