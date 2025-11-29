@@ -27,12 +27,13 @@ export default async function QuestionEditPage({ params }: PageProps) {
     notFound()
   }
 
-  // Ensure all required fields are present
+  // Type assertion first, then ensure all required fields are present
+  const questionAny = question as any
   const typedQuestion = {
-    ...question,
-    tags: question.tags || null,
-    not_helpful_count: question.not_helpful_count || 0,
-    status: question.status || 'published'
+    ...questionAny,
+    tags: questionAny.tags || null,
+    not_helpful_count: questionAny.not_helpful_count || 0,
+    status: questionAny.status || 'published'
   }
 
   return (
