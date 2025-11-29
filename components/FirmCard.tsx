@@ -31,7 +31,7 @@ interface FirmCardProps {
 
 export default function FirmCard({ firm, cardIndex }: FirmCardProps) {
   return (
-    <div className="flex-1 min-w-0 max-w-[450px] lg:max-w-none 2xl:max-w-[550px] w-full mb-3 lawyer-card-pack flex flex-col lg:h-full">
+    <div className="flex-1 min-w-[280px] sm:min-w-[320px] max-w-[450px] lg:max-w-none 2xl:max-w-[550px] w-full mb-3 lawyer-card-pack flex flex-col lg:h-full">
       <div 
         className="relative w-full h-full pt-5 pb-10 m-auto overflow-visible text-center bg-top bg-no-repeat bg-cover rounded-lg lg:pb-8 lawfirm box-shad-card flex flex-col"
         style={{ backgroundImage: 'url(/images/lawyer-box-long.svg)' }}

@@ -22,26 +22,26 @@ export default function FAQAccordion({ questions }: FAQAccordionProps) {
   }
 
   return (
-    <div className="px-3 common-questions-wrapper mb-11">
+    <div className="px-0 sm:px-3 common-questions-wrapper mb-6 lg:mb-11">
       {questions.slice(0, 5).map((q, index) => (
         <div 
           key={q.id} 
-          className={`common-questions-item ${activeIndex === index ? 'active' : ''}`}
+          className={`common-questions-item ${activeIndex === index ? 'active' : ''} mb-3 lg:mb-4`}
         >
           <div 
-            className="common-questions"
+            className="common-questions text-sm sm:text-base lg:text-lg cursor-pointer"
             onClick={() => toggleQuestion(index)}
           >
             {q.question}
           </div>
           <div className="common-answer">
             {q.answer && (
-              <div className="component-rich-text">
+              <div className="component-rich-text text-sm sm:text-base">
                 {q.answer.length > 300 ? q.answer.substring(0, 300) + '...' : q.answer}
               </div>
             )}
-            <div className="article-link">
-              <Link href={`/questions/${q.slug}`}>Full Article</Link>
+            <div className="article-link mt-2">
+              <Link href={`/questions/${q.slug}`} className="text-sm sm:text-base">Full Article</Link>
             </div>
           </div>
         </div>

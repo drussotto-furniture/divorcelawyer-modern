@@ -140,29 +140,29 @@ export default async function Home() {
       <Header />
       <main className="min-h-screen bg-white">
         {/* Hero Section - HeroComponentSecondary */}
-        <section className="block-hero-component-secondary bg-bluish relative column-layout">
-          <div className="mx-auto container-fluid">
+        <section className="block-hero-component-secondary bg-bluish relative column-layout pt-24 lg:pt-0">
+          <div className="mx-auto container-fluid px-4 lg:px-0">
             <div className="flex flex-col h-full mx-auto lg:flex-row block-container container-size-medium content-middle">
               {/* Text Content */}
-              <div className="relative z-10 pb-11 lg:pb-0 flex flex-col items-start justify-start text-center lg:text-left hero-content-wrapper basis-1/2">
-                <h1 className="title font-proxima">
+              <div className="relative z-10 pb-6 lg:pb-0 flex flex-col items-center justify-center text-center lg:items-start lg:justify-start lg:text-left hero-content-wrapper basis-1/2 px-4 lg:px-0">
+                <h1 className="title font-proxima text-sm lg:text-base">
                   {get('hero', 'title')?.title || 'The Best Divorce Lawyers and Expert Resources'}
                 </h1>
-                <h2 className="subtitle">
+                <h2 className="subtitle text-3xl lg:text-6xl xl:text-7xl">
                   <div className="component-rich-text" dangerouslySetInnerHTML={{ __html: get('hero', 'subtitle')?.subtitle || 'Go your <span>own</span> way' }} />
                 </h2>
-                <div className="component-rich-text">
+                <div className="component-rich-text text-sm lg:text-base mt-4 mb-6 lg:mb-8">
                   {get('hero', 'description')?.description || "We're your go-to source for all things divorce. From a comprehensive learning portal to vetted divorce specialists in your area, we make sure you have everything you need to move forward with confidence."}
                 </div>
                 
-                <div className="flex flex-col gap-0 pb-0 mx-auto text-center lg:gap-5 lg:mx-0 lg:pb-0 lg:text-left lg:flex-row hero-menu-list">
+                <div className="flex flex-col gap-3 w-full sm:w-auto sm:flex-row pb-0 mx-auto text-center lg:gap-5 lg:mx-0 lg:pb-0 lg:text-left hero-menu-list">
                   {get('hero', 'cta_find_lawyer') && (
-                    <Link href={get('hero', 'cta_find_lawyer')?.link_url || '/connect-with-lawyer'} className="component-button style-primary mt-6 lg:mt-0">
+                    <Link href={get('hero', 'cta_find_lawyer')?.link_url || '/connect-with-lawyer'} className="component-button style-primary w-full sm:w-auto">
                       <span>{get('hero', 'cta_find_lawyer')?.link_text || 'Find a Lawyer'}</span>
                     </Link>
                   )}
                   {get('hero', 'cta_learn') && (
-                    <Link href={get('hero', 'cta_learn')?.link_url || '/learning-center'} className="component-button style-secondary mt-6 lg:mt-0">
+                    <Link href={get('hero', 'cta_learn')?.link_url || '/learning-center'} className="component-button style-secondary w-full sm:w-auto">
                       <span>{get('hero', 'cta_learn')?.link_text || 'Learn'}</span>
                     </Link>
                   )}
@@ -170,14 +170,14 @@ export default async function Home() {
               </div>
 
               {/* Mobile Image */}
-              <div className="flex dls-home-hero-image-wrapper lg:hidden basis-1/2">
-                <div className="hero-image">
+              <div className="flex dls-home-hero-image-wrapper lg:hidden basis-1/2 mt-4">
+                <div className="hero-image w-full">
                   <Image
                     src={get('hero', 'mobile_image')?.image_url || '/media/NewLife-DivorceLawyer.webp'}
                     alt="New Life"
                     width={600}
                     height={600}
-                    className="w-full h-auto"
+                    className="w-full h-auto object-contain"
                     priority
                   />
                 </div>
@@ -204,12 +204,14 @@ export default async function Home() {
         <DiscoverSlider slides={discoverSlides} />
 
         {/* Top Divorce Lawyers Section - Three Pack Component */}
-        <ThreePackComponent 
-          lawFirms={lawFirms as any}
-          city={defaultCityDisplay}
-          stateCode={defaultStateCode}
-          backgroundColor="bg-bluish"
-        />
+        <div className="px-4 lg:px-0">
+          <ThreePackComponent 
+            lawFirms={lawFirms as any}
+            city={defaultCityDisplay}
+            stateCode={defaultStateCode}
+            backgroundColor="bg-bluish"
+          />
+        </div>
 
         {/* Most Popular Reads */}
         <MostPopularReads
@@ -220,26 +222,26 @@ export default async function Home() {
         />
 
         {/* Stages of Divorce */}
-        <section id="stages" className="block-stages block-spacing spacing-top-none spacing-bottom-none bg-subtlesand px-0 lg:px-8">
+        <section id="stages" className="block-stages block-spacing spacing-top-none spacing-bottom-none bg-subtlesand px-4 lg:px-8">
           <div className="bg-subtlesand block-container mx-auto container-size-medium">
-            <div className="container flex flex-col justify-between h-auto gap-10 px-0 pb-3 items-left lg:items-center xl:gap-12">
-              <div className="px-5 text-center text-container slideup">
-                <h2>
-                  <div className="component-rich-text text-left lg:text-center lg:mx-auto" dangerouslySetInnerHTML={{ __html: get('stages_section', 'title')?.title || '<span>Stages</span> of Divorce' }} />
+            <div className="container flex flex-col justify-between h-auto gap-6 lg:gap-10 px-0 pb-3 items-left lg:items-center xl:gap-12">
+              <div className="px-0 lg:px-5 text-center text-container slideup">
+                <h2 className="text-2xl lg:text-4xl mb-4">
+                  <div className="component-rich-text text-center" dangerouslySetInnerHTML={{ __html: get('stages_section', 'title')?.title || '<span>Stages</span> of Divorce' }} />
                 </h2>
-                <div className="component-rich-text max-w-screen-lg text-left lg:text-center lg:mx-auto">
+                <div className="component-rich-text max-w-screen-lg text-sm lg:text-base text-center mx-auto">
                   {get('stages_section', 'description')?.description || "Divorce can feel like a rollercoaster ride, full of ups and downs. To make it easier, sometimes it's best to break down the process into distinct stages, each with its unique characteristics and challenges. Click on a stage to explore articles and videos that can provide insight and support for your journey."}
                 </div>
               </div>
 
               <div className="mx-0 xl:mx-3 stages-container slideup">
-                <div className="flex flex-row flex-wrap text-left xl:flex-nowrap xl:gap-x-16">
+                <div className="flex flex-col sm:flex-row sm:flex-wrap text-left xl:flex-nowrap xl:gap-x-16 gap-4">
                   {stages.map((stage) => (
                     <div
                       key={stage.id}
-                      className="flex flex-row items-center w-full gap-5 px-5 py-5 xl:w-auto xl:items-start xl:gap-4 xl:py-0 xl:flex-col xl:basis-auto md:px-6 stage-item"
+                      className="flex flex-row items-center w-full gap-4 px-4 py-4 sm:px-5 sm:py-5 xl:w-auto xl:items-start xl:gap-4 xl:py-0 xl:flex-col xl:basis-auto bg-white rounded-lg xl:bg-transparent xl:rounded-none stage-item"
                     >
-                      <div className="w-12 min-w-12 flex justify-start">
+                      <div className="w-12 min-w-12 flex justify-start flex-shrink-0">
                         {stage.featured_image_url ? (
                           <Link href={`/stages/${stage.slug}`}>
                             <Image
@@ -256,8 +258,8 @@ export default async function Home() {
                           </div>
                         )}
                       </div>
-                      <div className="text-left">
-                        <h5 className="mb-1 md:mb-4 font-proxima">
+                      <div className="text-left flex-1">
+                        <h5 className="mb-1 md:mb-4 font-proxima text-base lg:text-lg">
                           <Link
                             href={`/stages/${stage.slug}`}
                             className="italic font-semibold tracking-tight font-proxima"
@@ -266,7 +268,7 @@ export default async function Home() {
                           </Link>
                         </h5>
                         {stage.description && (
-                          <div className="component-rich-text text-left">
+                          <div className="component-rich-text text-left text-sm lg:text-base">
                             {stage.description}
                           </div>
                         )}
@@ -277,10 +279,10 @@ export default async function Home() {
               </div>
 
               {get('stages_section', 'button') && (
-                <div className="hidden md:flex slideup">
+                <div className="flex justify-center slideup px-4">
                   <Link
                     href={get('stages_section', 'button')?.link_url || '/stages'}
-                    className="component-button style-primary"
+                    className="component-button style-primary w-full sm:w-auto text-center"
                   >
                     <span>{get('stages_section', 'button')?.link_text || 'Learn More about the Stages of Divorce'}</span>
                   </Link>
@@ -291,23 +293,23 @@ export default async function Home() {
         </section>
 
         {/* Emotional Path */}
-        <section id="emotions" className="block-emotions block-spacing spacing-top-normal spacing-bottom-normal py-10 px-5 lg:px-8 bg-seashell section-style-boxed">
-          <div className="block-container container-dark slideup mx-auto container-size-medium py-16 md:py-24">
-            <div className="container flex flex-col justify-center text-left align-middle xl:text-center min-h-96">
-              <h2>
+        <section id="emotions" className="block-emotions block-spacing spacing-top-normal spacing-bottom-normal py-8 lg:py-10 px-4 lg:px-8 bg-seashell section-style-boxed">
+          <div className="block-container container-dark slideup mx-auto container-size-medium py-8 md:py-16 lg:py-24">
+            <div className="container flex flex-col justify-center text-left align-middle xl:text-center min-h-auto lg:min-h-96">
+              <h2 className="text-2xl lg:text-4xl mb-4">
                 <div className="component-rich-text text-center" dangerouslySetInnerHTML={{ __html: get('emotions_section', 'title')?.title || 'The <span>Emotional</span> Path Through Divorce' }} />
               </h2>
-              <div className="component-rich-text max-w-6xl mx-auto text-left xl:text-center lg:px-7">
+              <div className="component-rich-text max-w-6xl mx-auto text-sm lg:text-base text-left xl:text-center lg:px-7 mb-6 lg:mb-8">
                 {get('emotions_section', 'description')?.description || "A divorce is a major life change, and it's natural to experience a range of intense emotions along the way. Whether you're thinking about divorce or already in the middle of it, we're here to help navigate through it. Click on an emotion to explore and understand the feelings you may be experiencing."}
               </div>
 
               <div className="mx-0 xl:mx-3 emotions-list slideup">
-                <ul className="flex flex-row flex-wrap max-w-screen-lg gap-0 py-16 mx-auto align-middle justify-evenly md:justify-center gap-y-4 lg:gap-10 lg:flex-nowrap">
+                <ul className="flex flex-row flex-wrap max-w-screen-lg gap-3 py-8 lg:py-16 mx-auto align-middle justify-center gap-y-3 lg:gap-10 lg:flex-nowrap">
                   {emotions.map((emotion) => (
-                    <li key={emotion.id} className="text-center basis-6/12 md:basis-0">
+                    <li key={emotion.id} className="text-center w-full sm:w-auto sm:flex-1 lg:flex-none">
                       <Link
                         href={`/emotions/${emotion.slug}`}
-                        className="px-8 py-4 text-white transition-all rounded-full lg:px-6 lg:py-3 font-proxima bg-greenShadesLight hover:text-black hover:bg-primary"
+                        className="block px-6 py-3 lg:px-8 lg:py-4 text-white transition-all rounded-full text-sm lg:text-base font-proxima bg-greenShadesLight hover:text-black hover:bg-primary"
                       >
                         {emotion.name}
                       </Link>
@@ -317,10 +319,10 @@ export default async function Home() {
               </div>
 
               {get('emotions_section', 'button') && (
-                <div className="flex justify-center slideup">
+                <div className="flex justify-center slideup px-4">
                   <Link
                     href={get('emotions_section', 'button')?.link_url || '/emotions'}
-                    className="component-button style-primary"
+                    className="component-button style-primary w-full sm:w-auto text-center"
                   >
                     <span>{get('emotions_section', 'button')?.link_text || 'Explore Emotions Along the Process'}</span>
                   </Link>
@@ -331,12 +333,12 @@ export default async function Home() {
         </section>
 
         {/* Real Voices */}
-        <section id="real-voices" className="block-real-voices block-spacing spacing-top-none spacing-bottom-large bg-subtlesand">
+        <section id="real-voices" className="block-real-voices block-spacing spacing-top-none spacing-bottom-large bg-subtlesand px-4 lg:px-0">
           <div className="block-container mx-auto slideup container-size-small">
-            <h2>
+            <h2 className="text-2xl lg:text-4xl mb-4">
               <div className="component-rich-text text-center" dangerouslySetInnerHTML={{ __html: get('real_voices_section', 'title')?.title || 'Real Voices:<br/><span>Coffee Talk</span>' }} />
             </h2>
-            <div className="component-rich-text max-w-screen-lg mx-auto mb-6 text-center">
+            <div className="component-rich-text max-w-screen-lg mx-auto mb-6 text-center text-sm lg:text-base">
               {get('real_voices_section', 'description')?.description || "A safe space where real people offer comfort and guidance by sharing their very real divorce stories. Whether contemplating divorce or starting your new life, Coffee Talk will remind you that you're not alone."}
             </div>
 
@@ -349,10 +351,10 @@ export default async function Home() {
             />
 
             {get('real_voices_section', 'button') && (
-              <div className="flex justify-center mt-10">
+              <div className="flex justify-center mt-6 lg:mt-10 px-4">
                 <Link
                   href={get('real_voices_section', 'button')?.link_url || '/real-voices'}
-                  className="component-button style-primary"
+                  className="component-button style-primary w-full sm:w-auto text-center"
                 >
                   <span>{get('real_voices_section', 'button')?.link_text || 'Explore Real Voices'}</span>
                 </Link>
@@ -362,20 +364,20 @@ export default async function Home() {
         </section>
 
         {/* Get Informed Categories */}
-        <section id="categories" className="block-categories block-spacing spacing-top-normal spacing-bottom-normal z-10 relative bg-white px-5 py-10 lg:px-8">
+        <section id="categories" className="block-categories block-spacing spacing-top-normal spacing-bottom-normal z-10 relative bg-white px-4 py-8 lg:px-8 lg:py-10">
           <div className="relative bg-white block-container mx-auto container-size-medium">
             <div className="slideup">
-              <div className="px-5 pr-0 text-center slideup">
-                <h2>
+              <div className="px-0 lg:px-5 text-center slideup mb-6 lg:mb-8">
+                <h2 className="text-2xl lg:text-4xl mb-4">
                   <div className="component-rich-text" dangerouslySetInnerHTML={{ __html: get('categories_section', 'title')?.title || 'Get Informed.<br/>Get <span>Empowered.</span>' }} />
                 </h2>
-                <div className="component-rich-text max-w-screen-lg mx-auto text-center">
+                <div className="component-rich-text max-w-screen-lg mx-auto text-center text-sm lg:text-base">
                   {get('categories_section', 'description')?.description || 'Read up on essential divorce topics to learn more about the process and all its different aspects.'}
                 </div>
               </div>
 
-              <div className="py-10 category-block slideup">
-                <ul className="flex flex-row flex-wrap justify-center w-full gap-0 p-0 mx-auto lg:flex-nowrap">
+              <div className="py-6 lg:py-10 category-block slideup">
+                <ul className="flex flex-row flex-wrap justify-center w-full gap-2 sm:gap-3 lg:gap-0 p-0 mx-auto lg:flex-nowrap">
                   {contentCategories.length > 0 ? (
                     contentCategories.map((category: any) => (
                       <li key={category.id}>
@@ -412,10 +414,10 @@ export default async function Home() {
               </div>
 
               {get('categories_section', 'button') && (
-                <div className="flex justify-center slideup">
+                <div className="flex justify-center slideup px-4 mt-6">
                   <Link
                     href={get('categories_section', 'button')?.link_url || '/learning-center/categories'}
-                    className="component-button style-primary min-w-64"
+                    className="component-button style-primary w-full sm:w-auto sm:min-w-64 text-center"
                   >
                     <span>{get('categories_section', 'button')?.link_text || 'Browse Categories'}</span>
                   </Link>
@@ -426,45 +428,45 @@ export default async function Home() {
         </section>
 
         {/* Connect CTA */}
-        <section className="block-connect-with-lawyer block-spacing spacing-top-none spacing-bottom-none section-dark lg:px-10 xl:px-10 md:px-4 sm:px-4 px-4">
-          <div className="pack-component block-container rounded-3xl slideup container-size-medium bg-bluish">
+        <section className="block-connect-with-lawyer block-spacing spacing-top-none spacing-bottom-none section-dark px-4 lg:px-10 xl:px-10">
+          <div className="pack-component block-container rounded-2xl lg:rounded-3xl slideup container-size-medium bg-bluish overflow-hidden">
             <div className="flex flex-col align-center lg:flex-row">
-              <div className="w-full px-5 py-10 text-center lg:text-left lg:px-20 md:flex-col sm:w-full md:w-full lg:w-8/12 xl:w-8/12 left-pan">
-                <h2 className="p-0 m-0 font-medium uppercase">
+              <div className="w-full px-5 py-8 lg:py-10 text-center lg:text-left lg:px-20 md:flex-col sm:w-full md:w-full lg:w-8/12 xl:w-8/12 left-pan">
+                <h2 className="p-0 m-0 font-medium uppercase text-sm lg:text-base mb-2">
                   {get('connect_cta', 'title')?.title || 'Introductions, no pressure'}
                 </h2>
-                <h3>
+                <h3 className="text-2xl lg:text-4xl mb-4">
                   <div className="component-rich-text">
                     {get('connect_cta', 'subtitle')?.subtitle || 'Connect with a Top Divorce Attorney'}
                   </div>
                 </h3>
-                <p className="mt-10 mb-4 text-sm font-light location-tagline">
+                <p className="mt-4 lg:mt-10 mb-4 text-sm lg:text-base font-light location-tagline">
                   {get('connect_cta', 'description')?.description || 'Are you in a different location? We can introduce you to the best family lawyers in your area.'}
                 </p>
                 <div className="w-full max-w-full lg:max-w-xl">
-                  <form className="newsletter-form mt-2">
+                  <form className="newsletter-form mt-2 flex flex-col sm:flex-row gap-2">
                     <input 
                       type="text" 
-                      className="search-field"
+                      className="search-field flex-1"
                       placeholder={get('connect_cta', 'placeholder')?.description || 'Type your city or zipcode.'}
                     />
                     <button
                       type="submit"
-                      className="submit-button"
+                      className="submit-button whitespace-nowrap"
                     >
                       {get('connect_cta', 'button')?.link_text || 'Find a Lawyer'}
                     </button>
                   </form>
                 </div>
               </div>
-              <div className="w-full sm:w-full md:w-full lg:w-4/12 xl:w-4/12">
-                <div className="w-full h-full rounded-2xl image-fit">
+              <div className="w-full sm:w-full md:w-full lg:w-4/12 xl:w-4/12 mt-6 lg:mt-0">
+                <div className="w-full h-64 sm:h-80 lg:h-full rounded-b-2xl lg:rounded-2xl image-fit overflow-hidden">
                   <Image
                     src={get('connect_cta', 'image')?.image_url || '/media/connect-with-vetted-lawyer.png'}
                     alt="Connect with lawyer"
                     width={400}
                     height={500}
-                    className="max-w-3xl rounded-3xl h-full object-cover"
+                    className="w-full h-full object-cover"
                   />
                 </div>
               </div>
@@ -473,13 +475,13 @@ export default async function Home() {
         </section>
 
         {/* Common Questions */}
-        <section id="faq" className="block-common-questions block-spacing spacing-top-none spacing-bottom-none bg-white px-5 lg:px-8">
+        <section id="faq" className="block-common-questions block-spacing spacing-top-none spacing-bottom-none bg-white px-4 lg:px-8 py-8 lg:py-12">
           <div className="mx-auto block-container bg-white container-size-medium">
-            <h2>
+            <h2 className="text-2xl lg:text-4xl mb-4 text-center">
               <div className="component-rich-text" dangerouslySetInnerHTML={{ __html: get('faq_section', 'title')?.title || 'Common <span>Questions</span>' }} />
             </h2>
-            <div className="short-description">
-              <div className="component-rich-text text-center max-w-4xl mx-auto">
+            <div className="short-description mb-6">
+              <div className="component-rich-text text-center max-w-4xl mx-auto text-sm lg:text-base">
                 {get('faq_section', 'description')?.description || "Here are some of the most commonly asked questions about divorce. Click on a question to get a quick answer and access more detailed information."}
               </div>
             </div>
@@ -493,8 +495,8 @@ export default async function Home() {
             )}
 
             {get('faq_section', 'button') && (
-              <div className="flex justify-center mt-3.5">
-                <Link href={get('faq_section', 'button')?.link_url || '/questions'} className="component-button style-primary">
+              <div className="flex justify-center mt-6 px-4">
+                <Link href={get('faq_section', 'button')?.link_url || '/questions'} className="component-button style-primary w-full sm:w-auto text-center">
                   <span>{get('faq_section', 'button')?.link_text || 'Visit Top Questions'}</span>
                 </Link>
               </div>

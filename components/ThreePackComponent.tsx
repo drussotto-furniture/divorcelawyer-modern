@@ -69,35 +69,35 @@ export default function ThreePackComponent({
   }
 
   return (
-    <section id="3pack" className="top-law-firms-section block-spacing spacing-top-large spacing-bottom-none lg:px-10 xl:px-10 md:px-4 sm:px-0 px-5">
-      <div className={`pack-component block-container px-6 py-20 rounded-xl slideup ${backgroundColor} overley-layout`}>
+    <section id="3pack" className="top-law-firms-section block-spacing spacing-top-large spacing-bottom-none px-4 lg:px-10 xl:px-10">
+      <div className={`pack-component block-container px-4 sm:px-6 py-12 lg:py-20 rounded-xl slideup ${backgroundColor} overley-layout`}>
         <div className="flex justify-center align-center">
           <div className="container-size-small w-full">
             <div className="px-0 text-center lg:px-0">
-              <h2 className={`${textColor} title-pack`}>
+              <h2 className={`${textColor} title-pack text-xl lg:text-3xl mb-2`}>
                 The Top Divorce Lawyers in your Area
               </h2>
-              <h2 className={`${textColor} title-pack`}>
+              <h2 className={`${textColor} title-pack text-xl lg:text-3xl mb-4`}>
                 <span>{city}, {stateCode}</span>
               </h2>
               <div className="mb-4 lg:px-24">
                 <a 
                   href="#" 
                   id="open-change-location-modal" 
-                  className="italic underline underline-offset-2 cursor-pointer text-white font-proxima hover:text-primary"
+                  className="italic underline underline-offset-2 cursor-pointer text-white font-proxima hover:text-primary text-sm lg:text-base"
                 >
                   Change location
                 </a>
               </div>
             </div>
             
-            <div className="px-4 mb-3 text-center xl:px-64 lg:px-64 md:px-20 sm:px-4">
-              <div className={`max-w-6xl text-center p-0 component-rich-text ${backgroundColor === 'bg-bluish' ? 'text-white' : ''}`}>
+            <div className="px-0 mb-6 lg:mb-3 text-center xl:px-64 lg:px-64 md:px-20 sm:px-4">
+              <div className={`max-w-6xl text-center p-0 component-rich-text text-sm lg:text-base ${backgroundColor === 'bg-bluish' ? 'text-white' : ''}`}>
                 Divorce can be complex, and choosing a lawyer among many is often overwhelming. We've done the initial screening for you, selecting the right representation, carefully vetted and handpicked for you.
               </div>
             </div>
             
-            <div className="container flex flex-row flex-nowrap gap-4 px-0 top-law-firmscard-wrapper slide-container lg:gap-2 lg:px-0 xl:gap-4 xl:px-0 lg:items-stretch justify-center">
+            <div className="container flex flex-row flex-nowrap gap-3 sm:gap-4 px-0 top-law-firmscard-wrapper slide-container overflow-x-auto lg:overflow-x-visible lg:gap-2 lg:px-0 xl:gap-4 xl:px-0 lg:items-stretch justify-start lg:justify-center pb-4 lg:pb-0">
               {cards.map((card, cardIndex) => {
                 if (card.type === 'firm' && card.data) {
                   return <FirmCard key={cardIndex} firm={card.data} cardIndex={cardIndex} />
@@ -119,10 +119,10 @@ export default function ThreePackComponent({
               })}
             </div>
             
-            <div className="flex justify-center mb-0 text-center mt-9">
+            <div className="flex justify-center mb-0 text-center mt-6 lg:mt-9 px-4">
               <Link
                 href={`/locations/${stateCode.toLowerCase()}/${city.toLowerCase().replace(/ /g, '-')}`}
-                className="component-button style-bottom-button"
+                className="component-button style-bottom-button w-full sm:w-auto text-center"
               >
                 <span className="button-wrapper">
                   <span>Explore All in {city}, {stateCode}</span>

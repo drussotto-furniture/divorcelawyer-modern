@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 
 export default function Header() {
   const [activeMenu, setActiveMenu] = useState<string | null>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userRole, setUserRole] = useState<'super_admin' | 'law_firm' | 'lawyer' | null>(null)
   const [lawFirmId, setLawFirmId] = useState<string | null>(null)
   const [lawyerId, setLawyerId] = useState<string | null>(null)
@@ -58,11 +59,11 @@ export default function Header() {
 
   return (
     <header className="shadow-md bg-bluishlight topheader topheaderfunction">
-      <div className="nav-overlay"></div>
+      <div className={`nav-overlay ${mobileMenuOpen ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}></div>
       <nav className="container flex items-center justify-between mx-auto">
         {/* Logo */}
         <div className="flex items-center justify-center w-full lg:flex-1 toplogo lg:w-auto lg:justify-normal">
-          <Link href="/">
+          <Link href="/" onClick={() => setMobileMenuOpen(false)}>
             <Image 
               src="/images/HeaderWhte-logo.svg" 
               alt="DivorceLawyer.com" 
@@ -81,6 +82,17 @@ export default function Header() {
             />
           </Link>
         </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          className="lg:hidden flex flex-col justify-center items-center w-10 h-10 text-white z-50 relative"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span className={`block w-6 h-0.5 bg-white transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+          <span className={`block w-6 h-0.5 bg-white mt-1.5 transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : ''}`}></span>
+          <span className={`block w-6 h-0.5 bg-white mt-1.5 transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+        </button>
 
         {/* Desktop Navigation and Search */}
         <div className="flex items-center mx-auto">
@@ -187,6 +199,114 @@ export default function Header() {
                   <button type="submit" className="search-submit" aria-label="Search"></button>
                 </label>
               </form>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        <div className={`lg:hidden fixed top-[101px] left-0 right-0 bg-bluishlight z-40 transform transition-transform duration-300 overflow-y-auto max-h-[calc(100vh-101px)] ${
+          mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}>
+          <div className="px-6 py-6 space-y-4">
+            {/* Mobile Search */}
+            <div className="mb-6">
+              <form role="search" method="get" className="search-form" action="/search">
+                <label>
+                  <input 
+                    type="search" 
+                    className="search-field w-full" 
+                    placeholder="Enter topic or keyword" 
+                    name="s" 
+                  />
+                  <button type="submit" className="search-submit" aria-label="Search"></button>
+                </label>
+              </form>
+            </div>
+
+            {/* Mobile Navigation Links */}
+            <div className="space-y-4">
+              <div>
+                <Link 
+                  href="/learning-center" 
+                  className="block py-3 text-white font-proxima font-semibold text-lg border-b border-white/20"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Learn
+                </Link>
+                <div className="pl-4 mt-2 space-y-2">
+                  <Link href="/learning-center" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Learning Center</Link>
+                  <Link href="/learning-center/categories" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Divorce Categories</Link>
+                  <Link href="/learning-center/top-divorce-questions" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Top Questions</Link>
+                  <Link href="/learning-center/stages-of-divorce" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Stages Of Divorce</Link>
+                  <Link href="/learning-center/emotions" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Emotional Path</Link>
+                  <Link href="/learning-center/real-voices" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Real Voices</Link>
+                </div>
+              </div>
+
+              <div>
+                <Link 
+                  href="/connect-with-lawyer" 
+                  className="block py-3 text-white font-proxima font-semibold text-lg border-b border-white/20"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Connect
+                </Link>
+                <div className="pl-4 mt-2 space-y-2">
+                  <Link href="/connect-with-lawyer" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Find a Divorce Lawyer</Link>
+                  <Link href="/locations" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Search by State</Link>
+                  <Link href="/top-cities" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Top Cities</Link>
+                  <Link href="/vetting-process" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Vetting Process</Link>
+                </div>
+              </div>
+
+              <div>
+                <Link 
+                  href="/about-us" 
+                  className="block py-3 text-white font-proxima font-semibold text-lg border-b border-white/20"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  About
+                </Link>
+                <div className="pl-4 mt-2 space-y-2">
+                  <Link href="/about-us" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
+                  <Link href="/about-us/meet-the-team" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Meet the Team</Link>
+                  <Link href="/about-us/company-faq" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Company FAQ</Link>
+                  <Link href="/about-us/news-and-press" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>News and Press</Link>
+                  <Link href="/councils" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Councils</Link>
+                  <Link href="/for-lawyers" className="block py-2 text-white/90 text-sm font-bold" onClick={() => setMobileMenuOpen(false)}>For Lawyers</Link>
+                  <Link href="/contact" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Contact Us</Link>
+                </div>
+              </div>
+
+              {/* Mobile Auth Buttons */}
+              {!loading && (
+                <div className="pt-4 border-t border-white/20">
+                  {userRole === 'super_admin' && (
+                    <Link
+                      href="/admin"
+                      className="block px-4 py-2 bg-primary text-white rounded-lg text-center text-sm font-medium mb-2"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Admin Panel
+                    </Link>
+                  )}
+                  {(userRole === 'law_firm' || userRole === 'lawyer') && (
+                    <Link
+                      href={
+                        userRole === 'law_firm' && lawFirmId
+                          ? `/admin/directory/law-firms/${lawFirmId}`
+                          : userRole === 'lawyer' && lawyerId
+                          ? `/admin/directory/lawyers/${lawyerId}`
+                          : '/admin'
+                      }
+                      className="block px-4 py-2 bg-primary text-white rounded-lg text-center text-sm font-medium"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Manage Profile
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -59,16 +59,16 @@ export default function MostPopularReads({
   }
 
   return (
-    <section className={`${backgroundColor} block-most-popular-reads block-spacing spacing-top-normal spacing-bottom-normal lg:px-10 xl:px-10 md:px-4 sm:px-0 px-5`}>
+    <section className={`${backgroundColor} block-most-popular-reads block-spacing spacing-top-normal spacing-bottom-normal px-4 lg:px-10 xl:px-10`}>
       <div className={`block-container mx-auto ${backgroundColor} container-size-medium`}>
         <div className="container flex flex-col lg:px-0 gap-x-14 xl:gap-x-10 slideup">
-          <h2>
+          <h2 className="text-2xl lg:text-4xl mb-4 text-center">
             <div className="component-rich-text">
               Most <span>Popular</span> Reads and Views
             </div>
           </h2>
 
-          <div className="max-w-screen-lg mx-auto text-center component-rich-text">
+          <div className="max-w-screen-lg mx-auto text-center component-rich-text text-sm lg:text-base mb-6">
             Explore the most popular articles and videos on divorce-related topics to gain insights into your own process.
           </div>
 
@@ -173,10 +173,10 @@ export default function MostPopularReads({
             </div>
           </div>
 
-          <div className="flex justify-center slideup">
+          <div className="flex justify-center slideup px-4 mt-6">
             <Link
               href="/learning-center/categories"
-              className="component-button style-primary font-proxima min-w-64"
+              className="component-button style-primary font-proxima w-full sm:w-auto sm:min-w-64 text-center"
             >
               <span className="button-wrapper">
                 <span>Browse Topics</span>

@@ -29,15 +29,15 @@ export default function DiscoverSlider({ slides }: DiscoverSliderProps) {
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null)
 
   return (
-    <section className="block-discover-slider block-spacing spacing-top-normal spacing-bottom-none bg-white">
+    <section className="block-discover-slider block-spacing spacing-top-normal spacing-bottom-none bg-white px-4 lg:px-0">
       <div className="block-container container-size-medium overley-layout mx-auto">
         <div className="swiper-container discover-slider-container">
           {/* Custom Indicators */}
-          <div className="custom-indicators">
+          <div className="custom-indicators overflow-x-auto pb-2 lg:overflow-x-visible">
             {slides.map((slide, index) => (
               <button
                 key={index}
-                className={`custom-indicator ${index === activeIndex ? 'active' : ''}`}
+                className={`custom-indicator text-xs sm:text-sm ${index === activeIndex ? 'active' : ''}`}
                 onClick={() => swiperInstance?.slideTo(index)}
               >
                 <span>{slide.caption}</span>
@@ -59,18 +59,23 @@ export default function DiscoverSlider({ slides }: DiscoverSliderProps) {
             className="swiper-wrapper"
           >
             {slides.map((slide, index) => (
-              <SwiperSlide key={index} className="swiper-slide items-center justify-center p-4">
+              <SwiperSlide key={index} className="swiper-slide items-center justify-center p-2 sm:p-4">
                 {/* Mobile content (shows before image) */}
-                <div className="flex flex-col justify-end min-h-52 discover-slider-content lg:hidden">
-                  {slide.title && <h2 className="font-proxima">{slide.title}</h2>}
-                  <h3 className="font-libre">
+                <div className="flex flex-col justify-end min-h-48 sm:min-h-52 discover-slider-content lg:hidden mb-4">
+                  {slide.title && <h2 className="font-proxima text-lg sm:text-xl mb-2">{slide.title}</h2>}
+                  <h3 className="font-libre text-2xl sm:text-3xl mb-3">
                     <div
                       className="component-rich-text"
                       dangerouslySetInnerHTML={{ __html: slide.subtitle }}
                     />
                   </h3>
-                  <div className="block-short-des">
-                    <div className="component-rich-text">{slide.description}</div>
+                  <div className="block-short-des mb-4">
+                    <div className="component-rich-text text-sm sm:text-base">{slide.description}</div>
+                  </div>
+                  <div className="flex component-button-wrapper">
+                    <Link href={slide.link.url} className="component-button style-primary w-full sm:w-auto text-center">
+                      <span>{slide.link.title}</span>
+                    </Link>
                   </div>
                 </div>
 
@@ -82,7 +87,7 @@ export default function DiscoverSlider({ slides }: DiscoverSliderProps) {
                       alt={slide.caption}
                       width={504}
                       height={600}
-                      className="w-full h-auto"
+                      className="w-full h-auto rounded-lg"
                     />
                   </div>
                   <div className="mob-slider-navigation swiper-button-prev discover-button-prev" />
