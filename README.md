@@ -203,6 +203,8 @@ This project is configured for automatic deployments on Vercel:
 
 See Vercel dashboard for deployment status and logs.
 
+> **Note**: Every push to the `main` branch triggers an automatic production deployment.
+
 ## License
 
 Private project
