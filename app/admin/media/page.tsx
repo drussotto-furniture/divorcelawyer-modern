@@ -13,7 +13,7 @@ export default async function MediaPage() {
   const supabase = await createClient()
   
   const { data: media, error } = await supabase
-    .from('media')
+    .from('media' as any)
     .select('*')
     .order('created_at', { ascending: false })
     .limit(100)
