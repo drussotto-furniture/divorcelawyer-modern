@@ -27,6 +27,43 @@ export default async function ContactSubmissionPage({ params }: PageProps) {
     notFound()
   }
 
+  // Type assertion after error check
+  const typedSubmission = submission as unknown as {
+    id: string
+    name: string
+    email: string
+    phone: string | null
+    message: string
+    city_id: string | null
+    lawyer_id: string | null
+    source: string | null
+    status: string
+    created_at: string
+    cities?: {
+      name: string
+      states?: {
+        abbreviation: string
+      } | null
+    } | null
+    lawyers?: {
+      first_name: string
+      last_name: string
+      slug: string
+    } | null
+  }
+
+  // Transform to match expected type (convert null to undefined)
+  const transformedSubmission = {
+    ...typedSubmission,
+    cities: typedSubmission.cities
+      ? {
+          ...typedSubmission.cities,
+          states: typedSubmission.cities.states || undefined,
+        }
+      : undefined,
+    lawyers: typedSubmission.lawyers || undefined,
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -34,7 +71,7 @@ export default async function ContactSubmissionPage({ params }: PageProps) {
         <p className="mt-2 text-gray-600">View submission details</p>
       </div>
 
-      <ContactSubmissionView submission={submission} />
+      <ContactSubmissionView submission={transformedSubmission as any} />
     </div>
   )
 }
