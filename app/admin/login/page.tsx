@@ -28,7 +28,10 @@ export default function AdminLogin() {
           .eq('id', user.id)
           .single()
 
-        if (profile && (profile.role === 'super_admin' || profile.role === 'law_firm' || profile.role === 'lawyer')) {
+        // Type assertion after query
+        const typedProfile = profile as unknown as { role?: string } | null
+
+        if (typedProfile && (typedProfile.role === 'super_admin' || typedProfile.role === 'law_firm' || typedProfile.role === 'lawyer')) {
           router.push('/admin')
           return
         }
