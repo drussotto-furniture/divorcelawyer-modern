@@ -44,8 +44,8 @@ export default async function ContentBlockEditPage({ params }: PageProps) {
     notFound()
   }
 
-  // Type assertion after error check
-  const typedBlock = block as ContentBlock
+  // Type assertion after error check - use unknown first for safety
+  const typedBlock = block as unknown as ContentBlock
 
   return (
     <div className="space-y-6">

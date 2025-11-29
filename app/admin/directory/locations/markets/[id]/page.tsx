@@ -17,7 +17,7 @@ export default async function MarketEditPage({ params }: PageProps) {
 
   const supabase = await createClient()
   const { data: market, error } = await supabase
-    .from('markets')
+    .from('markets' as any)
     .select('*')
     .eq('id', id)
     .single()
@@ -26,14 +26,17 @@ export default async function MarketEditPage({ params }: PageProps) {
     notFound()
   }
 
+  // Type assertion for market
+  const typedMarket = market as unknown as { id: string; name: string; [key: string]: any }
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Edit Market</h1>
-        <p className="mt-2 text-gray-600">{market.name}</p>
+        <p className="mt-2 text-gray-600">{typedMarket.name}</p>
       </div>
 
-      <MarketEditForm market={market} />
+      <MarketEditForm market={typedMarket as any} />
     </div>
   )
 }

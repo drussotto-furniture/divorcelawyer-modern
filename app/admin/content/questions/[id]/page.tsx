@@ -27,14 +27,22 @@ export default async function QuestionEditPage({ params }: PageProps) {
     notFound()
   }
 
+  // Ensure all required fields are present
+  const typedQuestion = {
+    ...question,
+    tags: question.tags || null,
+    not_helpful_count: question.not_helpful_count || 0,
+    status: question.status || 'published'
+  }
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Edit Question</h1>
-        <p className="mt-2 text-gray-600">{question.question}</p>
+        <p className="mt-2 text-gray-600">{typedQuestion.question}</p>
       </div>
 
-      <QuestionEditForm question={question} />
+      <QuestionEditForm question={typedQuestion as any} />
     </div>
   )
 }

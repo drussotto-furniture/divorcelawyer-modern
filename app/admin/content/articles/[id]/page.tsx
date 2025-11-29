@@ -34,14 +34,20 @@ export default async function ArticleEditPage({ params }: PageProps) {
     notFound()
   }
 
+  // Ensure status is a string (not null)
+  const typedArticle = {
+    ...article,
+    status: article.status || 'draft'
+  }
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Edit Article</h1>
-        <p className="mt-2 text-gray-600">{article.title}</p>
+        <p className="mt-2 text-gray-600">{typedArticle.title}</p>
       </div>
 
-      <ArticleEditForm article={article} categories={categories || []} />
+      <ArticleEditForm article={typedArticle as any} categories={categories || []} />
     </div>
   )
 }

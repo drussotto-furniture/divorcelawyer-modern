@@ -23,7 +23,9 @@
     "update:questions-answers": "tsx scripts/update-questions-answers.ts",
           "check-and-update-all-data": "tsx scripts/check-and-update-all-data.ts",
           "create:test-data": "tsx scripts/create-test-data.ts",
-          "check:location-counts": "tsx scripts/check-location-data-counts.ts"
+          "check:location-counts": "tsx scripts/check-location-data-counts.ts",
+          "update:cities-wp-id": "tsx scripts/update-cities-wordpress-id.ts",
+          "link:zip-codes": "tsx scripts/link-zip-codes-to-cities.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",

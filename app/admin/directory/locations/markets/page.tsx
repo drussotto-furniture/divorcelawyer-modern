@@ -12,7 +12,7 @@ export default async function MarketsPage() {
 
   const supabase = await createClient()
   const { data: markets, error } = await supabase
-    .from('markets')
+    .from('markets' as any)
     .select('id, name, slug, description')
     .order('name', { ascending: true })
 
