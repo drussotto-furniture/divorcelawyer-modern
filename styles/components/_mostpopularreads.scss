@@ -1,0 +1,100 @@
+@import '../utils.scss';
+
+@include block('most-popular-reads') {
+  .block-container {
+    text-align: center;
+    .heading {
+      letter-spacing: rem(2.2);
+      text-transform: uppercase;
+          text-align: left;
+    }
+
+    .component-rich-text {
+      font-size: fluid(16, 20);
+      line-height: fluid(20, 26);
+      padding-top: 0.25rem;
+          padding-bottom: 0.25rem;
+    }
+
+    &.container-size-small {
+      max-width: rem(1536);
+    }
+
+    &.container-size-medium {
+      max-width: rem(1830);
+    }
+
+    .second-level-articles {
+      .second-level-article {
+        .article-thumbnail {
+
+          @include media('<=md') {
+            /* @apply h-40 - needs manual conversion */
+          }
+          iframe{
+            background-color: #1D1D1D;
+            .vp-center{
+              display: block;
+            }
+          }
+        }
+      }
+    }
+
+    .featured-thumbnail{
+      iframe{
+        background-color: #1D1D1D;
+      }
+    }
+
+    h2 {
+      .component-rich-text {
+        font-size: fluid(38, 64);
+        line-height: fluid(42, 84);
+        letter-spacing: fluid(-1.14, -1.92);
+        color: #1D1D1D;
+          font-weight: 400;
+          padding-left: 0;
+          padding-bottom: 0;
+          font-style: normal;
+          font-family: 'Libre', serif;
+      }
+
+      span {
+        color: #B6572E;
+          font-style: italic;
+      }
+    }
+
+    a:not(.component-button) {
+      color: #B6572E;
+    }
+
+    .articles-list {
+      .items {
+        /* @apply border-t - needs manual conversion */
+          border-style: solid;
+          /* @apply border-lightsand - needs manual conversion */
+          /* @apply bottom-1 - needs manual conversion */
+
+        &:last-child {
+          /* @apply border-b - needs manual conversion */
+        }
+      }
+    }
+  }
+
+  .overley-layout {
+    /* @apply -top-20 - needs manual conversion */
+          /* @apply -mb-28 - needs manual conversion */
+          /* @apply pt-[6%] - needs manual conversion */
+          position: relative;
+          border-radius: 1.5rem;
+          z-index: 10;
+
+          @include media(">=lg") {
+            top: -9rem;
+            /* @apply lg:-mb-36 - needs manual conversion */
+          }
+  }
+}

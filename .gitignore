@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# WordPress migration artifacts (already migrated to Supabase)
+wordpress-export/
+public/*.xml
+public/*.sql
+output/

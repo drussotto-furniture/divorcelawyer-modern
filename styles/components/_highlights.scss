@@ -1,0 +1,81 @@
+@import '../utils.scss';
+
+@include block('highlights') {
+  .block-container {
+
+    .category-block {
+      margin-top: 3rem;
+      .list {
+        border-width: 2px;
+          border-style: solid;
+          border-color: transparent;
+          border-radius: 1rem;
+
+        &:nth-child(odd) {
+          /* @apply border-bColor - needs manual conversion */
+        }
+
+        h2 {
+          position: relative;
+          padding-bottom: 1.5rem;
+
+          @include media(">=lg") {
+            padding-bottom: 1.5rem;
+          }
+          .component-rich-text {
+            font-size: fluid(28, 34);
+            line-height: fluid(32, 38);
+            text-align: center;
+          /* @apply } - needs manual conversion */
+          /* @apply &::after - needs manual conversion */
+          /* @apply { - needs manual conversion */
+          /* @apply content: - needs manual conversion */
+          /* @apply '' - needs manual conversion */
+            height: rem(7);
+            position: absolute;
+          /* @apply bg-sandy - needs manual conversion */
+          /* @apply w-11 - needs manual conversion */
+          /* @apply bottom-2 - needs manual conversion */
+          margin-left: auto; margin-right: auto;
+          left: 0;
+          right: 0;
+
+          @include media(">=lg") {
+            /* @apply lg:-bottom-0 - needs manual conversion */
+          }
+          }
+        }
+
+        .component-rich-text {
+          /* @apply text-darkgray - needs manual conversion */
+          text-align: left;
+
+          p {
+            padding-top: 0.625rem; padding-bottom: 0.625rem;
+          font-size: 1.25rem;
+          }
+
+          ul {
+            li {
+              /* @apply py-1.5 - needs manual conversion */
+          font-size: 1.25rem;
+            }
+          }
+        }
+      }
+
+
+    }
+  }
+
+  .overley-layout {
+    /* @apply -top-0 - needs manual conversion */
+          /* @apply -mb-0 - needs manual conversion */
+
+          @include media(">=lg") {
+            top: -9rem;
+            margin-bottom: -10rem;
+            padding-top: 5rem;
+          }
+  }
+}

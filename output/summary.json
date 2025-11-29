@@ -1,0 +1,21 @@
+{
+  "total_items": 74563,
+  "content_types": {
+    "states": 52,
+    "counties": 3217,
+    "cities": 29585,
+    "zip_codes": 40954,
+    "articles": 75,
+    "article_categories": 7,
+    "videos": 36,
+    "questions": 16,
+    "lawyers": 5,
+    "law_firms": 5,
+    "stages": 6,
+    "emotions": 6,
+    "team_members": 29,
+    "pages": 23,
+    "posts": 4
+  },
+  "parsed_at": "2025-11-26T20:06:10.627207"
+}

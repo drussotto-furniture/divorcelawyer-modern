@@ -1,0 +1,143 @@
+@import '../utils.scss';
+
+@include block("connect-with-lawyer") {
+  .block-container {
+    margin-left: auto; margin-right: auto;
+
+    &.container-size-small {
+      max-width: rem(1516);
+    }
+
+    &.container-size-medium {
+      max-width: rem(1830);
+    }
+
+    .img-height {
+      @include media(">=3xl") {
+        height: 32.3rem;
+      }
+    }
+
+    .headline {
+      line-height: fluid(15, 22);
+      letter-spacing: fluid(0.5, 0.5);
+      font-size: 0.75rem;
+    }
+
+    h2 {
+      font-size: fluid(12, 15);
+      line-height: fluid(18, 32);
+      /* @apply text-beigemuted - needs manual conversion */
+          padding-bottom: 0.25rem;
+          text-transform: uppercase;
+          /* @apply leading-5 - needs manual conversion */
+          font-weight: 700;
+          padding-left: 0.75rem; padding-right: 0.75rem;
+          /* @apply tracking-[0.48px] - needs manual conversion */
+
+          @include media(">=lg") {
+            padding-left: 0; padding-right: 0;
+            /* @apply lg:tracking-[2.4px] - needs manual conversion */
+          }
+    }
+
+    h3 {
+      .component-rich-text {
+        font-size: fluid(38, 64);
+        line-height: fluid(36, 68);
+        color: #fff;
+          font-weight: 400;
+          font-style: normal;
+          font-family: 'Libre', serif;
+          padding-top: 0; padding-bottom: 0;
+          /* @apply -tracking-[1.44px] - needs manual conversion */
+          max-width: 100%;
+          /* @apply my-2.5 - needs manual conversion */
+
+          @include media(">=lg") {
+            padding-left: 0; padding-right: 0;
+            /* @apply lg:-tracking-[2.7px] - needs manual conversion */
+          }
+
+        &.location-heading {
+          color: #FC9445;
+          font-style: italic;
+        }
+      }
+
+      span {
+        color: #FC9445;
+          font-style: italic;
+      }
+    }
+
+    .location-tagline {
+      font-size: fluid(16, 20);
+      line-height: rem(26);
+      color: #fff;
+          font-family: 'Proxima', sans-serif;
+    }
+
+    .left-pan {
+      a {
+        text-decoration: underline;
+        font-style: italic;
+          margin-top: 1rem;
+      }
+    }
+
+    .submit-button {
+      border-radius: 9999px;
+          padding-left: 2.5rem; padding-right: 2.5rem;
+          padding-top: 1rem; padding-bottom: 1rem;
+          background-color: #FC9445;
+          line-height: 1rem;
+          text-transform: uppercase;
+          font-size: 0.875rem;
+    }
+
+    .search-field {
+      border-radius: 9999px;
+          padding-left: 2.5rem; padding-right: 2.5rem;
+          padding-top: 0.75rem; padding-bottom: 0.75rem;
+          /* @apply border-lightsand - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:pl-10 - needs manual conversion */
+            /* @apply lg:pr-44 - needs manual conversion */
+          }
+    }
+
+    .image-fit {
+      figure {
+        height: 100%;
+      }
+      img {
+        height: 100%;
+          /* @apply object-cover - needs manual conversion */
+      }
+    }
+  }
+
+  &.section-light {
+    h2 {
+      color: #000;
+    }
+    h3 {
+      .component-rich-text {
+        color: #000;
+
+        &.location-heading {
+          color: #B6572E;
+        }
+      }
+    }
+    .goto-location {
+      color: #000;
+    }
+    .location-tagline {
+      color: #000;
+          font-family: 'Proxima', sans-serif;
+    }
+  }
+}

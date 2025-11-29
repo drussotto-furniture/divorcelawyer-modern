@@ -1,0 +1,294 @@
+@import '../utils.scss';
+
+@include block('real-voices') {
+  padding-top: rem(56);
+  padding-bottom: rem(56);
+
+  .block-container {
+    margin-left: rem(20);
+    margin-right: rem(20);
+
+    @include media('>=lg') {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    &.container-size-small {
+      max-width: rem(1267);
+    }
+
+    &.container-size-medium {
+      max-width: rem(1485);
+    }
+
+    h2 {
+      .component-rich-text {
+        font-size: fluid(38, 64);
+        line-height: fluid(42, 68);
+        letter-spacing: fluid(-1.14, -1.92);
+        color: #000000;
+        font-weight: 400;
+        font-family: 'Libre', serif;
+        margin-bottom: rem(24);
+        max-width: rem(256);
+        margin-left: auto;
+        margin-right: auto;
+
+        @include media('>=md') {
+          max-width: 100%;
+        }
+
+        @include media('>=lg') {
+          margin-bottom: rem(32);
+        }
+      }
+
+      span {
+        color: #B6572E;
+        font-style: italic;
+      }
+    }
+
+    .real-voices-container {
+      max-width: rem(850);
+      overflow-y: auto;
+
+      @include media('>=2xl') {
+        max-width: rem(1024);
+      }
+
+      @include media('>=3xl') {
+        max-width: rem(1267);
+      }
+
+      .swiper-wrapper {
+        .swiper-slide {
+          .real-voices-card-item {
+            border-radius: rem(12);
+            height: 100%;
+            padding: rem(36) rem(20);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #FBFAF9;
+
+            @include media('>=lg') {
+              text-align: center;
+              align-items: center;
+              justify-content: center;
+              padding: rem(56) rem(135);
+              min-height: rem(423);
+            }
+
+            h3 {
+              font-size: fluid(22, 54);
+              line-height: fluid(30, 65);
+              color: #000000;
+              font-weight: 500;
+              padding-bottom: rem(16);
+              font-style: italic;
+              font-family: 'Libre', serif;
+
+              @include media('>=lg') {
+                padding-bottom: rem(28);
+              }
+            }
+
+            .short-description {
+              text-align: left;
+
+              @include media('>=lg') {
+                text-align: center;
+              }
+
+              .component-rich-text {
+                font-size: fluid(14, 22);
+                line-height: normal;
+                font-weight: 400;
+                color: #000000;
+                font-family: 'Proxima', sans-serif;
+                display: inline;
+              }
+
+              span {
+                &.read-btn {
+                  font-size: fluid(14, 22);
+                  color: #B6572E;
+                  line-height: normal;
+                  font-weight: 400;
+                  font-family: 'Proxima', sans-serif;
+                  text-decoration: underline;
+                  text-transform: capitalize;
+                  cursor: pointer;
+
+                  @include media('>=lg') {
+                    color: #000000;
+                  }
+                }
+              }
+
+              .more-text {
+                transition: max-height 0.25s ease-out;
+                max-height: 0;
+                overflow: hidden;
+              }
+
+              &.expanded {
+                .more-text {
+                  max-height: none;
+                }
+              }
+            }
+
+            h4 {
+              font-size: fluid(16, 22);
+              line-height: fluid(30, 45);
+              color: #000000;
+              font-weight: 700;
+              font-style: normal;
+              font-family: 'Proxima', sans-serif;
+              line-height: normal;
+              position: relative;
+              text-transform: capitalize;
+
+              &::before {
+                content: '';
+                height: rem(7);
+                width: rem(29);
+                background-color: #FC9445;
+                display: block;
+                margin-top: rem(16);
+                margin-bottom: rem(10);
+
+                @include media('>=lg') {
+                  height: rem(5);
+                  width: rem(61);
+                  margin: rem(24) auto;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .realvoices-arrow-navigation {
+      position: relative;
+      height: 100%;
+      margin-bottom: rem(80);
+      width: 100%;
+      top: rem(4);
+
+      @include media('>=lg') {
+        position: absolute;
+        top: 0;
+        margin-bottom: 0;
+      }
+
+      .swiper-button-prev,
+      .swiper-button-next {
+        outline: none;
+        top: 45%;
+        opacity: 1;
+        color: #95754B;
+        width: rem(56);
+        height: rem(56);
+        background-color: white;
+        border-radius: 50%;
+
+        &::after {
+          font-weight: 600;
+          font-size: rem(24);
+          position: relative;
+        }
+      }
+
+      .swiper-button-next {
+        right: 0;
+
+        @include media('>=lg') {
+          right: rem(-30);
+        }
+
+        @include media('>=xl') {
+          right: rem(-90);
+        }
+
+        &::after {
+          right: rem(-2);
+        }
+      }
+
+      .swiper-button-prev {
+        left: 0;
+
+        @include media('>=lg') {
+          left: rem(-30);
+        }
+
+        @include media('>=xl') {
+          left: rem(-90);
+        }
+
+        &::after {
+          left: rem(-2);
+        }
+      }
+    }
+
+    .swiper-pagination {
+      top: rem(18);
+      position: relative;
+      margin-top: rem(44);
+
+      @include media('>=lg') {
+        top: 0;
+      }
+
+      .swiper-pagination-bullet {
+        width: rem(9);
+        height: rem(9);
+        border-radius: 50%;
+        background-color: #c7af90;
+
+        &-active {
+          background-color: #B6572E;
+        }
+      }
+    }
+
+    .component-button {
+      font-size: rem(15);
+      letter-spacing: rem(1.5);
+      min-width: rem(320);
+      color: #000000;
+
+      span {
+        font-weight: 700;
+        line-height: 2rem;
+        font-family: 'Proxima', sans-serif;
+      }
+    }
+  }
+
+  &.section-white {
+    .block-container {
+      .swiper-wrapper {
+        .swiper-slide {
+          .real-voices-card-item {
+            background-color: #F4F2EC;
+          }
+        }
+      }
+
+      .swiper-button-prev,
+      .swiper-button-next {
+        background-color: #F4F2EC;
+      }
+    }
+  }
+}
+

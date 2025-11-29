@@ -1,0 +1,182 @@
+@import '../utils.scss';
+
+@include block("common-questions") {
+  .block-container {
+    border-radius: rem(20);
+    padding: rem(32) rem(16);
+    position: relative;
+    z-index: 10;
+
+    @include media('>=lg') {
+      padding: rem(64);
+    }
+
+    &.container-size-small {
+      max-width: rem(1516);
+    }
+
+    &.container-size-medium {
+      max-width: 100%;
+    }
+
+    h2 {
+      .component-rich-text {
+        font-size: fluid(38, 64); // Figma: 64px
+        line-height: fluid(42, 68); // Figma: 68px (106%)
+        letter-spacing: -0.03em; // Figma: -0.03em
+        color: #1D1D1D;
+        font-weight: 400; // Figma: 400
+        padding-left: rem(20);
+        padding-right: rem(20);
+        font-family: 'Libre', serif;
+        text-align: center;
+        margin-bottom: rem(12);
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      span {
+        color: #B6572E;
+        font-style: italic;
+      }
+    }
+
+    .short-description {
+      .component-rich-text {
+        text-align: center;
+        max-width: rem(900);
+        margin: 0 auto;
+      }
+    }
+
+    .common-questions-wrapper {
+      max-width: rem(1516);
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: rem(28);
+      margin-top: rem(40);
+
+      @include media('>=lg') {
+        margin-bottom: rem(48);
+        margin-top: rem(56);
+      }
+
+      .common-questions-item {
+        border-top: 1px solid #6191A3; // Figma: tealhaze
+
+        .common-questions {
+          font-size: fluid(16, 20); // Figma: 20px
+          line-height: fluid(20, 30); // Figma: 30px (150%)
+          color: #1D1D1D;
+          font-family: 'Proxima', sans-serif;
+          font-weight: 700; // Figma: 700
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: rem(20) 0; // Figma: 20px 0px
+          gap: rem(12); // Figma: 12px gap
+          cursor: pointer;
+          text-align: left;
+
+          &::after {
+            content: '';
+            width: 24px;
+            height: 24px;
+            background-image: url('/images/Faq-arroa-down.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            flex-shrink: 0;
+            margin-left: rem(16);
+          }
+        }
+
+        .common-answer {
+          transition: all 0.15s linear;
+          height: 0;
+          overflow: hidden;
+          text-align: left;
+
+          .component-rich-text {
+            font-size: fluid(16, 20);
+            color: #1D1D1D;
+            font-family: 'Proxima', sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+          }
+
+          .article-link {
+            text-align: right;
+            margin-top: rem(16);
+
+            a {
+              font-size: fluid(16, 18);
+              color: #16596D;
+              text-transform: capitalize;
+              font-style: italic;
+              text-decoration: underline;
+
+              @include media('>=lg') {
+                margin-right: rem(48);
+              }
+            }
+          }
+        }
+
+        &:last-child {
+          border-bottom: 1px solid #6191A3; // Figma: tealhaze
+        }
+
+        &.active {
+          .common-questions {
+            &::after {
+              background-image: url('/images/Faq-arroa-up.svg');
+            }
+          }
+
+          .common-answer {
+            padding-bottom: rem(20);
+            height: auto;
+          }
+        }
+      }
+    }
+
+    .component-button {
+      font-size: rem(15);
+      letter-spacing: rem(1.5);
+      min-width: rem(320);
+      color: #1D1D1D;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #FC9445;
+      border-radius: rem(100);
+      padding: rem(12) rem(32);
+      text-transform: uppercase;
+      transition: all 0.3s ease;
+      text-decoration: none;
+
+      &:hover {
+        background-color: #1D1D1D;
+        color: #fff;
+      }
+
+      span {
+        font-weight: 700;
+        line-height: 2rem;
+        font-family: 'Proxima', sans-serif;
+      }
+    }
+
+    &.overley-layout {
+      top: rem(-80);
+      margin-bottom: rem(-112);
+
+      @include media('>=lg') {
+        top: rem(-144);
+        margin-bottom: rem(-144);
+      }
+    }
+  }
+}

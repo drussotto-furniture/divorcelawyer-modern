@@ -1,0 +1,103 @@
+@import '../utils.scss';
+
+@include block('landing-content-column') {
+  .block-container {
+    padding-left: 1.25rem; padding-right: 1.25rem;
+
+          @include media(">=lg") {
+            padding-left: 2rem; padding-right: 2rem;
+          }
+
+          @include media(">=2xl") {
+            padding-left: 4rem; padding-right: 4rem;
+          }
+
+    h2 {
+      position: relative;
+          padding-bottom: 1.5rem;
+
+          @include media(">=lg") {
+            /* @apply lg:pb-9 - needs manual conversion */
+          }
+      .component-rich-text {
+        font-size: fluid(38, 60);
+        line-height: fluid(45, 44);
+        color: #fff;
+      }
+    }
+
+    .component-rich-text {
+      font-size: fluid(16, 24);
+      line-height: fluid(20, 40);
+      color: #fff;
+
+      p {
+        /* @apply py-1.5 - needs manual conversion */
+      }
+      a{
+        color: #B6572E;
+          text-decoration: none;
+      }
+    }
+
+    .content-block {
+      h2 {
+        position: relative;
+          padding-bottom: 1.5rem;
+
+          @include media(">=lg") {
+            padding-bottom: 1.75rem;
+          }
+        .component-rich-text {
+          font-size: fluid(32, 38);
+          line-height: fluid(46, 48);
+          color: #FC9445;
+          font-style: italic;
+        }
+        &::after {
+          content: '';
+          height: rem(7);
+          position: absolute;
+          /* @apply bg-sandy - needs manual conversion */
+          /* @apply w-11 - needs manual conversion */
+          /* @apply bottom-2 - needs manual conversion */
+          left: 0;
+          right: 0;
+          margin-left: auto; margin-right: auto;
+
+          @include media(">=lg") {
+            /* @apply lg:-bottom-0 - needs manual conversion */
+            margin-left: 0; margin-right: 0;
+          }
+        }
+      }
+
+      .component-rich-text {
+        font-size: fluid(16, 20);
+        line-height: fluid(20, 26);
+        color: #fff;
+          padding-top: 1.25rem;
+
+        p {
+          /* @apply py-1.5 - needs manual conversion */
+        }
+      }
+    }
+
+    &.background-dark {
+      background-color: #000;
+    }
+
+    &.background-bluish {
+      /* @apply bg-darkblue - needs manual conversion */
+    }
+
+    &.background-seashell {
+      /* @apply bg-seashell - needs manual conversion */
+
+      .component-rich-text {
+        color: #000;
+      }
+    }
+  }
+}

@@ -1,0 +1,533 @@
+@import '../utils.scss';
+
+@include block("discover-slider") {
+  padding-left: 1.25rem; padding-right: 1.25rem;
+          position: relative;
+          /* @apply z-[2] - needs manual conversion */
+
+  .block-container {
+    /* @apply rounded-[20px] - needs manual conversion */
+          position: relative;
+          z-index: 10;
+
+    &.container-size-small {
+      max-width: rem(1516);
+    }
+
+    &.container-size-medium {
+      max-width: rem(1830);
+    }
+
+    .swiper-container {
+      padding-top: 0; padding-bottom: 0;
+          /* @apply overflow-x-hidden - needs manual conversion */
+
+      @include media(">=lg") {
+        padding-top: 5rem;
+      }
+
+      .swiper-wrapper {
+        align-items: flex-start;
+
+          @include media(">=lg") {
+            align-items: center;
+          }
+
+        .swiper-slide {
+          padding: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          /* @apply transition-all - needs manual conversion */
+          margin-bottom: 0.75rem;
+
+          @include media(">=lg") {
+            padding: 0;
+            flex-direction: row;
+            justify-content: center;
+            margin-bottom: 0;
+          }
+
+          .discover-slide-thumbnail {
+            position: relative;
+          margin-bottom: 1.25rem;
+          width: 100%;
+
+            @include media(">=lg") {
+              position: relative;
+          margin-bottom: 0;
+          width: auto;
+            }
+
+            &::after {
+              content: "";
+              height: 90%;
+              top: 5%;
+              border-radius: rem(20);
+              z-index: -2;
+
+              /* @apply bg-subtlesand - needs manual conversion */
+          position: absolute;
+          margin-bottom: 0;
+          display: none;
+          /* @apply -right-4 - needs manual conversion */
+          /* @apply w-12 - needs manual conversion */
+
+              @include media(">=lg") {
+                display: block;
+              }
+            }
+
+            &::before {
+              content: "";
+              height: 76%;
+              right: - rem(30);
+              top: 12%;
+              border-radius: rem(20);
+              z-index: -2;
+
+              /* @apply bg-ivorytint - needs manual conversion */
+          position: absolute;
+          display: none;
+          bottom: 0;
+          /* @apply w-12 - needs manual conversion */
+
+              @include media(">=lg") {
+                display: block;
+              }
+            }
+
+            .component-image {
+              overflow: initial;
+              position: relative;
+
+              img {
+                border-radius: rem(10);
+                max-height: rem(600);
+                /* @apply aspect-auto - needs manual conversion */
+
+                @include media(">=lg") {
+                  max-width: rem(300);
+                  border-radius: rem(20);
+                }
+
+                @include media(">=xl") {
+                  max-width: rem(365);
+                }
+
+                @include media(">=2xl") {
+                  max-width: rem(504);
+                }
+              }
+            }
+          }
+
+          .discover-slider-content {
+            position: relative;
+          width: 100%;
+          margin: 0;
+          /* @apply max-w-max - needs manual conversion */
+
+            .discover-slide-inner-content{
+              @include media(">=lg") {
+                max-width: rem(430);
+              }
+              @include media(">=xl") {
+                max-width: rem(500);
+              }
+              @include media(">=4xl") {
+                max-width: rem(600);
+              }
+            }
+
+            @include media(">=lg") {
+              margin-left: rem(100);
+              /* @apply w-1/2 - needs manual conversion */
+          /* @apply min-h-max - needs manual conversion */
+            }
+
+            @include media(">=xl") {
+
+              margin-right: rem(50);
+            }
+
+            @include media(">=4xl") {
+              margin-left: rem(140);
+
+              margin-right: rem(50);
+            }
+
+            h2 {
+              letter-spacing: rem(2.8);
+              text-align: left;
+          /* @apply text-spandark - needs manual conversion */
+          padding-bottom: 0;
+          text-transform: uppercase;
+          /* @apply leading-5 - needs manual conversion */
+          font-weight: 700;
+          font-family: 'Proxima', sans-serif;
+          font-size: 0.875rem;
+
+              @include media(">=md") {
+                padding-bottom: 0.75rem;
+              }
+            }
+
+            h3 {
+              .component-rich-text {
+                font-size: fluid(36, 64);
+                line-height: fluid(40, 64);
+                text-align: left;
+          color: #1D1D1D;
+          font-weight: 400;
+          padding-left: 0;
+          font-style: normal;
+          font-family: 'Libre', serif;
+              }
+
+              span {
+                /* @apply text-spandark - needs manual conversion */
+          font-style: italic;
+              }
+            }
+
+            .block-short-des {
+              .component-rich-text {
+                font-size: fluid(16, 20);
+                line-height: fluid(20, 26);
+                text-align: left;
+          padding-top: 0.25rem;
+          padding-bottom: 1.25rem;
+          /* @apply font-light - needs manual conversion */
+          font-family: 'Proxima', sans-serif;
+              }
+            }
+
+            .component-button-wrapper {
+              flex-direction: column;
+          align-items: center;
+
+              @include media(">=lg") {
+                flex-direction: row;
+          align-items: flex-start;
+              }
+
+              .component-button {
+                letter-spacing: fluid(1.4, 1.5);
+                text-transform: uppercase;
+          width: 100%;
+          border-radius: 9999px;
+          border-color: #FC9445;
+          /* @apply my-2 - needs manual conversion */
+          margin-left: 0;
+          font-family: 'Proxima', sans-serif;
+          font-weight: 700;
+          /* @apply leading-8 - needs manual conversion */
+          width: 100%;
+          white-space: nowrap;
+          /* @apply min-w-64 - needs manual conversion */
+          padding-left: 1rem; padding-right: 1rem;
+
+          @include media(">=lg") {
+            width: auto;
+          }
+
+                span {
+                  font-size: fluid(14,15);
+                  font-weight: 700;
+          font-family: 'Proxima', sans-serif;
+                }
+
+                &.style-primary {
+                  margin-right: 0.75rem;
+          color: #000;
+          border-radius: 9999px;
+          margin-left: 0.75rem;
+
+          &:hover {
+            background-color: #1D1D1D;
+            color: #fff;
+          }
+
+                  @include media(">=lg") {
+                    margin-left: 0;
+                  }
+                }
+
+                &.style-secondary {
+                  margin-right: 0.75rem;
+          /* @apply text-bluishlight - needs manual conversion */
+          /* @apply border-bluishlight - needs manual conversion */
+          border-radius: 9999px;
+          margin-left: 0.75rem;
+
+          &:hover {
+            background-color: #1D1D1D;
+            color: #fff;
+            border-color: transparent;
+          }
+
+                  @include media(">=lg") {
+                    margin-left: 0;
+                  }
+                }
+
+                @include media(">=lg") {
+                  margin-left: auto; margin-right: auto;
+          margin-top: 0; margin-bottom: 0;
+          /* @apply min-w-max - needs manual conversion */
+                }
+
+                @include media(">=xl") {
+                  /* @apply min-w-64 - needs manual conversion */
+                }
+              }
+            }
+          }
+
+          &.swiper-slide-next,
+          &.swiper-slide-prev {
+            .discover-slider-content {
+              /* @apply invisible - needs manual conversion */
+            }
+          }
+        }
+      }
+    }
+
+    .custom-indicators {
+      margin-bottom: 0;
+          position: relative;
+          /* @apply bottom-7 - needs manual conversion */
+          /* @apply top-8 - needs manual conversion */
+          display: flex;
+          margin-left: auto; margin-right: auto;
+          justify-content: flex-start;
+          overflow: hidden;
+
+          @include media(">=lg") {
+            /* @apply lg:my-5 - needs manual conversion */
+            /* @apply lg:mb-7 - needs manual conversion */
+            /* @apply lg:-top-9 - needs manual conversion */
+          }
+
+      @include media(">=lg") {
+        /* @apply mx-3 - needs manual conversion */
+          /* @apply overflow-x-scroll - needs manual conversion */
+          padding-bottom: 0.625rem;
+          display: block;
+          white-space: nowrap;
+      }
+
+      @include media(">=3xl") {
+        /* @apply bottom-11 - needs manual conversion */
+      }
+
+      .custom-indicator {
+        letter-spacing: rem(2.8);
+        display: none;
+          text-transform: uppercase;
+          /* @apply text-darkbluish - needs manual conversion */
+          position: relative;
+          font-weight: 600;
+          font-family: 'Proxima', sans-serif;
+          font-size: 0.75rem;
+          white-space: nowrap;
+          /* @apply left-[8%] - needs manual conversion */
+          /* @apply w-[91%] - needs manual conversion */
+          /* @apply mb-11 - needs manual conversion */
+
+          @include media(">=lg") {
+            display: inline-block;
+            /* @apply lg:text-bluishlight - needs manual conversion */
+            /* @apply lg:mx-14 - needs manual conversion */
+            /* @apply lg:mx-10 - needs manual conversion */
+            font-size: 0.875rem;
+            left: 0;
+            top: 0;
+            margin-bottom: 0;
+            width: auto;
+          }
+
+          @include media(">=2xl") {
+            margin-right: 5rem;
+          }
+
+
+        span {
+          /* @apply border-b - needs manual conversion */
+          border-style: solid;
+          border-color: transparent;
+        }
+
+        &::before {
+          content: "";
+          border-radius: 50%;
+          margin-right: rem(5);
+          /* @apply border-darkbluish - needs manual conversion */
+          /* @apply top-[3px] - needs manual conversion */
+          display: inline-block;
+          position: relative;
+          /* @apply bg-transparent - needs manual conversion */
+          /* @apply w-4 - needs manual conversion */
+          /* @apply h-4 - needs manual conversion */
+          border-width: 2px;
+
+          @include media(">=lg") {
+            /* @apply lg:border-bluishlight - needs manual conversion */
+            margin-right: 0.75rem;
+            /* @apply lg:top-0.5 - needs manual conversion */
+          }
+        }
+
+        span.caption-arrow {
+          background-image: url("/images/right-indicator-arrow.svg");
+          top: rem(3);
+          filter: brightness(0) saturate(100%) invert(55%) sepia(41%) saturate(350%) hue-rotate(151deg) brightness(90%) contrast(85%);
+
+          display: inline-block;
+          /* @apply w-8 - needs manual conversion */
+          /* @apply h-7 - needs manual conversion */
+          position: absolute;
+          left: auto;
+          right: 0;
+          /* @apply bg-no-repeat - needs manual conversion */
+          /* @apply border-0 - needs manual conversion */
+          /* @apply align-middle - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:-right-14 - needs manual conversion */
+          }
+
+          @include media(">=2xl") {
+            /* @apply 2xl:-right-[77px] - needs manual conversion */
+          }
+
+          @include media(">=lg") {
+            position: absolute;
+          }
+        }
+
+        &.active {
+          display: block;
+          /* @apply font-extrabold - needs manual conversion */
+
+          @include media(">=lg") {
+            display: inline-block;
+          }
+
+          span {
+            /* @apply border-bluishlight - needs manual conversion */
+          }
+
+          &::before {
+            background-color: #235561;
+          }
+        }
+
+        &:last-child {
+          span.caption-arrow {
+            display: none;
+          }
+        }
+      }
+
+      &::-webkit-scrollbar {
+        /* @apply w-1 - needs manual conversion */
+          /* @apply h-1 - needs manual conversion */
+      }
+
+      &::-webkit-scrollbar-track {
+        border-radius: 0.5rem;
+          /* @apply bg-transparent - needs manual conversion */
+      }
+
+      &::-webkit-scrollbar-thumb {
+        border-radius: 0.5rem;
+          background-color: #235561;
+      }
+    }
+
+    .swiper-button-prev,
+    .swiper-button-next {
+      outline: none;
+      /* @apply top-1/2 - needs manual conversion */
+          position: absolute;
+          /* @apply opacity-100 - needs manual conversion */
+          color: #fff;
+
+      &.swiper-button-disabled {
+        display: none;
+          /* @apply opacity-0 - needs manual conversion */
+      }
+
+      &::after {
+        line-height: fluid(50, 60);
+        font-weight: 700;
+      }
+
+      @include media(">=lg") {
+        /* @apply text-tealhaze - needs manual conversion */
+          /* @apply top-[60%] - needs manual conversion */
+      }
+
+      &.mob-slider-navigation {
+        display: flex;
+          /* @apply top-[8%] - needs manual conversion */
+          height: 100%;
+          align-items: center;
+          padding-left: 2rem; padding-right: 2rem;
+
+          @include media(">=lg") {
+            display: none;
+          }
+
+        &::before{
+          content: "";
+          display: block;
+          /* @apply bg-dark/[.3] - needs manual conversion */
+          /* @apply blur-3xl - needs manual conversion */
+          /* @apply h-24 - needs manual conversion */
+          z-index: 0;
+          position: absolute;
+          width: 100%;
+        }
+        &::after{
+          z-index: 10;
+        }
+      }
+    }
+
+    .swiper-button-next {
+      right: 0;
+
+      @include media(">=lg") {
+        /* @apply right-[2.3%] - needs manual conversion */
+      }
+
+      @include media(">=3xl") {
+        /* @apply right-[5%] - needs manual conversion */
+      }
+    }
+
+    .swiper-button-prev {
+      left: 0;
+
+      @include media(">=lg") {
+        /* @apply left-[2.3%] - needs manual conversion */
+      }
+
+      @include media(">=3xl") {
+        /* @apply left-[5%] - needs manual conversion */
+      }
+    }
+
+    &.overley-layout {
+      /* @apply -top-12 - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:-top-28 - needs manual conversion */
+          }
+    }
+  }
+}

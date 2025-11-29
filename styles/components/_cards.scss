@@ -1,0 +1,158 @@
+@import '../utils.scss';
+
+.card-component {
+  background-color: #FFFFFF;
+  border-radius: rem(12);
+  padding: rem(32);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .card-title {
+    font-size: fluid(20, 24);
+    font-weight: 700;
+    margin-bottom: rem(16);
+    font-family: 'Proxima', sans-serif;
+  }
+
+  .card-content {
+    font-size: fluid(16, 18);
+    line-height: 1.6;
+    color: #7A7474;
+    margin-bottom: rem(20);
+  }
+
+  .card-link {
+    color: #FC9445;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: rem(8);
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #B6572E;
+    }
+  }
+}
+
+// Discover Cards (4-card grid on homepage)
+.discover-card {
+  @extend .card-component;
+  border: 2px solid transparent;
+
+  &:hover {
+    border-color: #FC9445;
+  }
+}
+
+// Article/Video Cards
+.content-card {
+  @extend .card-component;
+  padding: 0;
+  overflow: hidden;
+  background-color: #F8F1EA; // Figma: peachcream
+  border-radius: rem(10); // Figma: 10px
+
+  .card-image {
+    width: 100%;
+    height: rem(200);
+    background-color: #EDF1F5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: rem(48);
+    color: #7A7474;
+  }
+
+  .card-body {
+    padding: rem(24) rem(20); // Figma: 24px 20px or 24px 32px
+  }
+}
+
+// Stage/Emotion Cards
+.stage-card {
+  background-color: rgba(223, 209, 191, 0.3);
+  padding: rem(24);
+  border-radius: rem(12);
+  text-align: center;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(223, 209, 191, 0.5);
+    border-color: #FC9445;
+  }
+
+  .stage-name {
+    font-size: fluid(14, 16);
+    font-weight: 600;
+    color: #1A1A1A;
+    margin-bottom: rem(8);
+  }
+
+  .stage-description {
+    font-size: rem(12);
+    color: #7A7474;
+  }
+}
+
+// Testimonial Cards (Real Voices)
+.testimonial-card {
+  background-color: rgba(223, 209, 191, 0.2);
+  padding: rem(32);
+  border-radius: rem(12);
+
+  .testimonial-title {
+    font-size: fluid(18, 20);
+    font-weight: 700;
+    margin-bottom: rem(16);
+    font-family: 'Proxima', sans-serif;
+  }
+
+  .testimonial-quote {
+    font-style: italic;
+    color: #1A1A1A;
+    margin-bottom: rem(16);
+    line-height: 1.6;
+
+    &::before {
+      content: '"';
+    }
+
+    &::after {
+      content: '"';
+    }
+  }
+
+  .testimonial-author {
+    font-size: rem(14);
+    font-weight: 600;
+    color: #7A7474;
+
+    &::before {
+      content: '— ';
+    }
+  }
+}
+
+// Category Cards
+.category-card {
+  @extend .card-component;
+  border: 2px solid #EDF1F5;
+  text-align: center;
+  font-weight: 600;
+  padding: rem(24);
+
+  &:hover {
+    border-color: #FC9445;
+    box-shadow: 0 4px 12px rgba(252, 148, 69, 0.2);
+  }
+}
+

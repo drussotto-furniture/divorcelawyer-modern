@@ -1,0 +1,242 @@
+@import '../utils.scss';
+
+@include block("team-members") {
+  .block-container {
+
+    .heading-short-description{
+      max-width: rem(660);
+    }
+
+    .teammembers-wrapper {
+      /* @apply gap-y-3.5 - needs manual conversion */
+          /* @apply px-[18px] - needs manual conversion */
+          /* @apply grid - needs manual conversion */
+          /* @apply grid-cols-1 - needs manual conversion */
+
+          @include media(">=lg") {
+            column-gap: 1.25rem;
+            row-gap: 1.25rem;
+            /* @apply lg:grid-cols-3 - needs manual conversion */
+          }
+
+      .teammembers-card {
+        min-height: rem(114);
+        max-width: rem(490);
+        /* @apply rounded-[20px] - needs manual conversion */
+          /* @apply basis-1/3 - needs manual conversion */
+          width: 100%;
+          max-width: 100%;
+
+        @include media(">=lg") {
+          min-height: rem(202);
+        }
+
+        overflow: hidden;
+          width: 100%;
+
+        .team-members-thumbnail {
+          min-width: rem(100);
+          max-width: rem(100);
+
+          @include media(">=lg") {
+            min-width: rem(178);
+            max-width: rem(178);
+          }
+
+          &.image-rounded {
+            width: rem(90);
+            height: rem(90);
+            min-width: rem(90);
+            max-width: rem(90);
+            border-radius: 9999px;
+          overflow: hidden;
+          /* @apply m-3 - needs manual conversion */
+
+          @include media(">=lg") {
+            margin-right: 2rem;
+            margin-left: 2.5rem;
+            /* @apply lg:mt-9 - needs manual conversion */
+            margin-bottom: 2.5rem;
+            margin-right: 0;
+            /* @apply lg:max-w-32 - needs manual conversion */
+            /* @apply lg:min-w-32 - needs manual conversion */
+            /* @apply lg:w-32 - needs manual conversion */
+            /* @apply lg:h-32 - needs manual conversion */
+          }
+
+            img {
+              /* @apply object-top - needs manual conversion */
+          /* @apply object-cover - needs manual conversion */
+          height: auto;
+            }
+          }
+        }
+
+        .team-members-detail {
+          /* @apply pl-[18px] - needs manual conversion */
+          /* @apply pr-1.5 - needs manual conversion */
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+
+          @include media(">=lg") {
+            /* @apply lg:pl-6 - needs manual conversion */
+          }
+
+          h2 {
+            font-size: fluid(20, 26);
+            line-height: fluid(26, 32);
+            letter-spacing: fluid(-0.8, -1.04);
+            color: #6B6B4E;
+          font-weight: 400;
+          font-family: 'Libre', serif;
+          text-align: left;
+          /* @apply mt-[18px] - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:mt-14 - needs manual conversion */
+          }
+          }
+
+          a {
+            text-decoration: none;
+          margin-bottom: 0.625rem;
+          /* @apply leading-[14px] - needs manual conversion */
+          /* @apply leading-[18px] - needs manual conversion */
+          }
+        }
+      }
+    }
+  }
+
+  .popup-overlay {
+    z-index: 9999;
+    position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: #000;
+          /* @apply opacity-60 - needs manual conversion */
+          display: none;
+  }
+
+  .dls-member-profile-popup {
+    max-width: rem(361);
+    border-radius: rem(20);
+    z-index: 99999;
+    max-height: rem(734);
+
+    background-color: #fff;
+          padding: 2rem;
+          margin-left: auto; margin-right: auto;
+          text-align: center;
+          position: fixed;
+          /* @apply h-max - needs manual conversion */
+          position: fixed;
+          /* @apply top-16 - needs manual conversion */
+          left: 0;
+          right: 0;
+          display: none;
+          /* @apply overflow-y-auto - needs manual conversion */
+          /* @apply max-h-[80vh] - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:top-[10%] - needs manual conversion */
+          }
+
+    @include media(">=lg") {
+      max-width: rem(803);
+    }
+
+    .member-profile-avatar {
+      width: rem(227);
+      height: rem(227);
+      border-radius: 9999px;
+          overflow: hidden;
+          margin-left: auto; margin-right: auto;
+
+      img {
+        width: 100%;
+          /* @apply object-cover - needs manual conversion */
+      }
+    }
+
+    .member-profile-detail {
+      h2 {
+        font-size: rem(32);
+      }
+
+      .popup-position {
+        position: relative;
+
+        &::after {
+          content: "";
+          height: rem(6);
+          width: rem(52);
+          background-color: #FC9445;
+          display: block;
+          margin-top: 1rem;
+          margin-left: auto; margin-right: auto;
+
+          @include media(">=lg") {
+            /* @apply lg:my-6 - needs manual conversion */
+          }
+        }
+      }
+    }
+
+    .popup-long-info {
+      font-size: fluid(16, 18);
+      line-height: rem(22);
+      font-weight: 400;
+          font-family: 'Proxima', sans-serif;
+          color: #1D1D1D;
+          text-align: left;
+
+      h2{
+        font-size: fluid(20, 22);
+        line-height: fluid(26, 28);
+        font-family: 'Proxima', sans-serif;
+          font-weight: 600;
+          color: #1D1D1D;
+          margin-bottom: 0.5rem;
+          position: relative;
+      }
+      h3,h4,h5{
+        font-size: fluid(18, 20);
+        line-height: fluid(24, 26);
+        font-family: 'Proxima', sans-serif;
+          font-weight: 600;
+          color: #1D1D1D;
+          margin-bottom: 0.5rem;
+          position: relative;
+      }
+      p{
+        /* @apply mb-3.5 - needs manual conversion */
+      }
+      ol, ul{
+        list-style: initial;
+        margin: 14px 0px;
+        padding-left: 18px;
+      }
+      a{
+        text-decoration: underline;
+      }
+    }
+
+    .close-popup {
+      position: relative;
+          margin-bottom: 2rem;
+          /* @apply -mr-3.5 - needs manual conversion */
+
+          @include media(">=lg") {
+            margin-right: 0;
+          }
+
+      img {
+        position: fixed;
+      }
+    }
+  }
+}

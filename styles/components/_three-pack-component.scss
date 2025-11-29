@@ -1,0 +1,738 @@
+@import '../utils.scss';
+
+// Block-scoped styles for ThreePackComponent
+@include block('three-pack-component') {
+  .pack-component {
+    position: relative;
+
+    .component-rich-text {
+      font-size: fluid(16, 20);
+      line-height: fluid(20, 26);
+      padding-top: 0.25rem;
+      padding-bottom: 1.75rem;
+      
+      &.text-white {
+        color: #fff !important;
+      }
+    }
+    
+    h2.title-pack {
+      font-size: fluid(38, 64); // Figma: 64px
+      line-height: fluid(42, 68); // Figma: 68px (106%)
+      letter-spacing: -0.03em; // Figma: -0.03em
+      font-weight: 400; // Figma: 400
+      padding-left: 0;
+      padding-bottom: 0;
+      font-style: normal;
+      font-family: 'Libre', serif;
+      margin-bottom: 0.5rem;
+      color: #FFFFFF; // Figma: white (on bluish background)
+      
+      span {
+        font-style: italic;
+        color: #FC9445 !important; // Figma: primary orange
+      }
+    }
+
+    .title-container {
+      min-height: rem(80);
+      height: rem(80);
+      padding-left: 0;
+      padding-right: 0;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      align-content: flex-start;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-bottom: 0;
+      width: 100%;
+      max-width: 100%;
+      
+      @include media('>=lg') {
+        min-height: rem(100);
+        height: rem(100);
+      }
+      
+      @include media('>2xl') {
+        margin-top: 0;
+      }
+
+      h3 {
+        font-size: fluid(22, 24);
+        line-height: fluid(24, 28);
+        color: #1D1D1D;
+        font-weight: 400;
+        padding-left: 0;
+        font-style: normal;
+        font-family: 'Libre', serif;
+        padding-bottom: 0;
+        margin: 0;
+        text-align: center;
+      }
+      
+      // New approach: Firm name title with explicit two-line structure
+      .firm-name-title {
+        font-size: fluid(22, 24);
+        line-height: fluid(24, 28);
+        color: #fff;
+        font-weight: 400;
+        padding-left: 0;
+        font-style: normal;
+        font-family: 'Libre', serif;
+        padding-bottom: 0;
+        margin: 0;
+        text-align: center;
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        
+        @include media('>2xl') {
+          font-size: fluid(20, 26);
+          line-height: fluid(24, 30);
+        }
+        
+        // Single line names (2 words or less)
+        &.firm-name-single {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        
+        // Two-line names (3+ words)
+        &.firm-name-two-lines {
+          // Ensure exactly 2 lines
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          
+          .firm-name-line {
+            display: block;
+            width: 100%;
+            text-align: center;
+            // Prevent wrapping within each line
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            // Ensure each line takes up space
+            flex-shrink: 0;
+          }
+          
+          // First line
+          .firm-name-line-1 {
+            margin-bottom: 0;
+          }
+          
+          // Second line
+          .firm-name-line-2 {
+            margin-top: 0;
+          }
+          
+          // Hide the <br> since we're using flexbox
+          br {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+  
+  .block-container {
+    &.bg-bluish {
+      h2.title-pack {
+        span {
+          font-style: italic;
+          color: #FC9445 !important;
+        }
+      }
+    }
+    
+    .container-size-small {
+      max-width: rem(1536);
+    }
+
+    .container-size-medium {
+      max-width: rem(1830);
+    }
+  }
+  
+  .component-button {
+    &.style-vp-button {
+      line-height: fluid(15, 22);
+      letter-spacing: fluid(-0, -0);
+      background-color: #FC9445;
+      border-radius: 1.5rem;
+      padding: 0.375rem 1rem 0.25rem;
+      font-size: 0.75rem;
+      font-family: 'Proxima', sans-serif;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      position: relative;
+      z-index: 50;
+      
+      &:hover {
+        background-color: #1D1D1D;
+        color: #fff;
+      }
+      
+      .button-wrapper {
+        span {
+          font-size: 13px;
+          line-height: 16px;
+          color: #000;
+          font-weight: 600;
+        }
+      }
+      
+      &:hover .button-wrapper span {
+        color: #fff;
+      }
+    }
+  }
+
+  .component-button {
+    &.style-bottom-button {
+      letter-spacing: fluid(-0.5, -0.5);
+      background-color: #FC9445;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: rem(100);
+      padding: rem(12) rem(32);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: #1D1D1D;
+        color: #fff;
+      }
+      
+      .button-wrapper {
+        span {
+          font-size: fluid(14,15);
+          line-height: fluid(18,32);
+          font-family: 'Proxima', sans-serif;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  .box-shad-card {
+    box-shadow: 0px 8px 20px 0px rgba(98, 74, 52, 0.15);
+  }
+
+  .text-color {
+    color: #fff;
+  }
+
+  .swiper-button-prev {
+    &::after {
+      display: none;
+    }
+    @include media('>=xs') {
+      top: 92%;
+    }
+    @include media('>=xl') {
+      top: 50%;
+    }
+    @include media('>=3xl') {
+      left: 0.75rem;
+    }
+  }
+  
+  .swiper-button-next {
+    &::after {
+      display: none;
+    }
+    @include media('>=xs') {
+      top: 92%;
+    }
+    @include media('>=xl') {
+      top: 50%;
+    }
+    @include media('>=3xl') {
+      right: 0.75rem;
+    }
+  }
+  
+  .swiper-pagination {
+    .swiper-pagination-bullet-active {
+      background-color: #FC9445;
+    }
+  }
+  
+  .lawfirm.xl\:w-96 {
+    @include media('>=xl') {
+      width: 22rem;
+    }
+  }
+  
+  .slide-container {
+    @include media('>=2xl') {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+
+  .overley-layout {
+    top: -2.5rem;
+    margin-bottom: -5rem;
+    
+    @include media('>=lg') {
+      top: -9rem;
+      margin-bottom: -10rem;
+    }
+  }
+}
+
+.image-cover {
+  position: relative;
+  flex: 1;
+  min-height: rem(193);
+  
+  @include media(">=lg") {
+    width: rem(326);
+    height: 100%;
+    min-height: rem(193);
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    
+    @include media(">=lg") {
+      height: 100%;
+    }
+  }
+}
+
+// Ensure button container allows overflow for button visibility
+.lawyer-card-pack {
+  overflow: visible !important;
+  
+  .relative {
+    overflow: visible !important;
+  }
+  
+  .swiper {
+    overflow: visible !important;
+  }
+  
+  .swiper-wrapper {
+    overflow: visible !important;
+  }
+}
+
+.lawyer-img-overlay {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 53.89%, rgba(0, 0, 0, 0.80) 79.77%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+// Ensure lawyer name text is bright white and visible
+.image-cover {
+  .lawyer-name-overlay,
+  .overlay.lawyer-name-overlay {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.95), 0 0 12px rgba(0, 0, 0, 0.8), 1px 1px 2px rgba(0, 0, 0, 1) !important;
+    z-index: 10 !important;
+    opacity: 1 !important;
+  }
+}
+
+.top-law-firms-section {
+  // Make descriptive text white on dark background
+  .pack-component {
+    .component-rich-text {
+      &.text-white {
+        color: #fff !important;
+      }
+    }
+  }
+  
+  // Also target it directly in the section
+  .component-rich-text.text-white {
+    color: #fff !important;
+  }
+
+  // Button styles need to be accessible here
+  .component-button {
+    &.style-vp-button {
+      line-height: fluid(15, 22);
+      letter-spacing: fluid(-0, -0);
+      background-color: #FC9445;
+      border-radius: 1.5rem;
+      padding: 0.375rem 1rem 0.25rem;
+      font-size: 0.75rem;
+      font-family: 'Proxima', sans-serif;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      position: relative;
+      z-index: 50;
+      
+      &:hover {
+        background-color: #1D1D1D;
+        color: #fff;
+      }
+      
+      .button-wrapper {
+        span {
+          font-size: 13px;
+          line-height: 16px;
+          color: #000;
+          font-weight: 600;
+        }
+      }
+      
+      &:hover .button-wrapper span {
+        color: #fff;
+      }
+    }
+
+    &.style-bottom-button {
+      letter-spacing: fluid(-0.5, -0.5);
+      background-color: #FC9445;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: rem(100);
+      padding: rem(12) rem(32);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: #1D1D1D;
+        color: #fff;
+      }
+      
+      .button-wrapper {
+        span {
+          font-size: fluid(14,15);
+          line-height: fluid(18,32);
+          font-family: 'Proxima', sans-serif;
+          font-weight: 700;
+          color: #000;
+        }
+      }
+      
+      &:hover .button-wrapper span {
+        color: #fff;
+      }
+    }
+  }
+
+  .block-container {
+    max-width: rem(1830);
+    position: relative;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    top: -3.5rem;
+    margin-bottom: -3.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    
+    @include media('>=lg') {
+      top: -5rem;
+      margin-bottom: -5rem;
+    }
+
+    .short-decription {
+      max-width: rem(1088);
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 1.25rem;
+      
+      @include media('>=lg') {
+        margin-top: 1.75rem;
+      }
+    }
+
+    .top-lawfirm-heading {
+      max-width: rem(1088);
+      margin-left: auto;
+      margin-right: auto;
+
+      &.full-heading {
+        max-width: rem(1600);
+      }
+    }
+
+    .top-law-firmscard-wrapper {
+      display: flex;
+      gap: 1.25rem;
+      justify-content: center;
+      align-items: stretch;
+      
+      @include media('>=lg') {
+        gap: 10px;
+        align-items: stretch;
+        align-content: stretch;
+      }
+      
+      @include media('>=2xl') {
+        gap: 40px;
+      }
+      
+      > * {
+        @include media('>=lg') {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+        }
+      }
+
+      .law-firmscard {
+        max-width: rem(450);
+        background-image: url("/images/white-pack-tri.png");
+        border-radius: rem(15);
+        background-size: contain;
+        background-position: top;
+        background-repeat: no-repeat;
+
+        h2 {
+          font-size: fluid(24, 32);
+          line-height: fluid(26, 36);
+          letter-spacing: fluid(-0.96, -1.28);
+          color: #6B6B4E;
+          font-weight: 400;
+          font-family: 'Libre', serif;
+          padding-top: 1.5rem;
+          min-height: 7rem;
+          padding-bottom: 0.75rem;
+          
+          @include media('>=lg') {
+            padding-top: 2.5rem;
+          }
+        }
+
+        .law-firmscard-featured {
+          padding-left: 1.25rem;
+          padding-right: 1.25rem;
+          
+          @include media(">=lg") {
+            padding-left: 3.5rem;
+            padding-right: 3.5rem;
+            max-height: rem(205);
+          }
+
+          img {
+            width: 100%;
+            height: 100%;
+          }
+
+          a {
+            min-width: rem(117);
+            background-color: #FC9445;
+            color: #1D1D1D;
+            text-transform: uppercase;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            display: block;
+            max-width: max-content;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 9999px;
+            padding: 0.5rem 0.75rem;
+            position: relative;
+            top: -1.25rem;
+            
+            &:hover {
+              background-color: #1D1D1D;
+              color: #fff;
+            }
+          }
+        }
+
+        &.comming-soon {
+          box-shadow: 0px 8px 20px 0px rgba(98, 74, 52, 0.15);
+          background: none;
+          background-color: #fff;
+          text-align: center;
+          padding-bottom: 3rem;
+          padding-left: 2.25rem;
+          padding-right: 2.25rem;
+          margin-bottom: 0.75rem;
+          max-width: 400px;
+          border: 1px solid #08555c;
+          
+          @include media('>=2xl') {
+            max-width: 450px;
+          }
+
+          h2 {
+            font-size: 1.5rem;
+            font-style: italic;
+            color: #B6572E;
+            min-height: max-content;
+            
+            @include media('>=lg') {
+              font-size: 2.25rem;
+            }
+          }
+
+          h3 {
+            font-size: fluid(22, 34);
+            line-height: fluid(24, 40);
+            color: #1D1D1D;
+            font-weight: 400;
+            margin-bottom: 1rem;
+            font-family: 'Libre', serif;
+
+            &.no-firms {
+              font-size: fluid(22, 26);
+              line-height: fluid(24, 32);
+            }
+          }
+
+          &.explore {
+            h2 {
+              font-size: 28px;
+            }
+            h3 {
+              font-size: fluid(22, 28);
+              line-height: fluid(24, 32);
+            }
+          }
+        }
+
+        &.vetting-process {
+          padding-top: 2rem;
+          padding-bottom: 2rem;
+          background: none;
+          padding-left: 1.75rem;
+          padding-right: 1.75rem;
+          margin-bottom: 0.75rem;
+          max-width: 400px;
+          min-height: rem(380);
+          
+          @include media('>=lg') {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+            padding-left: 0;
+            padding-right: 0;
+          }
+          
+          @include media('>=2xl') {
+            max-width: 450px;
+          }
+
+          h2 {
+            font-size: fluid(24, 28);
+            line-height: fluid(26, 37);
+            background-color: #fff;
+            border-bottom-left-radius: 0.75rem;
+            border-bottom-right-radius: 0.75rem;
+            padding: 1.5rem 1.25rem;
+            text-align: center;
+            max-width: 100%;
+            margin-bottom: 1.25rem;
+            min-height: auto;
+            
+            @include media('>=lg') {
+              border-bottom-right-radius: 0.75rem;
+              border-bottom-left-radius: 0;
+              border-top-right-radius: 0.75rem;
+              padding: 3rem 1.5rem 5rem 1rem;
+              text-align: right;
+              max-width: 12rem;
+              margin-bottom: 0;
+            }
+            
+            span {
+              color: #B6572E;
+            }
+          }
+
+          ul {
+            padding-left: 1.75rem;
+            padding-right: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            list-style: disc;
+
+            li {
+              text-align: left;
+              font-size: 0.875rem;
+              font-family: 'Proxima', sans-serif;
+              margin-bottom: 0.5rem;
+              
+              @include media('>=lg') {
+                font-size: 1rem;
+              }
+
+              &::marker {
+                color: #FC9445;
+              }
+            }
+          }
+        }
+      }
+      
+      .lawyer-card-pack {
+        display: flex;
+        flex-direction: column;
+        align-self: stretch;
+        
+        @include media(">=lg") {
+          height: 100%;
+        }
+        
+        @include media(">=4xl") {
+          max-width: rem(483);
+        }
+        
+        .lawfirm {
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          
+          @include media(">=lg") {
+            height: 100%;
+            flex: 1;
+          }
+        }
+        
+        .swiper {
+          @include media(">=lg") {
+            height: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+          }
+          
+          .swiper-wrapper {
+            @include media(">=lg") {
+              height: 100%;
+              flex: 1;
+            }
+          }
+          
+          .swiper-slide {
+            @include media(">=lg") {
+              height: 100%;
+              display: flex;
+              flex-direction: column;
+            }
+            overflow: visible !important;
+          }
+        }
+      }
+    }
+  }
+}

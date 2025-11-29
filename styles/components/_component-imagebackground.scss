@@ -1,0 +1,10 @@
+@import '../utils.scss';
+
+@include component('image-background') {
+  pointer-events: none;
+  @include fit;
+
+  .background, .overlay, .image, .img {
+    @include fit;
+  }
+}

@@ -1,0 +1,341 @@
+@import '../utils.scss';
+
+@include block("stages") {
+  .block-container {
+    border-radius: rem(20);
+    padding-top: 2rem; padding-bottom: 2rem;
+          position: relative;
+          z-index: 10;
+
+          @include media(">=lg") {
+            padding: 4rem;
+          }
+
+    .heading {
+      letter-spacing: rem(2.2);
+      text-transform: uppercase;
+          text-align: left;
+    }
+
+    .component-rich-text {
+      font-size: fluid(16, 20);
+      line-height: fluid(20, 26);
+      padding-top: rem(4);
+      padding-bottom: rem(28);
+      color: #6B6B4E;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    
+    // Spacing between h2 and component-rich-text
+    h2 + .component-rich-text,
+    h2 ~ .component-rich-text {
+      margin-top: rem(12);
+      
+      @include media(">=lg") {
+        margin-top: rem(16);
+      }
+    }
+
+    &.container-size-small {
+      max-width: rem(1536);
+    }
+
+    &.container-size-medium {
+      max-width: rem(1830);
+    }
+
+    h2 {
+      .component-rich-text {
+        font-size: fluid(38, 64); // Figma: 64px
+        line-height: fluid(42, 68); // Figma: 68px (106%)
+        letter-spacing: -0.03em; // Figma: -0.03em
+        color: #B6572E; // Figma: secondary
+        font-weight: 400; // Figma: 400
+        padding-left: 0;
+        font-style: italic; // Figma: italic
+        font-family: 'Libre', serif;
+        padding-bottom: 0;
+      }
+
+      span {
+        color: #B6572E; // Figma: secondary
+        font-style: italic;
+      }
+    }
+
+    .component-button {
+      padding: rem(12) rem(30);
+      letter-spacing: rem(2.3);
+      width: auto;
+          /* @apply min-w-[260px] - needs manual conversion */
+          font-family: 'Proxima', sans-serif;
+          text-transform: uppercase;
+          margin-left: auto; margin-right: auto;
+          font-weight: 700;
+          /* @apply leading-8 - needs manual conversion */
+
+      @include media(">=md") {
+        /* @apply min-w-[210px] - needs manual conversion */
+      }
+
+      span{
+        font-weight: 700;
+      }
+    }
+
+    .stages-container {
+      .stage-item {
+        position: relative;
+        background-color: #fff;
+        padding: rem(20);
+        border-radius: rem(8);
+        min-height: rem(200);
+        align-items: flex-start; // Left-align all items
+        text-align: left; // Left-align text
+        display: flex; // Ensure flex layout for proper alignment
+
+        @include media(">=xl") {
+          background-color: transparent;
+          padding: 0;
+          min-height: auto;
+          align-items: flex-start; // Keep left-aligned on desktop
+          display: flex; // Maintain flex layout
+        }
+
+        &::after {
+          content: "";
+          background-image: url("/images/bottomarrow.svg");
+          background-repeat: no-repeat;
+          background-size: contain;
+          width: rem(25);
+          height: rem(13);
+          position: absolute;
+          top: auto;
+          right: 0;
+          left: 0;
+          bottom: rem(-20);
+          margin-left: auto;
+          margin-right: auto;
+          z-index: 10;
+
+          @include media(">=xl") {
+            background-image: url("/images/rightarrow.svg");
+            width: rem(14);
+            height: rem(115);
+            // Position arrow to align with h5 title center
+            // Icon: 48px height
+            // Gap between icon and text: 16px (xl:gap-4 = 1rem)
+            // h5 container starts at: 48px + 16px = 64px from top
+            // h5 has min-height: 40px and uses flexbox align-items: center
+            // So the center of h5 is at: 64px + 20px = 84px from top
+            top: rem(84); // Title center: icon (48px) + gap (16px) + half h5 height (20px)
+            right: rem(-32); // Center of the 64px gap for even spacing
+            left: auto;
+            bottom: auto;
+            margin-left: 0;
+            margin-right: 0;
+            transform: translateY(-50%); // Center the arrow vertically on the title center
+          }
+        }
+
+        &:last-child {
+          &::after {
+            display: none;
+          }
+        }
+
+        &:nth-child(even) {
+          @include media(">=xl") {
+            background-color: transparent;
+          }
+        }
+      }
+
+      h5 {
+        padding-bottom: rem(4);
+        margin-bottom: rem(8);
+        text-align: left; // Left-align titles
+        position: relative; // Allow arrow to position relative to title
+        // Ensure consistent height/positioning for arrow alignment
+        min-height: rem(40); // Match line-height to ensure consistent positioning
+        display: flex;
+        align-items: center; // Vertically center the title text
+
+        a {
+          font-size: fluid(20, 28); // Figma: 28px
+          line-height: fluid(24, 40); // Figma: 40px (143%)
+          text-decoration: underline; // Figma: underline
+          position: relative;
+          color: #604B30; // Figma: secondarydark
+          font-weight: 600; // Figma: 600
+          font-style: italic; // Figma: italic
+          font-family: 'Proxima', sans-serif;
+          padding-bottom: rem(2);
+          display: inline-block;
+          letter-spacing: -0.02em; // Figma: -0.02em
+          text-align: left; // Left-align link text
+
+          &:hover {
+            color: #604B30;
+          }
+        }
+
+        span {
+          color: #FC9445;
+          font-style: italic;
+        }
+      }
+
+      .component-rich-text {
+        font-size: fluid(14, 16); // Figma: 16px
+        line-height: fluid(18, 20); // Figma: 20px (125%)
+        padding-top: 0;
+        padding-bottom: 0;
+        font-family: 'Proxima', sans-serif;
+        color: #1D1D1D;
+        font-weight: 400; // Figma: 400
+        font-style: normal; // Not italic for description
+        margin-top: rem(8);
+        text-align: left; // Left-align descriptions
+      }
+    }
+
+    .stages-second-style-wrapper {
+      display: flex;
+          flex-wrap: wrap;
+          row-gap: 1.75rem;
+          justify-content: flex-start;
+
+          @include media(">=lg") {
+            column-gap: 9rem;
+            flex-wrap: wrap;
+            justify-content: center;
+          }
+
+      .stages-second-style-item {
+        /* @apply basis-1/2 - needs manual conversion */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+
+          @include media(">=lg") {
+            /* @apply lg:basis-auto - needs manual conversion */
+          }
+
+        .icon-wrapper {
+          /* @apply w-24 - needs manual conversion */
+          /* @apply h-24 - needs manual conversion */
+          /* @apply bg-secondary - needs manual conversion */
+          border-radius: 9999px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          img {
+            /* @apply w-11 - needs manual conversion */
+          /* @apply brightness-0 - needs manual conversion */
+          /* @apply invert - needs manual conversion */
+          }
+        }
+
+        .link-title {
+          font-size: fluid(16, 22);
+          line-height: fluid(20, 26);
+          /* @apply text-link - needs manual conversion */
+          text-decoration: underline;
+          /* @apply -tracking-[.32px] - needs manual conversion */
+          margin-top: 1rem;
+          display: block;
+          font-family: 'Proxima', sans-serif;
+          font-style: italic;
+          font-weight: 500;
+
+          @include media(">=lg") {
+            /* @apply lg:-tracking-[.44px] - needs manual conversion */
+            margin-top: 1.25rem;
+          }
+        }
+      }
+    }
+  }
+
+  &.section-dark {
+    padding-left: 1.25rem; padding-right: 1.25rem;
+    .block-container {
+      padding-bottom: 0;
+          overflow: hidden;
+
+          @include media(">=lg") {
+            padding-top: 5rem; padding-bottom: 5rem;
+            /* @apply lg:overflow-auto - needs manual conversion */
+          }
+      .container{
+        padding-bottom: 0;
+
+          @include media(">=lg") {
+            padding-bottom: 0.75rem;
+          }
+      .component-rich-text {
+        color: #fff;
+      }
+
+      h2 {
+        .component-rich-text {
+          color: #fff;
+
+          span {
+            color: #FC9445;
+          }
+        }
+      }
+
+      .component-button{
+        
+
+          @include media(">=lg") {
+            margin-top: 2rem;
+          }
+      }
+
+      .stages-container {
+        .stage-item {
+          &::after {
+            background-image: url("/images/stages-bottom-arrow.png");
+            @include media(">=xl") {
+            background-image: url("/images/satges-right-arow.png");
+            }
+          }
+          img {
+            filter: brightness(0) saturate(100%) invert(58%) sepia(74%) saturate(427%) hue-rotate(340deg) brightness(97%) contrast(103%);
+          }
+
+
+          &:nth-child(even) {
+            /* @apply bg-greenShadesLight-dark - needs manual conversion */
+
+            @include media(">=xl") {
+              /* @apply bg-transparent - needs manual conversion */
+            }
+          }
+        }
+
+        h5 {
+          a {
+            /* @apply border-beigemuted - needs manual conversion */
+          /* @apply text-beigemuted - needs manual conversion */
+
+          &:hover {
+            /* @apply hover:text-beigemuted - needs manual conversion */
+          }
+          }
+        }
+
+        .component-rich-text {
+          color: #fff;
+        }
+      }
+    }
+  }
+  }
+}

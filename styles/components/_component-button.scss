@@ -1,0 +1,44 @@
+@import '../utils.scss';
+
+@include component('button') {
+  & {
+    display: flex;
+    justify-content: center;
+    gap: fluid(14, 12);
+    border-radius: rem(100); // Figma: 100px (fully rounded)
+    padding: rem(12) rem(18); // Figma: 12px 18px
+    font-style: normal;
+    letter-spacing: 0.1em; // Figma: 0.1em
+    text-transform: uppercase;
+    font-size: rem(15); // Figma: 15px (Proxima) or 14px (Helvetica)
+    font-weight: 700; // Figma: 700
+    line-height: rem(32); // Figma: 32px
+
+    &.style-primary {
+      background-color: #FC9445;
+      color: #000; // Figma: #000000
+      font-family: 'Proxima', sans-serif;
+
+
+      &:hover {
+        background-color: #1D1D1D;
+          color: #fff;
+      }
+    }
+
+    &.style-secondary {
+      background-color: transparent;
+      border: 1px solid;
+      border-color: #FC9445;
+          color: #FC9445;
+          font-family: 'Proxima', sans-serif;
+
+      &:hover {
+        background-color: #1D1D1D;
+          color: #fff;
+          border-color: #1D1D1D;
+      }
+    }
+
+  }
+}

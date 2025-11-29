@@ -1,0 +1,285 @@
+@import '../utils.scss';
+
+@include block("council-membership-form") {
+  .block-container {
+
+    .council-membershipform-content-wrapper{
+
+      h2 {
+        .component-rich-text {
+          font-size: rem(36);
+          line-height: rem(46);
+          margin-bottom: rem(30);
+          max-width: rem(1090);
+          letter-spacing: normal;
+          color: #fff;
+          /* @apply font-dmserifText - needs manual conversion */
+          font-weight: 400;
+        }
+      }
+
+      h3 {
+        .component-rich-text {
+          font-size: rem(18);
+          line-height: rem(22);
+          margin-bottom: rem(20);
+          max-width: rem(1090);
+          letter-spacing: normal;
+          color: #fff;
+          font-family: 'Roboto', sans-serif;
+          font-weight: 400;
+        }
+      }
+
+
+      .short-description {
+
+        .component-rich-text {
+          font-size: fluid(14, 18);
+          line-height: fluid(22, 22);
+          max-width: rem(1090);
+          letter-spacing: normal;
+          color: #fff;
+          font-family: 'Roboto', sans-serif;
+          font-weight: 400;
+
+          a{
+            letter-spacing: normal;
+            text-decoration: underline;
+          font-weight: 500;
+
+            &:hover{
+              color: #fff;
+            }
+          }
+        }
+      }
+      .mobile-sub-heading{
+        h2{
+          .component-rich-text{
+            font-size: fluid(28, 36);
+            line-height: fluid(35, 44);
+            margin-bottom:rem(36);
+            margin-top: rem(20);
+            letter-spacing: normal;
+            color: #FC9445;
+          /* @apply font-dmsans - needs manual conversion */
+          font-weight: 400;
+          text-transform: uppercase;
+          /* @apply max-w-[300px] - needs manual conversion */
+          text-align: center;
+
+          @include media(">=lg") {
+            /* @apply lg:max-w-[1090px] - needs manual conversion */
+          }
+            a{
+              text-decoration: underline;
+
+              &:hover{
+                color: #FC9445;
+              }
+            }
+        }
+      }
+      display: block;
+
+          @include media(">=lg") {
+            display: none;
+          }
+    }
+
+      .contact-form{
+        margin-top: rem(70);
+        .membership-form-wrapper{
+          /* @apply bg-charcoal - needs manual conversion */
+          /* @apply rounded-[24px] - needs manual conversion */
+          text-align: left;
+          padding-left: 1.5rem; padding-right: 1.5rem;
+          padding-top: 2rem;
+          padding-bottom: 2rem;
+
+          @include media(">=md") {
+            /* @apply md:pb-[100px] - needs manual conversion */
+            /* @apply md:pt-[70px] - needs manual conversion */
+            /* @apply md:px-[100px] - needs manual conversion */
+          }
+
+          .member-form-inner-wrapper{
+            max-width: rem(1160);
+            margin-left: auto; margin-right: auto;
+            .note{
+              font-size: rem(20);
+              line-height: rem(30);
+              margin-bottom: rem(32);
+              color: #fff;
+          font-family: 'Roboto', sans-serif;
+          font-weight: 400;
+            }
+            .form-field-wrapper{
+              h2{
+                font-size: rem(24);
+                line-height: rem(26);
+                letter-spacing: rem(2.4);
+                padding-bottom: rem(32);
+                margin-bottom: rem(32);
+                color: #fff;
+          /* @apply font-dmserifText - needs manual conversion */
+          font-weight: 400;
+          text-transform: uppercase;
+          /* @apply border-b - needs manual conversion */
+          border-style: solid;
+          /* @apply border-lightsmoke - needs manual conversion */
+              }
+
+              .form-field-items{
+                /* @apply grid - needs manual conversion */
+          /* @apply grid-cols-1 - needs manual conversion */
+          column-gap: 1.5rem;
+
+          @include media(">=sm") {
+            /* @apply sm:grid-cols-2 - needs manual conversion */
+          }
+                .item{
+                  margin-bottom: rem(32);
+                  label{
+                    font-size: rem(18);
+                    line-height: rem(22);
+                    margin-bottom: rem(12);
+                    letter-spacing: normal;
+                    font-weight: 600;
+                    color: #fff;
+          /* @apply font-dmsans - needs manual conversion */
+          font-weight: 500;
+          display: inline-block;
+                  }
+                  input,select{
+                    border: none;
+                    outline: none;
+                    border-radius: rem(50);
+                    padding: rem(20) rem(20);
+                    font-size: rem(18);
+                    line-height: normal;
+                    background-color: #fff;
+          width: 100%;
+          /* @apply font-dmsans - needs manual conversion */
+          font-weight: 400;
+          color: #1D1D1D;
+                    &::placeholder{
+                      /* @apply text-lavendergray - needs manual conversion */
+                    }
+                  }
+                  select{
+                    background-image: url('/images/select-dropdown-arrow.svg);
+                    background-position: right 10px center;
+                    color: #1D1D1D;
+          /* @apply appearance-none - needs manual conversion */
+          /* @apply bg-no-repeat - needs manual conversion */
+
+                    &:focus{
+                      color: #1D1D1D;
+                    }
+
+                  }
+                  &.textarea{
+                    width: 100%;
+          margin-bottom: 0;
+                    textarea{
+                      border: none;
+                      outline: none;
+                    border-radius: rem(20);
+                    padding: rem(20) rem(20);
+                    font-size: rem(18);
+                    line-height: normal;
+                    height: rem(140);
+                    background-color: #fff;
+          width: 100%;
+          /* @apply font-dmsans - needs manual conversion */
+          font-weight: 400;
+          color: #1D1D1D;
+                    &::placeholder{
+                      /* @apply text-lavendergray - needs manual conversion */
+                    }
+                    }
+                  }
+                }
+
+                &.items-full{
+                  display: block;
+                  width: 100%;
+                }
+              }
+            }
+          }
+
+        }
+
+        .wpcf7-not-valid-tip{
+          margin-top: rem(10);
+        }
+
+        .wpcf7-submit{
+          padding: rem(21) rem(36);
+          cursor: pointer;
+          border-radius: rem(40);
+          margin-top: rem(60);
+          background-image: url('/images/ArrowRight-white.svg);
+           background-position: right 22% center;
+          /* @apply max-w-[360px] - needs manual conversion */
+          /* @apply bg-no-repeat - needs manual conversion */
+          width: 100%;
+          padding-top: 0.75rem; padding-bottom: 0.75rem;
+          background-color: #FC9445;
+          margin-left: auto; margin-right: auto;
+          font-size: 1.125rem;
+          font-weight: 700;
+          color: #fff;
+          /* @apply font-dmsans - needs manual conversion */
+          text-transform: capitalize;
+          display: flex;
+          gap: 0.5rem;
+          border-width: 1px;
+          border-style: solid;
+          border-color: #FC9445;
+
+          @include media(">=md") {
+            /* @apply md:py-[21px] - needs manual conversion */
+            /* @apply md:max-w-[270] - needs manual conversion */
+            /* @apply md:w-[270] - needs manual conversion */
+          }
+          &::after{
+            content: url('/images/ArrowRight-white.svg);
+            position: relative;
+          /* @apply top-1 - needs manual conversion */
+          }
+          &:hover{
+            background-color: #1D1D1D;
+          }
+          @include media(">=md"){
+            background-position: right 30px center;
+          }
+        }
+
+        .submitting {
+          .wpcf7-submit {
+            /* @apply cursor-progress - needs manual conversion */
+          /* @apply text-gray - needs manual conversion */
+          }
+        }
+
+        .failed, .aborted, .invalid, .spam {
+           .wpcf7-response-output {
+             /* @apply border-errorRed - needs manual conversion */
+          /* @apply text-errorRed - needs manual conversion */
+           }
+        }
+        .sent:not(.spam) {
+          .wpcf7-response-output {
+            border-color: #FC9445;
+          color: #FC9445;
+          }
+        }
+      }
+    }
+
+  }
+}

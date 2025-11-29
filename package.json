@@ -3,24 +3,48 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "start": "next start -p 3001",
+    "lint": "eslint",
+    "gen:types": "supabase gen types typescript --project-id fdkbpedvibbblvrmwaeg > types/database.types.ts",
+    "export:wordpress": "tsx scripts/wordpress-export.ts",
+    "download:media": "tsx scripts/download-media.ts",
+    "upload:media": "tsx scripts/upload-to-supabase.ts",
+    "update:image-urls": "tsx scripts/update-image-urls.ts",
+    "analyze:content": "tsx scripts/analyze-content.ts",
+    "migrate:data": "tsx scripts/migrate-to-supabase.ts",
+    "update:featured-images": "tsx scripts/update-featured-images.ts",
+    "port:scss": "tsx scripts/port-scss.ts",
+    "copy:assets": "tsx scripts/copy-assets.ts",
+    "generate:components": "tsx scripts/generate-components.ts",
+    "setup:all": "npm run copy:assets && npm run port:scss",
+    "update:lawyer-firm-data": "tsx scripts/update-all-lawyer-firm-data.ts",
+    "update:questions-answers": "tsx scripts/update-questions-answers.ts",
+          "check-and-update-all-data": "tsx scripts/check-and-update-all-data.ts",
+          "create:test-data": "tsx scripts/create-test-data.ts",
+          "check:location-counts": "tsx scripts/check-location-data-counts.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.8.0",
+    "@supabase/supabase-js": "^2.86.0",
+    "dotenv": "^17.2.3",
     "next": "16.0.5",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "sass": "^1.94.2",
+    "swiper": "^12.0.3"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.22",
     "eslint": "^9",
     "eslint-config-next": "16.0.5",
-    "tailwindcss": "^4",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }

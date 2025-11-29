@@ -1,0 +1,119 @@
+@import '../utils.scss';
+
+@include block('landing-two-columns') {
+  .block-container {
+    padding-left: 0; padding-right: 0;
+
+          @include media(">=lg") {
+            padding-left: 0; padding-right: 0;
+          }
+
+    h2 {
+      position: relative;
+          padding-bottom: 0;
+
+          @include media(">=lg") {
+            padding-bottom: 0;
+          }
+      .component-rich-text {
+        font-size: fluid(28, 64);
+        line-height: fluid(27, 73);
+        color: #fff;
+
+        span {
+          color: #FC9445;
+        }
+      }
+    }
+
+    h3 {
+      position: relative;
+          padding-bottom: 0;
+
+          @include media(">=lg") {
+            padding-bottom: 0;
+          }
+      .component-rich-text {
+        font-size: fluid(20, 32);
+        line-height: fluid(20, 40);
+        color: #FC9445;
+          font-weight: 700;
+      }
+    }
+
+    .component-rich-text {
+      font-size: fluid(15, 27);
+      line-height: fluid(20, 40);
+      color: #fff;
+
+      p {
+        /* @apply py-1.5 - needs manual conversion */
+      }
+      a {
+        color: #B6572E;
+          text-decoration: none;
+      }
+    }
+
+    .text-icon-set {
+      h2 {
+        .component-rich-text {
+          font-size: fluid(24, 40);
+          line-height: fluid(30, 40);
+          color: #fff;
+        }
+      }
+
+      .component-rich-text {
+        font-size: fluid(16, 22);
+        line-height: fluid(20, 36);
+        color: #fff;
+          padding-top: 0;
+
+        p {
+          /* @apply py-1.5 - needs manual conversion */
+        }
+      }
+    }
+
+    &.background-dark {
+      background-color: #000;
+
+      .text-icon-set-bg {
+        /* @apply bg-darkblue - needs manual conversion */
+      }
+    }
+
+    &.background-bluish {
+      /* @apply bg-darkblue - needs manual conversion */
+
+      .text-icon-set-bg {
+        background-color: #000;
+      }
+    }
+
+    &.background-seashell {
+      /* @apply bg-seashell - needs manual conversion */
+
+      h2 {
+        .component-rich-text {
+          color: #000;
+        }
+      }
+
+      h3 {
+        .component-rich-text {
+          color: #FC9445;
+        }
+      }
+
+      .component-rich-text {
+        color: #000;
+      }
+
+      .text-icon-set-bg {
+        background-color: #fff;
+      }
+    }
+  }
+}

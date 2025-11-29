@@ -1,0 +1,52 @@
+@import '../utils.scss';
+
+.component-button {
+  display: inline-block;
+  padding: rem(16) rem(24);
+  border-radius: rem(100);
+  font-family: 'Proxima', sans-serif;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  
+  &.style-primary {
+    background-color: #FC9445;
+    color: #FFFFFF;
+    border: 1px solid #FC9445;
+
+    &:hover {
+      background-color: #B6572E;
+      border-color: #B6572E;
+    }
+  }
+
+  &.style-secondary {
+    background-color: transparent;
+    color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+
+    &:hover {
+      background-color: #FFFFFF;
+      color: #163B46;
+    }
+  }
+
+  &.style-tertiary {
+    background-color: #163B46;
+    color: #FFFFFF;
+    border: 1px solid #163B46;
+
+    &:hover {
+      background-color: #18414D;
+      border-color: #18414D;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+

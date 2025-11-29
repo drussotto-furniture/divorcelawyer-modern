@@ -1,0 +1,325 @@
+@import '../utils.scss';
+
+@include block("law-firms-hero") {
+  min-height: rem(745);
+
+  .block-container {
+    min-height: inherit;
+    max-width: rem(1830);
+    display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          position: relative;
+
+    .firms-hero-wrapper {
+      display: flex;
+          flex-direction: column;
+          margin-bottom: 4rem;
+          align-items: center;
+          /* @apply pt-28 - needs manual conversion */
+          margin-left: auto; margin-right: auto;
+
+          @include media(">=lg") {
+            flex-direction: row;
+            /* @apply lg:mb-36 - needs manual conversion */
+            padding-top: 0;
+          }
+
+      .firm-featured {
+        max-width: rem(580);
+
+        margin-left: auto; margin-right: auto;
+          margin-bottom: 2rem;
+          overflow: hidden;
+          border-radius: 0.5rem;
+
+          @include media(">=lg") {
+            margin-right: 6rem;
+            margin-left: 0;
+            margin-bottom: 0;
+          }
+
+        @include media(">=lg") {
+          min-width: rem(580);
+        }
+
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .law-hero-heading {
+        h1 {
+          font-size: fluid(40, 60);
+          line-height: fluid(52, 72);
+          color: #fff;
+          font-family: 'Libre', serif;
+          text-transform: capitalize;
+          font-weight: 700;
+        }
+
+        h2 {
+          font-size: fluid(12, 15);
+          line-height: fluid(18, 32);
+          /* @apply text-beigemuted - needs manual conversion */
+          padding-top: 4rem;
+          text-align: center;
+          padding-bottom: 0.25rem;
+          text-transform: uppercase;
+          /* @apply leading-5 - needs manual conversion */
+          font-weight: 700;
+          padding-left: 0.75rem; padding-right: 0.75rem;
+          /* @apply tracking-[0.48px] - needs manual conversion */
+
+          @include media(">=lg") {
+            padding-top: 0;
+            padding-left: 0; padding-right: 0;
+            /* @apply lg:tracking-[2.4px] - needs manual conversion */
+          }
+
+          &.lawyer{
+            text-align: left;
+          }
+        }
+
+        h3 {
+          font-size: fluid(12, 22);
+          line-height: rem(22);
+          letter-spacing:  fluid(0.48, 1.76);
+          color: #FC9445;
+          font-family: 'Proxima', sans-serif;
+          text-transform: uppercase;
+          font-weight: 600;
+          margin-top: 0.5rem;
+        }
+
+        &.desktop {
+          display: none;
+
+          @include media(">=lg") {
+            display: block;
+          }
+        }
+
+        &.mobile {
+          display: block;
+          margin-bottom: 1rem;
+
+          @include media(">=lg") {
+            display: none;
+          }
+        }
+      }
+
+      .law-firm-info {
+        text-align: center;
+          display: flex;
+          /* @apply flex-col-reverse - needs manual conversion */
+          justify-content: center;
+          align-items: center;
+
+          @include media(">=lg") {
+            text-align: left;
+            flex-direction: column;
+            align-items: flex-start;
+          }
+
+        ul {
+          padding-top: 1.5rem; padding-bottom: 1.5rem;
+          gap: 0.5rem;
+          padding-left: 0; padding-right: 0;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          flex-direction: column;
+          align-items: center;
+
+          @include media(">=lg") {
+            gap: 1.75rem;
+            justify-content: flex-start;
+            flex-direction: row;
+            align-items: flex-start;
+          }
+
+          li {
+            color: #fff;
+          font-size: 1rem;
+          display: flex;
+          align-items: center;
+
+            img {
+              margin-right: 0.5rem;
+            }
+          }
+        }
+
+        .component-button {
+          background-color: #FC9445;
+          color: #1D1D1D;
+          /* @apply leading-8 - needs manual conversion */
+          /* @apply max-w-max - needs manual conversion */
+          text-decoration: none;
+          white-space: nowrap;
+
+          &:hover {
+            background-color: #1D1D1D;
+            color: #fff;
+          }
+
+          &:last-child {
+            background-color: #fff;
+
+          &:hover {
+            background-color: #1D1D1D;
+          }
+          }
+        }
+      }
+    }
+
+    .law-firm-hero-navigation {
+      width: rem(282);
+      position: absolute;
+          margin-left: auto; margin-right: auto;
+          left: 0;
+          right: 0;
+          /* @apply -bottom-5 - needs manual conversion */
+          z-index: 50;
+
+          @include media(">=lg") {
+            /* @apply lg:static - needs manual conversion */
+          }
+
+      .firm-menu-cta {
+        display: flex;
+          background-color: #fff;
+          font-size: 0.875rem;
+          color: #B6572E;
+          font-weight: 700;
+          text-transform: uppercase;
+          padding-left: 1.5rem; padding-right: 1.5rem;
+          padding-top: 0.75rem; padding-bottom: 0.75rem;
+          border-radius: 9999px;
+          position: relative;
+          z-index: 30;
+
+          @include media(">=lg") {
+            display: none;
+          }
+
+        img {
+          /* @apply object-cover - needs manual conversion */
+        }
+
+        &.active {
+          img {
+            /* @apply rotate-180 - needs manual conversion */
+          }
+        }
+      }
+
+      ul {
+        max-width: rem(250);
+        box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.12);
+        position: absolute;
+          padding-top: 1.5rem; padding-bottom: 1.5rem;
+          padding-left: 1.25rem; padding-right: 1.25rem;
+          background-color: #fff;
+          margin-left: auto; margin-right: auto;
+          /* @apply rounded-b-xl - needs manual conversion */
+          width: 100%;
+          left: 0;
+          right: 0;
+          z-index: 20;
+          /* @apply top-6 - needs manual conversion */
+          display: none;
+
+          @include media(">=lg") {
+            top: auto;
+          }
+
+        &.open {
+          display: block;
+        }
+
+        @include media(">=lg") {
+          bottom: 0;
+          width: 100%;
+          /* @apply bg-darkcadet - needs manual conversion */
+          /* @apply rounded-t-xl - needs manual conversion */
+          display: flex;
+          margin-left: auto; margin-right: auto;
+          /* @apply max-w-max - needs manual conversion */
+          left: 0;
+          right: 0;
+          /* @apply px-[38px] - needs manual conversion */
+          /* @apply rounded-b-none - needs manual conversion */
+          padding-top: 0; padding-bottom: 0;
+          /* @apply shadow-none - needs manual conversion */
+        }
+
+        li {
+          border-style: solid;
+          border-color: #FC9445;
+          text-align: left;
+
+          @include media(">=lg") {
+            /* @apply lg:my-3.5 - needs manual conversion */
+            /* @apply lg:mr-[38px] - needs manual conversion */
+            /* @apply lg:border-r - needs manual conversion */
+          }
+
+          a {
+            font-size: 1rem;
+          /* @apply text-bluish - needs manual conversion */
+          text-decoration: none;
+          padding-top: 0.625rem; padding-bottom: 0.625rem;
+          /* @apply border-b - needs manual conversion */
+          border-style: solid;
+          /* @apply border-lightsand - needs manual conversion */
+          font-family: 'Proxima', sans-serif;
+          font-weight: 600;
+          display: block;
+          text-align: left;
+
+          @include media(">=lg") {
+            padding-top: 0; padding-bottom: 0;
+            /* @apply lg:border-b-0 - needs manual conversion */
+            font-size: 1.125rem;
+            color: #fff;
+            /* @apply lg:pr-[38px] - needs manual conversion */
+            &:hover { color: #FC9445; }
+          }
+
+            &:first-child {
+              a {
+                /* @apply border-t - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:border-t-0 - needs manual conversion */
+          }
+              }
+            }
+          }
+
+          &:last-child {
+            /* @apply border-r-0 - needs manual conversion */
+          margin-right: 0;
+
+            a {
+              padding-right: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+  .breadcrumb{
+    li {
+      a{
+        text-decoration: none;
+      }
+    }
+  }
+}

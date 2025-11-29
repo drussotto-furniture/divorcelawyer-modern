@@ -1,0 +1,41 @@
+@import '../utils.scss';
+
+@include component('link') {
+  transition: color $normal;
+
+  &.has-icon {
+    transition: opacity $normal;
+
+    .link-wrapper {
+        display: grid;
+        grid-template-columns: fluid(32, 64) auto;
+        align-items: center;
+        gap: fluid(12, 16);
+        color: blue;
+    }
+
+    .link-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: fluid(26, 52);
+        color: blue;
+        background: blue;
+        border-radius: fluid(6, 8);
+
+        svg {
+            width: 100%;
+            max-width: fluid(6, 8);
+        }
+    }
+
+    .link-text {
+        font-size: fluid(14, 20);
+        font-weight: bold;
+    }
+  }
+
+  &.style-default:hover {
+    color: blue;
+  }
+}

@@ -1,0 +1,325 @@
+@import '../utils.scss';
+
+@include block("leadership-team") {
+  .block-container {
+    
+
+          @include media(">=lg") {
+            /* @apply lg:rounded-[20px] - needs manual conversion */
+          }
+
+    .heading-short-description{
+      max-width: rem(660);
+    }
+
+    .featured-team-members {
+      /* @apply mb-3.5 - needs manual conversion */
+          display: flex;
+          /* @apply gap-y-3.5 - needs manual conversion */
+          justify-content: center;
+          flex-direction: column;
+          /* @apply pl-[18px] - needs manual conversion */
+
+          @include media(">=lg") {
+            gap: 2.5rem;
+            row-gap: 2.5rem;
+            flex-direction: row;
+            /* @apply lg:px-[18px] - needs manual conversion */
+          }
+
+      .featured-team-card {
+        max-width: rem(734);
+
+        /* @apply rounded-r-none - needs manual conversion */
+          /* @apply rounded-l-[20px] - needs manual conversion */
+
+        @include media(">=lg") {
+          max-height: rem(367);
+          margin-bottom: rem(51);
+          /* @apply rounded-r-[20px] - needs manual conversion */
+        }
+
+        overflow: hidden;
+          /* @apply bg-midnightblack - needs manual conversion */
+          width: 100%;
+
+        .ft-thumbnail {
+          min-width: rem(180);
+          max-width: rem(180);
+
+          @include media(">=lg") {
+            min-width: rem(285);
+            max-width: rem(285);
+          }
+        }
+
+        .ft-team-members-detail {
+          /* @apply pl-[18px] - needs manual conversion */
+          /* @apply pr-1.5 - needs manual conversion */
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: center;
+          padding-top: 1.25rem;
+          padding-bottom: 1rem;
+
+          @include media(">=lg") {
+            /* @apply lg:pl-[46px] - needs manual conversion */
+            /* @apply lg:pt-9 - needs manual conversion */
+          }
+
+          h2 {
+            font-size: fluid(28, 32);
+            line-height: fluid(32, 36);
+            color: #fff;
+          font-weight: 400;
+          font-family: 'Libre', serif;
+          text-align: left;
+          }
+
+          .ft-short-bio {
+            font-size: fluid(12, 16);
+            line-height: fluid(14, 22);
+            color: #fff;
+          font-weight: 400;
+          font-family: 'Proxima', sans-serif;
+          text-align: left;
+          margin-top: 0.5rem;
+          margin-bottom: 1.25rem;
+          /* @apply overflow-y-hidden - needs manual conversion */
+
+          @include media(">=lg") {
+            margin-top: 1.25rem;
+            /* @apply lg:max-h-max - needs manual conversion */
+          }
+
+            &.desktop {
+              display: none;
+
+          @include media(">=lg") {
+            display: block;
+          }
+            }
+
+            &.mobile {
+              display: block;
+
+          @include media(">=lg") {
+            display: none;
+          }
+            }
+          }
+
+          a {
+            text-decoration: none;
+          margin-bottom: 0.625rem;
+          /* @apply leading-[14px] - needs manual conversion */
+          /* @apply leading-[18px] - needs manual conversion */
+          }
+        }
+      }
+    }
+
+    .nonfeatured-team-members {
+      display: flex;
+          /* @apply gap-y-3.5 - needs manual conversion */
+          justify-content: center;
+          flex-direction: column;
+          /* @apply px-[18px] - needs manual conversion */
+
+          @include media(">=lg") {
+            gap: 1.5rem;
+            gap: 1.5rem;
+            row-gap: 1.25rem;
+            flex-direction: row;
+          }
+
+      .nonfeatured-team-card {
+        max-width: rem(489);
+        min-height: rem(180);
+        border-radius: rem(20);
+        width: 100%;
+
+        @include media(">=lg") {
+          min-height: rem(268);
+        }
+
+        overflow: hidden;
+          background-color: #fff;
+
+        .nft-thumbnail {
+          min-width: rem(141);
+          max-width: rem(141);
+          overflow: hidden;
+
+          @include media(">=lg") {
+            min-width: rem(198);
+            max-width: rem(198);
+          }
+        }
+
+        .nft-team-members-detail {
+          /* @apply px-[13px] - needs manual conversion */
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+
+          @include media(">=lg") {
+            /* @apply lg:pl-[26px] - needs manual conversion */
+          }
+
+          h2 {
+            font-size: fluid(26, 28);
+            line-height: fluid(30, 32);
+            color: #6B6B4E;
+          font-weight: 400;
+          font-family: 'Libre', serif;
+          text-align: left;
+          margin-top: 2rem;
+
+            @include media(">=lg") {
+              margin-top: rem(71);
+            }
+          }
+
+          a {
+            text-decoration: none;
+          margin-bottom: 0.625rem;
+          /* @apply leading-[14px] - needs manual conversion */
+          /* @apply leading-[18px] - needs manual conversion */
+          }
+        }
+      }
+    }
+  }
+
+  .popup-overlay {
+    z-index: 9999;
+    position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: #000;
+          /* @apply opacity-60 - needs manual conversion */
+          display: none;
+  }
+
+  .dls-member-profile-popup {
+    max-width: rem(361);
+    border-radius: rem(20);
+    z-index: 99999;
+    max-height: rem(734);
+    background-color: #fff;
+          padding: 2rem;
+          margin-left: auto; margin-right: auto;
+          text-align: center;
+          position: fixed;
+          /* @apply h-max - needs manual conversion */
+          position: fixed;
+          /* @apply top-16 - needs manual conversion */
+          left: 0;
+          right: 0;
+          display: none;
+          /* @apply overflow-y-auto - needs manual conversion */
+          /* @apply max-h-[80vh] - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:top-[10%] - needs manual conversion */
+          }
+
+    @include media(">=lg") {
+      max-width: rem(803);
+    }
+
+    .member-profile-avatar {
+      width: rem(227);
+      height: rem(227);
+      border-radius: 9999px;
+          overflow: hidden;
+          margin-left: auto; margin-right: auto;
+
+      img {
+        width: 100%;
+          /* @apply object-cover - needs manual conversion */
+      }
+    }
+
+    .member-profile-detail {
+      h2 {
+        font-size: rem(32);
+      }
+
+      .popup-position {
+        position: relative;
+
+        &::after {
+          content: "";
+          height: rem(6);
+          width: rem(52);
+          background-color: #FC9445;
+          display: block;
+          margin-top: 1rem;
+          margin-left: auto; margin-right: auto;
+
+          @include media(">=lg") {
+            /* @apply lg:my-6 - needs manual conversion */
+          }
+        }
+      }
+    }
+
+    .popup-long-info {
+      font-size: fluid(16, 18);
+      line-height: rem(22);
+      font-weight: 400;
+          font-family: 'Proxima', sans-serif;
+          color: #1D1D1D;
+          text-align: left;
+
+      h2{
+        font-size: fluid(20, 22);
+        line-height: fluid(26, 28);
+        font-family: 'Proxima', sans-serif;
+          font-weight: 600;
+          color: #1D1D1D;
+          margin-bottom: 0.5rem;
+          position: relative;
+      }
+      h3,h4,h5{
+        font-size: fluid(18, 20);
+        line-height: fluid(24, 26);
+        font-family: 'Proxima', sans-serif;
+          font-weight: 600;
+          color: #1D1D1D;
+          margin-bottom: 0.5rem;
+          position: relative;
+      }
+      p{
+        /* @apply mb-3.5 - needs manual conversion */
+      }
+      ol, ul{
+        list-style: initial;
+        margin: 14px 0px;
+        padding-left: 18px;
+      }
+      a{
+        text-decoration: underline;
+      }
+    }
+
+    .close-popup {
+      position: relative;
+          margin-bottom: 2rem;
+          /* @apply -mr-3.5 - needs manual conversion */
+
+          @include media(">=lg") {
+            margin-right: 0;
+          }
+
+      img {
+        position: fixed;
+      }
+    }
+  }
+}

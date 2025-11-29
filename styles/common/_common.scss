@@ -1,0 +1,99 @@
+@import '../utils.scss';
+
+// Block spacing utilities
+.block-container {
+  @apply text-center;
+
+  .component-rich-text {
+    font-size: fluid(16, 20);
+    line-height: fluid(20, 26);
+    @apply pt-1 pb-1;
+  }
+
+  &.container-size-small {
+    max-width: rem(1536);
+  }
+
+  &.container-size-medium {
+    max-width: rem(1830);
+  }
+
+  h2 {
+    .component-rich-text {
+      font-size: fluid(38, 64);
+      line-height: fluid(42, 84);
+      letter-spacing: fluid(-1.14, -1.92);
+      font-style: normal;
+      @apply text-dark font-normal pl-0 pb-0 font-libre;
+    }
+
+    span {
+      font-style: italic;
+      color: #B6572E;
+    }
+  }
+}
+
+// Section spacing
+.section {
+  padding: fluid(64, 96) 0;
+
+  &.section-sm {
+    padding: fluid(48, 64) 0;
+  }
+
+  &.section-lg {
+    padding: fluid(96, 128) 0;
+  }
+}
+
+// Typography utilities
+h1, .h1 {
+  font-size: fluid(40, 82);
+  line-height: fluid(52, 84);
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  font-family: 'Libre', serif;
+}
+
+h2, .h2 {
+  font-size: fluid(32, 64);
+  line-height: fluid(40, 76);
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  font-family: 'Libre', serif;
+}
+
+h3, .h3 {
+  font-size: fluid(24, 32);
+  line-height: fluid(32, 40);
+  font-weight: 700;
+  font-family: 'Proxima', sans-serif;
+}
+
+h4, .h4 {
+  font-size: fluid(20, 24);
+  line-height: fluid(28, 32);
+  font-weight: 600;
+  font-family: 'Proxima', sans-serif;
+}
+
+p {
+  font-size: fluid(16, 18);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+// Container
+.container {
+  max-width: rem(1830);
+  margin: 0 auto;
+  padding-left: rem(20);
+  padding-right: rem(20);
+
+  @include media('>=lg') {
+    padding-left: rem(40);
+    padding-right: rem(40);
+  }
+}
+

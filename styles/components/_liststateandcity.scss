@@ -1,0 +1,151 @@
+@import '../utils.scss';
+
+@include block('list-state-and-city') {
+  .block-container {
+
+    h2 {
+      position: relative;
+          padding-bottom: 0.75rem;
+          padding-left: 1.25rem; padding-right: 1.25rem;
+
+          @include media(">=lg") {
+            padding-bottom: 0.75rem;
+          }
+      .component-rich-text {
+        font-size: fluid(24, 34);
+        line-height: fluid(28, 38);
+        font-family: 'Proxima', sans-serif;
+          font-weight: 600;
+      }
+      &::after {
+        content: '';
+        height: rem(7);
+        position: absolute;
+          /* @apply bg-sandy - needs manual conversion */
+          /* @apply w-11 - needs manual conversion */
+          bottom: 0;
+          margin-left: auto; margin-right: auto;
+          left: 0;
+          right: 0;
+
+          @include media(">=lg") {
+            /* @apply lg:-bottom-0 - needs manual conversion */
+          }
+      }
+    }
+
+    .component-rich-text {
+      font-size: fluid(16, 20);
+      line-height: fluid(26, 26);
+      /* @apply text-darkgray - needs manual conversion */
+
+      p {
+        padding-top: 0.625rem; padding-bottom: 0.625rem;
+      }
+
+      a {
+        color: #B6572E;
+          text-decoration: none;
+      }
+    }
+  }
+
+  .states-list {
+    padding-top: 1.25rem;
+          /* @apply list-none - needs manual conversion */
+          text-align: center;
+          height: auto;
+          /* @apply w-[1240px] - needs manual conversion */
+          max-width: 100%;
+          margin: auto;
+
+          @include media(">=lg") {
+            padding-top: 2.5rem;
+          }
+
+    column-count: 2;
+
+    @include media('>=sm') {
+      column-count: 3;
+    }
+
+    @include media('>=md') {
+      column-count: 4;
+    }
+
+    @include media('>=lg') {
+      text-align: left;
+      column-count: 5;
+    }
+
+    @include media('>=xl') {
+      text-align: left;
+      column-count: 6;
+    }
+
+    li {
+      /* @apply text-darkgray - needs manual conversion */
+          padding-top: 0.75rem; padding-bottom: 0.75rem;
+          padding-left: 0; padding-right: 0;
+
+      a {
+        font-family: 'Proxima', sans-serif;
+          font-weight: 600;
+          font-size: 1.125rem;
+          text-decoration: underline;
+
+          @include media(">=lg") {
+            font-size: 1.5rem;
+          }
+      }
+    }
+  }
+
+  .cities-list {
+    padding-top: 1.25rem;
+          /* @apply list-none - needs manual conversion */
+          text-align: center;
+          height: auto;
+
+          @include media(">=lg") {
+            padding-top: 2.5rem;
+          }
+
+    column-count: 2;
+
+    @include media('>=sm') {
+      column-count: 3;
+    }
+
+    @include media('>=md') {
+      column-count: 4;
+    }
+
+    @include media('>=lg') {
+      text-align: left;
+      column-count: 5;
+    }
+
+    @include media('>=xl') {
+      text-align: left;
+      column-count: 6;
+    }
+
+    li {
+      /* @apply text-darkgray - needs manual conversion */
+          padding-top: 0.75rem; padding-bottom: 0.75rem;
+          padding-left: 0; padding-right: 0;
+
+      a {
+        font-family: 'Proxima', sans-serif;
+          font-weight: 600;
+          font-size: 1.125rem;
+          text-decoration: underline;
+
+          @include media(">=lg") {
+            font-size: 1.5rem;
+          }
+      }
+    }
+  }
+}

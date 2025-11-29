@@ -1,0 +1,114 @@
+@import '../utils.scss';
+
+@include block('most-popular-reads') {
+  .block-container {
+    text-align: center;
+
+    .heading {
+      letter-spacing: rem(2.2);
+      text-transform: uppercase;
+      text-align: left;
+    }
+
+    .component-rich-text {
+      font-size: fluid(16, 20);
+      line-height: fluid(20, 26);
+      padding-top: rem(4);
+      padding-bottom: rem(4);
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    
+    // Spacing between h2 and component-rich-text
+    h2 + .component-rich-text,
+    h2 ~ .component-rich-text {
+      margin-top: rem(12);
+      
+      @include media(">=lg") {
+        margin-top: rem(16);
+      }
+    }
+
+    &.container-size-small {
+      max-width: rem(1536);
+    }
+
+    &.container-size-medium {
+      max-width: rem(1830);
+    }
+
+    .second-level-articles {
+      .second-level-article {
+        .article-thumbnail {
+          @include media('<=md') {
+            height: rem(160);
+          }
+
+          iframe {
+            background-color: #000000;
+
+            .vp-center {
+              display: block;
+            }
+          }
+        }
+      }
+    }
+
+    .featured-thumbnail {
+      iframe {
+        background-color: #000000;
+      }
+    }
+
+    h2 {
+      .component-rich-text {
+        font-size: fluid(38, 64); // Figma: 64px
+        line-height: fluid(42, 68); // Figma: 68px (106%)
+        letter-spacing: -0.03em; // Figma: -0.03em
+        color: #000000;
+        font-weight: 400; // Figma: 400
+        padding-left: 0;
+        padding-bottom: 0;
+        font-style: normal;
+        font-family: 'Libre', serif;
+      }
+
+      span {
+        color: #B6572E;
+        font-style: italic;
+      }
+    }
+
+    a:not(.component-button) {
+      color: #B6572E;
+    }
+
+    .articles-list {
+      .items {
+        border-top: 1px solid #F4EBDD;
+        border-style: solid;
+        bottom: rem(4);
+
+        &:last-child {
+          border-bottom: 1px solid #F4EBDD;
+        }
+      }
+    }
+  }
+
+  .overley-layout {
+    top: rem(-80);
+    margin-bottom: rem(-112);
+    padding-top: 6%;
+    position: relative;
+    border-radius: rem(24);
+    z-index: 10;
+
+    @include media(">=lg") {
+      top: rem(-144);
+      margin-bottom: rem(-144);
+    }
+  }
+}
+

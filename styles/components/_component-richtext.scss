@@ -1,0 +1,85 @@
+@import '../utils.scss';
+
+@include component('rich-text') {
+  color: #1D1D1D;
+          font-family: 'Proxima', sans-serif;
+
+  font-size: rem(20);
+  line-height: rem(26);
+  font-weight: 400;
+
+  > * {
+    &:not(:last-child) {
+      margin-bottom: 0.6em;
+    }
+  }
+
+  strong {
+    font-weight: bold;
+  }
+
+  ul, ol {
+    padding-left: fluid(20, 40);
+  }
+
+  ul {
+    list-style: disc;
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
+  hr {
+    display: inline-block;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #1D1D1D;
+
+    &:not(:first-child) {
+      margin-top: 0.5em;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 1.6em;
+    }
+  }
+
+  h2 {
+    font-family: 'Libre', serif;
+  }
+
+  p {
+    a {
+      text-decoration: underline;
+          transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms;
+
+          &:hover {
+            color: rgba(29, 29, 29, 0.9);
+          }
+    }
+  }
+
+    // WP MEDIA UPLOAD CSS
+    .alignnone, .aligncenter, .alignright, .alignleft {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .alignright {
+      @include media('>=lg') {
+        float: right;
+        margin-right: 0;
+        margin-left: fluid(15, 30);
+      }
+    }
+
+    .alignleft {
+      @include media('>=lg') {
+        float: left;
+        margin-right: fluid(15, 30);
+        margin-left: 0;
+      }
+    }
+}

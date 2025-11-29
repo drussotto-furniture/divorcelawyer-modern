@@ -1,0 +1,34 @@
+// This file includes mixins for creating selector contexts in Sass.
+// Selector contexts are very important when styling entities such as blocks, components or partials.
+// They allow us to include resets in the admin interface, but still be able to override them in a conventional way.
+
+// Create a generic context.
+@mixin context($selector) {
+  body {
+    #{$selector} {
+      @content;
+    }
+  }
+}
+
+// Create a block context.
+// Note: Using 'block-' prefix instead of 'wp-block-' for our Next.js implementation
+@mixin block($id) {
+  @include context('.block-' + $id) {
+    @content;
+  }
+}
+
+// Create a component context.
+@mixin component($id) {
+  @include context('.component-' + $id) {
+    @content;
+  }
+}
+
+// Create a partial context.
+@mixin partial($id) {
+  @include context('.partial-' + $id) {
+    @content;
+  }
+}

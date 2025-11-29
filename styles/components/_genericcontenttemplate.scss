@@ -1,0 +1,447 @@
+@import '../utils.scss';
+
+@include block("generic-content-template") {
+  margin-left: auto; margin-right: auto;
+
+  .block-container {
+    max-width: rem(1516);
+    border-radius: 1.5rem;
+          padding-top: 2rem; padding-bottom: 2rem;
+          padding-left: 0; padding-right: 0;
+          position: relative;
+          z-index: 10;
+          margin-left: auto; margin-right: auto;
+
+    .generic-page-content {
+      max-width: rem(916);
+      
+
+          @include media(">=lg") {
+            /* @apply lg:px-7 - needs manual conversion */
+          }
+
+      h2 {
+        font-size: fluid(38, 64);
+        line-height: fluid(44, 68);
+        letter-spacing: fluid(-1.14, -1.92);
+        color: #1D1D1D;
+          font-family: 'Libre', serif;
+          margin-bottom: 0.5rem;
+
+          @include media(">=lg") {
+            margin-bottom: 0.75rem;
+          }
+
+        span {
+          font-style: italic;
+          color: #B6572E;
+        }
+      }
+
+      h3 {
+        font-size: fluid(26, 34);
+        line-height: fluid(30, 47);
+        font-family: 'Proxima', sans-serif;
+          font-weight: 600;
+          color: #1D1D1D;
+          margin-bottom: 1rem;
+          position: relative;
+
+        &::after {
+          content: "";
+          /* @apply w-11 - needs manual conversion */
+          /* @apply h-2 - needs manual conversion */
+          /* @apply bg-sandy - needs manual conversion */
+          display: block;
+        }
+      }
+
+      h4 {
+        font-size: fluid(24, 32);
+        line-height: fluid(28, 45);
+        font-family: 'Proxima', sans-serif;
+          font-weight: 600;
+          color: #1D1D1D;
+          margin-bottom: 1rem;
+          position: relative;
+      }
+
+      p {
+        font-size: fluid(16, 18);
+        line-height: fluid(24, 30);
+        font-weight: 400;
+          color: #1D1D1D;
+          font-family: 'Proxima', sans-serif;
+          margin-bottom: 2rem;
+
+          @include media(">=lg") {
+            margin-bottom: 3rem;
+          }
+
+        strong {
+          font-size: rem(20);
+          line-height: rem(34);
+          font-weight: 600;
+        }
+      }
+
+      ul,
+      ol {
+        /* @apply pl-8 - needs manual conversion */
+          margin-bottom: 2.5rem;
+
+          @include media(">=lg") {
+            margin-bottom: 3rem;
+          }
+
+        li {
+          font-size: fluid(16, 18);
+          line-height: fluid(24, 30);
+          font-family: 'Proxima', sans-serif;
+          font-weight: 400;
+
+          strong {
+            font-weight: 600;
+          }
+          a {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      blockquote {
+        padding: rem(26) rem(41);
+        /* @apply bg-grayShadesLight-soft - needs manual conversion */
+          color: #B6572E;
+          font-family: 'Libre', serif;
+          font-style: italic;
+          border-radius: 0.75rem;
+          margin-bottom: 2.5rem;
+
+          @include media(">=lg") {
+            margin-bottom: 3rem;
+          }
+
+        p {
+          font-size: rem(28);
+          line-height: rem(47);
+          margin-bottom: 0;
+          color: #B6572E;
+          font-family: 'Libre', serif;
+          font-style: italic;
+        }
+      }
+
+      .category-tags-wrapper {
+        ul {
+          padding-left: 0;
+          /* @apply gap-1.5 - needs manual conversion */
+          margin-top: 0.5rem;
+          margin-bottom: 2.5rem;
+
+          @include media(">=lg") {
+            gap: 1rem;
+            margin-bottom: 3rem;
+          }
+
+          li {
+            a {
+              font-size: fluid(12, 18);
+              line-height: fluid(14, 28);
+              /* @apply bg-cloudysky - needs manual conversion */
+          padding-top: 0.5rem; padding-bottom: 0.5rem;
+          padding-left: 1rem; padding-right: 1rem;
+          border-radius: 9999px;
+          /* @apply text-bluishlight - needs manual conversion */
+          text-decoration: none;
+          font-family: 'Proxima', sans-serif;
+          font-weight: 500;
+
+          &:hover {
+            background-color: #163B46;
+            color: #fff;
+          }
+            }
+          }
+        }
+      }
+
+      .share-this-post {
+        /* @apply border-t-[3px] - needs manual conversion */
+          /* @apply border-palesand - needs manual conversion */
+          border-style: solid;
+          padding-top: 0.5rem;
+          position: relative;
+
+        ul {
+          display: flex;
+          padding-left: 1rem;
+          column-gap: 0.5rem;
+
+          li {
+            /* @apply h-8 - needs manual conversion */
+          /* @apply w-8 - needs manual conversion */
+          border-radius: 9999px;
+          overflow: hidden;
+
+            a {
+              width: 100%;
+          height: 100%;
+          text-align: center;
+          /* @apply bg-mutedgray - needs manual conversion */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+              img {
+                /* @apply w-[22px] - needs manual conversion */
+              }
+
+              &:hover {
+                background-color: #163B46;
+
+                img {
+                  /* @apply brightness-0 - needs manual conversion */
+          /* @apply invert - needs manual conversion */
+                }
+              }
+            }
+          }
+        }
+
+        .toast-message{
+          position: absolute;
+          /* @apply top-14 - needs manual conversion */
+          border-radius: 9999px;
+          padding-top: 0.25rem; padding-bottom: 0.25rem;
+          padding-left: 2rem; padding-right: 2rem;
+          color: #fff;
+          font-family: 'Proxima', sans-serif;
+          font-weight: 400;
+          /* @apply bg-secondary - needs manual conversion */
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .right-wrapper {
+
+      text-align: left;
+          width: 100%;
+          max-width: 100%;
+
+      @include media('>=lg') {
+        max-width: rem(392);
+        width: rem(392);
+      }
+
+      .contents-list-wrap {
+        color: #1D1D1D;
+          font-family: 'Proxima', sans-serif;
+
+        h2 {
+          font-size: fluid(20, 24);
+          line-height: fluid(24, 30);
+          font-weight: 700;
+          margin-bottom: 0.75rem;
+        }
+
+        .contents-toggle-button {
+          /* @apply w-10 - needs manual conversion */
+          /* @apply h-10 - needs manual conversion */
+          border-radius: 9999px;
+          /* @apply bg-lightsky - needs manual conversion */
+          display: inline-block;
+          position: relative;
+          /* @apply top-3 - needs manual conversion */
+          left: 0.75rem;
+          cursor: pointer;
+
+          @include media(">=lg") {
+            display: none;
+          }
+
+          &::after {
+            content: url("/images/Faq-arroa-down.svg");
+            position: absolute;
+          /* @apply top-[14%] - needs manual conversion */
+          /* @apply left-[9%] - needs manual conversion */
+          }
+
+          &.active {
+            &::after {
+              content: url("/images/Faq-arroa-up.svg");
+            }
+          }
+        }
+
+        .contents-list {
+          padding: 0;
+          display: none;
+
+          @include media(">=lg") {
+            display: block;
+          }
+
+          &.open {
+            display: block;
+          }
+
+          li {
+            a {
+              font-size: rem(18);
+              line-height: rem(34);
+              text-decoration: underline;
+          font-weight: 500;
+            }
+          }
+        }
+      }
+
+      .stay-to-know-form {
+        padding: rem(50) rem(16);
+        display: none;
+          background-color: #235561;
+          /* @apply rounded-[20px] - needs manual conversion */
+          text-align: center;
+          /* @apply pb-9 - needs manual conversion */
+
+          @include media(">=lg") {
+            display: block;
+          }
+
+        h2 {
+          .component-rich-text {
+            font-size: rem(48);
+            line-height: rem(55);
+            letter-spacing: - rem(1.44);
+            color: #fff;
+          font-family: 'Libre', serif;
+
+            span {
+              color: #FC9445;
+          font-style: italic;
+            }
+          }
+        }
+
+        .component-rich-text {
+          color: #fff;
+          font-size: 1rem;
+          font-family: 'Proxima', sans-serif;
+          text-align: center;
+          margin-bottom: 1rem;
+        }
+
+        .wpcf7-form {
+          max-width: rem(272);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          margin-left: auto; margin-right: auto;
+
+          .wpcf7-form-control {
+            border-radius: rem(100);
+            padding: rem(15) rem(19);
+            width: 100%;
+          max-width: 100%;
+          background-color: #fff;
+          outline: none;
+          display: block;
+          border-width: 1px;
+          border-color: transparent;
+
+            &.wpcf7-submit {
+              width: rem(170);
+              cursor: pointer;
+              letter-spacing: rem(1.4);
+              margin-left: auto; margin-right: auto;
+          background-color: #FC9445;
+          color: #000;
+          margin-top: 1rem;
+          text-transform: uppercase;
+          font-family: 'Helvetica', sans-serif;
+          font-size: 0.875rem;
+          font-weight: 700;
+
+          &:hover {
+            background-color: #fff;
+            color: #000;
+          }
+
+          @include media(">=md") {
+            margin-left: 0; margin-right: 0;
+          }
+            }
+          }
+
+          .nl-name {
+            /* @apply basis-full - needs manual conversion */
+          margin-bottom: 0.5rem;
+
+          @include media(">=lg") {
+            /* @apply lg:basis-2/4 - needs manual conversion */
+          }
+
+          @include media(">=md") {
+            margin-right: 0.25rem;
+          }
+          }
+
+          .nl-lname {
+            /* @apply basis-full - needs manual conversion */
+          margin-bottom: 0.5rem;
+
+          @include media(">=lg") {
+            /* @apply lg:basis-2/4 - needs manual conversion */
+          }
+
+          @include media(">=md") {
+            margin-left: 0.25rem;
+          }
+          }
+
+          .footer-from-inner-wrapper {
+            display: flex;
+          flex-direction: column;
+
+          @include media(">=md") {
+            flex-direction: row;
+          }
+          }
+        }
+
+        .wpcf7-validates-as-required {
+          &.wpcf7-not-valid {
+            /* @apply border-red-700 - needs manual conversion */
+          border-width: 2px;
+          }
+        }
+
+        .wpcf7-not-valid-tip {
+          display: block;
+          margin-top: 10px;
+        }
+
+        .wpcf7-response-output {
+          margin: 0;
+          margin-bottom: 0.75rem;
+          /* @apply border-0 - needs manual conversion */
+          padding: 0;
+          color: #FC9445;
+        }
+      }
+    }
+  }
+
+  .overley-layout {
+    /* @apply -top-20 - needs manual conversion */
+          /* @apply -mb-28 - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:-top-28 - needs manual conversion */
+            /* @apply lg:-mb-36 - needs manual conversion */
+          }
+  }
+}

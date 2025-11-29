@@ -1,0 +1,234 @@
+@import '../utils.scss';
+
+@include block("lawfirm-lawyers-component") {
+  .block-container {
+    max-width: rem(1610);
+    margin-left: auto; margin-right: auto;
+    .firm-info-box {
+      max-width: rem(500);
+      text-align: center;
+          padding-top: 2rem; padding-bottom: 2rem;
+          width: 100%;
+
+          @include media(">=lg") {
+            text-align: left;
+            padding-top: 2.5rem;
+          }
+
+      h2 {
+        font-size: fluid(28, 45);
+        line-height: fluid(38, 55);
+        letter-spacing: fluid(-0.84, -1.35);
+        color: #FC9445;
+          font-family: 'Libre', serif;
+          font-weight: 400;
+          font-style: italic;
+      }
+
+      h3 {
+        font-size: fluid(38, 64);
+        line-height: fluid(48, 75);
+        letter-spacing: fluid(-1.14, -1.92);
+        color: #fff;
+          font-family: 'Libre', serif;
+          font-weight: 400;
+      }
+
+      .component-rich-text {
+        max-width: rem(415);
+        color: #fff;
+      }
+    }
+
+    .firm-lawyers-wrapper {
+      /* @apply grid - needs manual conversion */
+          /* @apply grid-cols-1 - needs manual conversion */
+          row-gap: 1.25rem;
+
+          @include media(">=lg") {
+            /* @apply lg:grid-cols-2 - needs manual conversion */
+            column-gap: 1rem;
+            row-gap: 1.75rem;
+            margin-left: 2.5rem;
+          }
+
+          @include media(">=xl") {
+            margin-left: 4rem;
+          }
+
+      @media (min-width: 1366px) {
+        /* @apply grid-cols-3 - needs manual conversion */
+      }
+
+      .firm-lawyers-card {
+        max-width: rem(350);
+        /* @apply bg-palesand - needs manual conversion */
+          /* @apply rounded-[15px] - needs manual conversion */
+          overflow: hidden;
+          margin-left: auto; margin-right: auto;
+
+          @include media(">=lg") {
+            margin-left: 0; margin-right: 0;
+          }
+
+        .lawyer-thumbnail {
+          height: rem(220);
+          border-radius: 8px 8px 0px 0px;
+          background: linear-gradient(
+              180deg,
+              rgba(0, 0, 0, 0) 70.32%,
+              rgba(0, 0, 0, 0.8) 88.86%
+            ),
+            lightgray -51.741px -1.207px / 125.235% 115.484% no-repeat;
+          position: relative;
+          width: 100%;
+
+          img {
+            width: 100%;
+          height: 100%;
+          /* @apply object-cover - needs manual conversion */
+          }
+
+          .Lawyer-name {
+            text-align: center;
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: #fff;
+          font-family: 'Proxima', sans-serif;
+          text-transform: capitalize;
+          position: absolute;
+          bottom: 0;
+          text-align: center;
+          /* @apply mb-[10px] - needs manual conversion */
+          width: 100%;
+          }
+        }
+
+        .lawyer-info {
+          padding-top: 1rem;
+          padding-bottom: 1.75rem;
+          padding-left: 1.25rem; padding-right: 1.25rem;
+
+          ul {
+            display: flex;
+          margin-top: 1.5rem;
+          column-gap: 0.75rem;
+          justify-content: center;
+          flex-wrap: wrap;
+          row-gap: 0.75rem;
+
+            li {
+              a {
+                min-width: rem(117);
+                display: block;
+          border-width: 1px;
+          border-style: solid;
+          border-color: #1D1D1D;
+          border-radius: 9999px;
+          /* @apply px-[10px] - needs manual conversion */
+          /* @apply py-[7px] - needs manual conversion */
+          color: #1D1D1D;
+          font-size: 0.875rem;
+          font-weight: 600;
+          font-family: 'Proxima', sans-serif;
+          text-decoration: none;
+          text-align: center;
+          white-space: nowrap;
+          /* @apply leading-[13px] - needs manual conversion */
+
+          &:hover {
+            background-color: #1D1D1D;
+            color: #fff;
+          }
+
+                &.primary {
+                  background-color: #FC9445;
+          border-color: #FC9445;
+          display: flex;
+          align-items: center;
+          /* @apply py-[5px] - needs manual conversion */
+
+          &:hover {
+            border-color: #1D1D1D;
+            background-color: #1D1D1D;
+          }
+
+                  &:hover {
+                    img {
+                      filter: brightness(0) invert(1);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        &.discuss-case-card {
+          padding: 0.75rem;
+
+          .discussed-heading {
+            font-size: rem(32);
+            line-height: rem(34);
+            letter-spacing: - rem(0.64);
+            font-style: italic;
+          font-family: 'Libre', serif;
+          font-weight: 600;
+          text-align: center;
+          padding-top: 2rem;
+          padding-bottom: 1.5rem;
+          padding-left: 1rem; padding-right: 1rem;
+          /* @apply rounded-t-xl - needs manual conversion */
+          /* @apply bg-white/[.7] - needs manual conversion */
+          /* @apply pb-11 - needs manual conversion */
+          }
+
+          .discussed-cta {
+            max-width: rem(216);
+            /* @apply rounded-[50px] - needs manual conversion */
+          /* @apply px-7 - needs manual conversion */
+          padding-top: 0.75rem; padding-bottom: 0.75rem;
+          background-color: #1D1D1D;
+          font-size: 0.875rem;
+          font-weight: 600;
+          line-height: 1rem;
+          font-family: 'Proxima', sans-serif;
+          color: #fff;
+          position: relative;
+          /* @apply -top-5 - needs manual conversion */
+          text-transform: uppercase;
+          display: block;
+          margin-left: auto; margin-right: auto;
+          text-decoration: none;
+
+          &:hover {
+            background-color: #FC9445;
+            color: #1D1D1D;
+          }
+          }
+
+          h3 {
+            font-size: 1rem;
+          text-align: left;
+          font-family: 'Proxima', sans-serif;
+          color: #1D1D1D;
+          font-weight: 600;
+          }
+
+          ul {
+            /* @apply list-disc - needs manual conversion */
+          padding-left: 1rem;
+
+            li {
+              font-size: 1rem;
+          font-weight: 400;
+          font-family: 'Proxima', sans-serif;
+          color: #1D1D1D;
+          text-align: left;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,167 @@
+@import '../utils.scss';
+
+@include block('quote-video-component') {
+  padding-bottom: 5rem;
+          padding-top: 2.5rem;
+
+  &.overley-layout {
+    padding-top: 0;
+          padding-bottom: 0;
+          /* @apply -mb-10 - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:-mb-6 - needs manual conversion */
+          }
+  }
+
+  .block-container {
+    max-width: rem(1650);
+    background-color: #fff;
+          border-radius: 1rem;
+          overflow: hidden;
+          margin-left: auto; margin-right: auto;
+  }
+
+  .video-box {
+    max-width: 100%;
+          overflow: hidden;
+          position: relative;
+          /* @apply min-w-max - needs manual conversion */
+          /* @apply aspect-square - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:aspect-auto - needs manual conversion */
+          }
+
+    @include media(">=lg") {
+      min-width: rem(570);
+      max-width: rem(670);
+      height: inherit;
+    }
+
+    .video-thumbnail {
+      position: absolute;
+          top: 0;
+          bottom: 0;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+
+          @include media(">=lg") {
+            right: 0;
+          }
+      width: 100%;
+      height: 100%;
+
+      img {
+        width: 100%;
+          height: 100%;
+          /* @apply object-cover - needs manual conversion */
+      }
+
+      .play-button {
+        position: absolute;
+          cursor: pointer;
+      }
+    }
+
+    div#videoPlayer{
+      width: 100%;
+          height: 100%;
+          top: 0;
+          bottom: 0;
+      div{
+        position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          bottom: 0;
+          background-color: #1D1D1D;
+
+        iframe {
+          min-height: 100%;
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          bottom: 0;
+
+        }
+      }
+    }
+    iframe {
+      min-height: 100%;
+      width: 100%;
+          height: 100%;
+    }
+  }
+
+  .quote-box {
+    font-size: fluid(16, 34);
+    line-height: fluid(25, 44);
+    padding-top: rem(70);
+    padding-bottom: rem(60);
+    padding-left: rem(50);
+    padding-right: rem(50);
+    font-family: 'Libre', serif;
+          color: #1D1D1D;
+          font-weight: 400;
+          font-style: italic;
+          text-align: center;
+          position: relative;
+
+          @include media(">=lg") {
+            text-align: left;
+          }
+
+    @include media(">=lg") {
+      padding-top: rem(117);
+      padding-bottom: rem(106);
+      padding-left: rem(100);
+      padding-right: rem(80);
+      max-width: calc(100% - rem(570));
+    }
+
+    @include media(">=xl") {
+      padding-left: rem(156);
+      padding-right: rem(140);
+    }
+
+    &::after {
+      content: '"';
+      font-size: fluid(80, 120);
+      line-height: rem(0);
+      color: #B6572E;
+          font-style: italic;
+          font-family: 'Libre', serif;
+          font-weight: 400;
+          /* @apply right-[9%] - needs manual conversion */
+          display: block;
+          text-align: right;
+          margin-top: 1.25rem;
+
+          @include media(">=lg") {
+            position: absolute;
+            /* @apply lg:mt-9 - needs manual conversion */
+          }
+    }
+
+    &:before {
+      content: '"';
+      font-size: fluid(80, 120);
+      line-height: rem(0);
+      color: #B6572E;
+          font-style: italic;
+          font-family: 'Libre', serif;
+          font-weight: 400;
+          /* @apply left-[7%] - needs manual conversion */
+          /* @apply top-[124px] - needs manual conversion */
+
+          @include media(">=lg") {
+            position: absolute;
+          }
+    }
+  }
+}

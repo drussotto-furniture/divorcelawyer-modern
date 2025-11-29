@@ -1,0 +1,81 @@
+@import '../utils.scss';
+
+@include block("council-subscribe-cta") {
+
+  background-color: #fff;
+
+    .block-container {
+      .council-subscribe-content-wrapper {
+        text-align: center;
+
+
+        h2 {
+          .component-rich-text {
+            font-size: fluid(30, 36);
+            line-height: fluid(33, 46);
+            margin-bottom: rem(10);
+            max-width: rem(1090);
+            color: #1D1D1D;
+          /* @apply font-dmserifText - needs manual conversion */
+          font-weight: 400;
+          /* @apply max-w-[270px] - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:max-w-[1090px] - needs manual conversion */
+          }
+          }
+        }
+
+        h3 {
+          .component-rich-text {
+            font-size: rem(18);
+            line-height: rem(30);
+            margin-bottom: rem(20);
+            max-width: rem(1090);
+            letter-spacing: normal;
+            font-family: 'Roboto', sans-serif;
+          color: #1D1D1D;
+          font-weight: 500;
+          }
+        }
+
+        .component-button{
+          /* @apply py-[15px] - needs manual conversion */
+          /* @apply px-[36px] - needs manual conversion */
+
+          @include media(">=md") {
+            /* @apply md:py-[19px] - needs manual conversion */
+          }
+
+          &.style-primary,.style-secondary{
+            max-width: 100%;
+          width: 100%;
+
+          @include media(">=md") {
+            /* @apply md:max-w-max - needs manual conversion */
+            margin-left: auto; margin-right: auto;
+          }
+
+            span.button-text{
+              font-size: rem(16);
+              letter-spacing: rem(1.6);
+              font-weight: 500;
+          color: #fff;
+          font-family: 'Roboto', sans-serif;
+          text-transform: uppercase;
+          display: flex;
+          gap: 0.5rem;
+              &::after{
+                content: url('/images/ArrowRight-white.svg);
+                position: relative;
+          /* @apply top-[3px] - needs manual conversion */
+              }
+            }
+          }
+        }
+
+
+      }
+    }
+
+}

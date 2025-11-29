@@ -1,0 +1,149 @@
+@import '../utils.scss';
+
+// Block spacing system - matches WordPress theme
+.block-spacing {
+  &.margin-top-small {
+    margin-top: rem(20);
+
+    @include media(">=md") {
+      margin-top: rem(28);
+    }
+
+    @include media(">=lg") {
+      margin-top: rem(40);
+    }
+  }
+
+  &.margin-top-normal {
+    margin-top: rem(40);
+
+    @include media(">=md") {
+      margin-top: rem(56);
+    }
+
+    @include media(">=lg") {
+      margin-top: rem(80);
+    }
+  }
+
+  &.margin-top-large {
+    margin-top: rem(80);
+
+    @include media(">=md") {
+      margin-top: rem(112);
+    }
+
+    @include media(">=lg") {
+      margin-top: rem(128);
+    }
+  }
+
+  &.margin-bottom-small {
+    margin-bottom: rem(20);
+
+    @include media(">=md") {
+      margin-bottom: rem(28);
+    }
+
+    @include media(">=lg") {
+      margin-bottom: rem(40);
+    }
+  }
+
+  &.margin-bottom-normal {
+    margin-bottom: rem(40);
+
+    @include media(">=md") {
+      margin-bottom: rem(56);
+    }
+
+    @include media(">=lg") {
+      margin-bottom: rem(80);
+    }
+  }
+
+  &.margin-bottom-large {
+    margin-bottom: rem(80);
+
+    @include media(">=md") {
+      margin-bottom: rem(112);
+    }
+
+    @include media(">=lg") {
+      margin-bottom: rem(128);
+    }
+  }
+
+  &.spacing-top-small {
+    padding-top: rem(20);
+
+    @include media(">=md") {
+      padding-top: rem(28);
+    }
+
+    @include media(">=lg") {
+      padding-top: rem(40);
+    }
+  }
+
+  &.spacing-top-normal {
+    padding-top: rem(40);
+
+    @include media(">=md") {
+      padding-top: rem(56);
+    }
+
+    @include media(">=lg") {
+      padding-top: rem(80);
+    }
+  }
+
+  &.spacing-top-large {
+    padding-top: rem(80);
+
+    @include media(">=md") {
+      padding-top: rem(112);
+    }
+
+    @include media(">=lg") {
+      padding-top: rem(128);
+    }
+  }
+
+  &.spacing-bottom-small {
+    padding-bottom: rem(20);
+
+    @include media(">=md") {
+      padding-bottom: rem(28);
+    }
+
+    @include media(">=lg") {
+      padding-bottom: rem(40);
+    }
+  }
+
+  &.spacing-bottom-normal {
+    padding-bottom: rem(40);
+
+    @include media(">=md") {
+      padding-bottom: rem(56);
+    }
+
+    @include media(">=lg") {
+      padding-bottom: rem(80);
+    }
+  }
+
+  &.spacing-bottom-large {
+    padding-bottom: rem(80);
+
+    @include media(">=md") {
+      padding-bottom: rem(112);
+    }
+
+    @include media(">=lg") {
+      padding-bottom: rem(128);
+    }
+  }
+}
+

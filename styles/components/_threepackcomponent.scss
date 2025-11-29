@@ -1,0 +1,434 @@
+@import '../utils.scss';
+
+@include block('three-pack-component') {
+  .pack-component {
+    position: relative;
+
+    .component-rich-text {
+      font-size: fluid(16, 20);
+      line-height: fluid(20, 26);
+      padding-top: 0.25rem;
+          padding-bottom: 1.75rem;
+    }
+    h2.title-pack {
+      font-size: fluid(38, 64);
+      line-height: fluid(42, 68);
+      letter-spacing: fluid(-1.14, -1.92);
+      font-weight: 400;
+          padding-left: 0;
+          padding-bottom: 0;
+          font-style: normal;
+          font-family: 'Libre', serif;
+          margin-bottom: 0.5rem;
+      span {
+        font-style: italic;
+          color: #B6572E;
+      }
+    }
+
+    .title-container {
+      padding-left: 0; padding-right: 0;
+          margin-left: auto; margin-right: auto;
+          display: flex;
+          align-content: flex-start;
+          flex-wrap: wrap;
+
+          @include media(">=lg") {
+            min-height: 5rem;
+          }
+      @include media('>2xl') {
+        margin-top: 0;
+      }
+
+      h3 {
+        font-size: fluid(22, 24);
+        line-height: fluid(24, 28);
+        color: #1D1D1D;
+          font-weight: 400;
+          padding-left: 0;
+          font-style: normal;
+          font-family: 'Libre', serif;
+          padding-bottom: 0.5rem;
+        @include media('>2xl') {
+          font-size: fluid(20, 26);
+          line-height: fluid(24, 30);
+        }
+      }
+    }
+
+
+  }
+  .block-container {
+    &.bg-bluish {
+
+      h2.title-pack {
+        span {
+          font-style: italic;
+          color: #FC9445;
+        }
+      }
+
+    }
+    .container-size-small {
+      max-width: rem(1536);
+    }
+
+    .container-size-medium {
+      max-width: rem(1830);
+    }
+
+
+  }
+  .component-button {
+    &.style-vp-button {
+      line-height: fluid(15, 22);
+      letter-spacing: fluid(-0, -0);
+      background-color: #FC9445;
+          border-radius: 1.5rem;
+          padding-left: 1rem; padding-right: 1rem;
+          padding-top: 0.375rem;
+          padding-bottom: 0.25rem;
+          font-size: 0.75rem;
+          font-family: 'Proxima', sans-serif;
+          font-weight: 600;
+      .button-wrapper {
+        span {
+          font-size: 13px;
+          line-height: 16px;
+          color: #000;
+        }
+      }
+    }
+  }
+
+  .component-button {
+    &.style-bottom-button {
+      letter-spacing: fluid(-0.5, -0.5);
+      background-color: #FC9445;
+
+          &:hover {
+            background-color: #1D1D1D;
+            color: #fff;
+          }
+      .button-wrapper {
+        span {
+          font-size: fluid(14,15);
+          line-height: fluid(18,32);
+          font-family: 'Proxima', sans-serif;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+    .box-shad-card {
+      box-shadow: 0px 8px 20px 0px rgba(98, 74, 52, 0.15);
+    }
+
+  .text-color {
+    color: #fff;
+  }
+
+  .swiper-button-prev {
+    &::after {
+      display: none;
+    }
+    @include media('>=xs') {
+      top: 92%;
+    }
+    @include media('>=xl') {
+      top: 50%;
+    }
+    @include media('>=3xl') {
+      left: 0.75rem;
+    }
+  }
+  .swiper-button-next {
+    &::after {
+      display: none;
+    }
+    @include media('>=xs') {
+      top: 92%;
+    }
+    @include media('>=xl') {
+      top: 50%;
+    }
+    @include media('>=3xl') {
+      right: 0.75rem;
+    }
+  }
+  .swiper-pagination {
+    .swiper-pagination-bullet-active {
+      background-color: #FC9445;
+    }
+  }
+  .lawfirm.xl\:w-96 {
+    @include media('>=xl') {
+      width: 22rem;
+    }
+  }
+  .slide-container {
+    @include media('>=2xl') {
+      padding-left: 0; padding-right: 0;
+    }
+  }
+
+  .overley-layout {
+    top: -2.5rem;
+          margin-bottom: -5rem;
+
+          @include media(">=lg") {
+            top: -9rem;
+            margin-bottom: -10rem;
+          }
+  }
+}
+.image-cover{
+  @include media(">=lg") {
+  width: rem(326);
+  height: rem(193);
+  }
+}
+.lawyer-img-overlay{
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 53.89%, rgba(0, 0, 0, 0.80) 79.77%);
+}
+
+.top-law-firms-section {
+  .block-container {
+    max-width: rem(1830);
+    position: relative;
+          border-top-left-radius: 20px; border-top-right-radius: 20px;
+          top: -3.5rem;
+          margin-bottom: -3.5rem;
+          margin-left: auto; margin-right: auto;
+
+          @include media(">=lg") {
+            /* @apply lg:-top-20 - needs manual conversion */
+            margin-bottom: -5rem;
+          }
+
+    .short-decription {
+      max-width: rem(1088);
+      margin-left: auto; margin-right: auto;
+          margin-top: 1.25rem;
+
+          @include media(">=lg") {
+            /* @apply lg:mt-7 - needs manual conversion */
+          }
+    }
+
+    .top-lawfirm-heading{
+      max-width: rem(1088);
+      margin-left: auto; margin-right: auto;
+
+      &.full-heading{
+        max-width: rem(1600);
+      }
+    }
+
+    .top-law-firmscard-wrapper {
+      display: flex;
+          gap: 1.25rem;
+          justify-content: center;
+
+          @include media(">=2xl") {
+            /* @apply 2xl:gap-[40px] - needs manual conversion */
+          }
+
+          @include media(">=lg") {
+            /* @apply lg:gap-[10px] - needs manual conversion */
+          }
+
+      .law-firmscard {
+        max-width: rem(386);
+        background-image: url("/images/white-pack-tri.png");
+        border-radius: rem(15);
+        /* @apply bg-contain - needs manual conversion */
+          /* @apply bg-top - needs manual conversion */
+          /* @apply bg-no-repeat - needs manual conversion */
+
+        h2 {
+          font-size: fluid(24, 32);
+          line-height: fluid(26, 36);
+          letter-spacing: fluid(-0.96, -1.28);
+          color: #6B6B4E;
+          font-weight: 400;
+          font-family: 'Libre', serif;
+          padding-top: 1.5rem;
+          /* @apply min-h-32 - needs manual conversion */
+          /* @apply min-h-28 - needs manual conversion */
+          padding-bottom: 0.75rem;
+
+          @include media(">=lg") {
+            padding-top: 2.5rem;
+          }
+        }
+
+        .law-firmscard-featured {
+          padding-left: 1.25rem; padding-right: 1.25rem;
+
+          @include media(">=lg") {
+            /* @apply lg:px-14 - needs manual conversion */
+          }
+          @include media(">=lg") {
+            max-height: rem(205);
+          }
+
+          img{
+            width: 100%;
+          height: 100%;
+          }
+
+          a {
+            min-width: rem(117);
+            background-color: #FC9445;
+          color: #1D1D1D;
+          text-transform: uppercase;
+          font-weight: 600;
+          font-size: 0.875rem;
+          text-decoration: none;
+          display: block;
+          /* @apply max-w-max - needs manual conversion */
+          margin-left: auto; margin-right: auto;
+          border-radius: 9999px;
+          padding-top: 0.5rem; padding-bottom: 0.5rem;
+          padding-left: 0.75rem; padding-right: 0.75rem;
+          position: relative;
+          /* @apply -top-5 - needs manual conversion */
+
+          &:hover {
+            background-color: #1D1D1D;
+            color: #fff;
+          }
+          }
+        }
+
+        &.comming-soon {
+          box-shadow: 0px 8px 20px 0px rgba(98, 74, 52, 0.15);
+          /* @apply bg-none - needs manual conversion */
+          background-color: #fff;
+          text-align: center;
+          padding-bottom: 3rem;
+          /* @apply px-9 - needs manual conversion */
+          margin-bottom: 0.75rem;
+          /* @apply max-w-[400px] - needs manual conversion */
+
+          @include media(">=2xl") {
+            /* @apply 2xl:max-w-[450px] - needs manual conversion */
+          }
+
+          h2 {
+            font-size: 1.5rem;
+          font-style: italic;
+          color: #B6572E;
+          /* @apply min-h-max - needs manual conversion */
+
+          @include media(">=lg") {
+            font-size: 2.25rem;
+          }
+          }
+
+          h3 {
+            font-size: fluid(22, 34);
+            line-height: fluid(24, 40);
+            color: #1D1D1D;
+          font-weight: 400;
+          margin-bottom: 1rem;
+          font-family: 'Libre', serif;
+
+            &.no-firms{
+              font-size: fluid(22, 26);
+            line-height: fluid(24, 32);
+            }
+          }
+
+          &.explore {
+            h2 {
+              /* @apply text-[28px] - needs manual conversion */
+          /* @apply } - needs manual conversion */
+          /* @apply h3 - needs manual conversion */
+          /* @apply { - needs manual conversion */
+          /* @apply font-size: - needs manual conversion */
+          /* @apply fluid(22, - needs manual conversion */
+          /* @apply 28) - needs manual conversion */
+              line-height: fluid(24, 32);
+            }
+          }
+        }
+
+        &.vetting-process {
+          padding-bottom: 2rem;
+          /* @apply bg-none - needs manual conversion */
+          /* @apply px-7 - needs manual conversion */
+          margin-bottom: 0.75rem;
+          /* @apply max-w-[400px] - needs manual conversion */
+
+          @include media(">=lg") {
+            padding-top: 3rem;
+            padding-bottom: 3rem;
+            padding-left: 0; padding-right: 0;
+          }
+
+          @include media(">=2xl") {
+            /* @apply 2xl:max-w-[450px] - needs manual conversion */
+          }
+
+          h2 {
+            font-size: fluid(24, 28);
+            line-height: fluid(26, 37);
+            background-color: #fff;
+          /* @apply rounded-b-xl - needs manual conversion */
+          padding-top: 1.5rem; padding-bottom: 1.5rem;
+          padding-left: 1.25rem; padding-right: 1.25rem;
+          text-align: center;
+          max-width: 100%;
+          margin-bottom: 1.25rem;
+
+          @include media(">=lg") {
+            /* @apply lg:rounded-r-xl - needs manual conversion */
+            /* @apply lg:rounded-l-none - needs manual conversion */
+            padding-bottom: 5rem;
+            /* @apply lg:pr-6 - needs manual conversion */
+            padding-left: 1rem;
+            padding-top: 3rem;
+            text-align: right;
+            /* @apply lg:max-w-48 - needs manual conversion */
+            margin-bottom: 0;
+          }
+          }
+
+          ul {
+            /* @apply pl-7 - needs manual conversion */
+          padding-right: 1rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          /* @apply list-disc - needs manual conversion */
+
+            li {
+              text-align: left;
+          font-size: 0.875rem;
+          font-family: 'Proxima', sans-serif;
+          margin-bottom: 0.5rem;
+
+          @include media(">=lg") {
+            font-size: 1rem;
+          }
+
+              &::marker {
+                color: #FC9445;
+              }
+            }
+          }
+        }
+      }
+      .lawyer-card-pack{
+        @include media(">=4xl") {
+          max-width: rem(483);
+        }
+      }
+    }
+  }
+
+
+}

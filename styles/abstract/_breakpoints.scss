@@ -1,0 +1,62 @@
+// Breakpoints map
+$breakpoints: (
+  'xs': 20rem,      // 320px
+  'sm': 36rem,      // 576px
+  'md': 48rem,      // 768px
+  'lg': 62rem,      // 992px
+  'xl': 80rem,      // 1280px
+  '2xl': 96rem,     // 1536px
+  '3xl': 112rem,    // 1792px
+  '4xl': 120rem,    // 1920px
+  'container': 114.375rem, // 1830px
+);
+
+// Get breakpoint value
+@function get-breakpoint($name) {
+  @if map-has-key($breakpoints, $name) {
+    @return map-get($breakpoints, $name);
+  }
+  @warn "Breakpoint '#{$name}' not found";
+  @return null;
+}
+
+// Media query mixin
+@mixin media($query) {
+  // Parse query (e.g., '>=lg', '<md', 'landscape')
+  @if type-of($query) == 'string' {
+    @if str-index($query, '>=') {
+      $bp: str-slice($query, 3);
+      $value: get-breakpoint($bp);
+      @media (min-width: $value) {
+        @content;
+      }
+    } @else if str-index($query, '<=') {
+      $bp: str-slice($query, 3);
+      $value: get-breakpoint($bp);
+      @media (max-width: $value) {
+        @content;
+      }
+    } @else if str-index($query, '<') {
+      $bp: str-slice($query, 2);
+      $value: get-breakpoint($bp);
+      @media (max-width: calc($value - 0.0625rem)) {
+        @content;
+      }
+    } @else if str-index($query, '>') {
+      $bp: str-slice($query, 2);
+      $value: get-breakpoint($bp);
+      @media (min-width: calc($value + 0.0625rem)) {
+        @content;
+      }
+    } @else if $query == 'landscape' {
+      @media (orientation: landscape) {
+        @content;
+      }
+    } @else if $query == 'portrait' {
+      @media (orientation: portrait) {
+        @content;
+      }
+    }
+  }
+}
+

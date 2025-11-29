@@ -1,0 +1,140 @@
+@import '../utils.scss';
+
+@include block("card-icons") {
+  .block-container {
+    h2 {
+      .component-rich-text {
+        font-size: fluid(38, 64);
+        line-height: fluid(42, 68);
+        letter-spacing: fluid(-1.14, -1.92);
+        color: #1D1D1D;
+          font-weight: 400;
+          font-family: 'Libre', serif;
+          text-align: center;
+          margin-bottom: 0.75rem;
+          margin-left: auto; margin-right: auto;
+      }
+
+      span {
+        color: #B6572E;
+          font-style: italic;
+      }
+    }
+
+    .short-description {
+      .component-rich-text {
+        font-size: fluid(16, 20);
+        line-height: rem(26);
+        max-width: rem(1048);
+        /* @apply font-light - needs manual conversion */
+          color: #1D1D1D;
+          font-family: 'Proxima', sans-serif;
+          margin-bottom: 2rem;
+          margin-left: auto; margin-right: auto;
+          text-align: center;
+
+          @include media(">=lg") {
+            /* @apply lg:mb-11 - needs manual conversion */
+          }
+      }
+    }
+
+    .custom-cards-icon-wrapper {
+      column-gap: 1.25rem;
+          row-gap: 0.5rem;
+          display: flex;
+          justify-content: center;
+          flex-direction: column;
+
+          @include media(">=lg") {
+            row-gap: 1.25rem;
+            flex-direction: row;
+          }
+
+      .custom-icon-card-item {
+        border-radius: rem(10);
+        background-color: #163B46;
+          /* @apply min-h-max - needs manual conversion */
+          max-width: 100%;
+          display: flex;
+          align-items: center;
+          padding-top: 0.75rem;
+          padding: 1rem;
+
+          @include media(">=lg") {
+            /* @apply lg:max-w-72 - needs manual conversion */
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 1rem;
+            /* @apply lg:min-h-72 - needs manual conversion */
+          }
+
+        .icon-box {
+          margin-right: rem(22);
+          /* @apply w-14 - needs manual conversion */
+          /* @apply h-14 - needs manual conversion */
+          /* @apply bg-blueShadesLight/20 - needs manual conversion */
+          border-radius: 9999px;
+          /* @apply min-w-14 - needs manual conversion */
+
+          @include media(">=lg") {
+            margin-bottom: rem(22);
+            margin-right: 0;
+          /* @apply w-24 - needs manual conversion */
+          /* @apply h-24 - needs manual conversion */
+          }
+
+          .component-image {
+            .picture {
+              display: flex;
+          justify-content: center;
+          align-items: center;
+
+              img {
+                /* @apply w-8 - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:w-14 - needs manual conversion */
+          }
+              }
+            }
+          }
+        }
+
+        .card-inner-content {
+          
+
+          @include media(">=lg") {
+            text-align: center;
+          }
+
+          h3 {
+            font-size: fluid(18, 20);
+            line-height: fluid(22, 24);
+            color: #fff;
+          font-weight: 700;
+          text-align: left;
+          font-family: 'Proxima', sans-serif;
+          margin-bottom: 0.25rem;
+
+          @include media(">=lg") {
+            text-align: center;
+          }
+          }
+
+          .component-rich-text {
+            font-size: fluid(14, 16);
+            line-height: fluid(18, 22);
+            font-family: 'Proxima', sans-serif;
+          color: #fff;
+          text-align: left;
+
+          @include media(">=lg") {
+            text-align: center;
+          }
+          }
+        }
+      }
+    }
+  }
+}

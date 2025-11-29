@@ -1,0 +1,97 @@
+@import '../utils.scss';
+
+@include block("simple-hero-component") {
+  .block-container {
+    max-width: rem(1380);
+    margin-left: auto; margin-right: auto;
+
+    h1 {
+      font-size: fluid(40, 66);
+      line-height: fluid(38, 76);
+      max-width: rem(1091);
+      color: #fff;
+          /* @apply pt-14 - needs manual conversion */
+          font-family: 'Proxima', sans-serif;
+          font-weight: 700;
+          text-align: left;
+          margin-bottom: 1.25rem;
+          text-transform: capitalize;
+    }
+
+    .component-rich-text {
+      max-width: rem(855);
+      font-size: fluid(15, 18);
+      line-height: fluid(18, 30);
+      color: #fff;
+          font-family: 'Proxima', sans-serif;
+          text-align: left;
+          margin-bottom: 1.5rem;
+    }
+
+    .author-info-wrapper {
+      display: flex;
+          align-items: center;
+          column-gap: 1.5rem;
+          padding-bottom: 5rem;
+
+      .author-avatar {
+        /* @apply h-14 - needs manual conversion */
+          /* @apply w-14 - needs manual conversion */
+          /* @apply min-w-14 - needs manual conversion */
+          border-radius: 9999px;
+          overflow: hidden;
+          border-width: 3px;
+          border-color: #fff;
+          border-style: solid;
+
+        img{
+          width: 100%;
+          height: 100%;
+          /* @apply object-cover - needs manual conversion */
+          /* @apply object-top - needs manual conversion */
+        }
+      }
+
+      .author-data {
+        h4 {
+          font-size: fluid(14, 18);
+          color: #fff;
+          font-family: 'Proxima', sans-serif;
+          line-height: 1.5;
+          font-weight: 600;
+
+          a{
+            text-decoration: none;
+          color: #fff;
+          }
+        }
+
+        span {
+          font-size: fluid(12, 16);
+          line-height: fluid(18, 24);
+          color: #fff;
+          font-family: 'Proxima', sans-serif;
+          display: inline-block;
+          font-weight: 500;
+
+          &.time-to-read {
+            position: relative;
+          left: 1.25rem;
+
+            &::before {
+              content: "";
+              position: relative;
+          /* @apply h-1 - needs manual conversion */
+          /* @apply w-1 - needs manual conversion */
+          /* @apply top-3.5 - needs manual conversion */
+          /* @apply -left-3.5 - needs manual conversion */
+          border-radius: 9999px;
+          display: block;
+          background-color: #fff;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,148 @@
+@import '../utils.scss';
+
+@include block("council-testimonials") {
+  background-color: #fff;
+
+  .block-container {
+    .topheading {
+      h2 {
+        font-size: rem(36);
+        line-height: rem(46);
+        margin-bottom: rem(70);
+        letter-spacing: normal;
+        font-weight: 400;
+          /* @apply font-dmserifText - needs manual conversion */
+          color: #1D1D1D;
+          text-transform: capitalize;
+      }
+    }
+
+    .council-testimonials-content-wrapper {
+
+
+      .council-testimonials-item {
+
+        padding: rem(30);
+        border-radius: rem(24);
+        min-width: rem(250);
+        max-width: rem(325);
+        /* @apply bg-cloudgray - needs manual conversion */
+          text-align: left;
+          margin-left: auto; margin-right: auto;
+
+          @include media(">=lg") {
+            max-width: 100%;
+          }
+
+        @include media(">=xl") {
+         max-width: rem(325);
+         margin-left: 0; margin-right: 0;
+       }
+
+
+
+        .testimonial-quotation {
+          font-size: rem(18);
+          line-height: rem(30);
+          margin-bottom: rem(28);
+
+          font-weight: 400;
+          font-family: 'Roboto', sans-serif;
+          color: #1D1D1D;
+
+          &::before {
+            content: '“';
+            font-size: rem(150);
+            font-weight: normal;
+            /* @apply font-shippori - needs manual conversion */
+          position: relative;
+          /* @apply top-[38px] - needs manual conversion */
+          /* @apply -left-[6px] - needs manual conversion */
+          display: block;
+          /* @apply text-bloodred - needs manual conversion */
+          }
+        }
+      }
+
+      h2 {
+        .component-rich-text {
+          font-size: rem(18);
+          line-height: rem(24);
+          letter-spacing: normal;
+          font-weight: 400;
+          /* @apply font-dmserifText - needs manual conversion */
+          color: #1D1D1D;
+          text-transform: capitalize;
+        }
+      }
+
+      h3 {
+        .component-rich-text {
+          font-size: rem(14);
+          line-height: rem(18);
+          letter-spacing: normal;
+          font-weight: 400;
+          /* @apply font-dmsans - needs manual conversion */
+          /* @apply text-mutedpurple - needs manual conversion */
+        }
+      }
+
+      .testimonial-logo {
+        max-width: rem(110);
+        margin-top: 0.5rem;
+
+        img {
+          max-width: 100%;
+        }
+      }
+      &.desktop{
+        display: none;
+
+        @include media(">=lg-plus") {
+           /* @apply grid - needs manual conversion */
+          /* @apply grid-cols-4 - needs manual conversion */
+          gap: 1rem;
+
+          @include media(">=xl") {
+            display: flex;
+            justify-content: center;
+          }
+        }
+      }
+      &.mobile{
+        @include media(">=lg-plus") {
+          display: none;
+       }
+
+        .swiper-pagination {
+          position: relative;
+          /* @apply mt-11 - needs manual conversion */
+          /* @apply -top-[30px] - needs manual conversion */
+
+          .swiper-pagination-bullet {
+            width: rem(9);
+            height: rem(9);
+            border-radius: 9999px;
+          /* @apply bg-neutralgray - needs manual conversion */
+          /* @apply mx-[2px] - needs manual conversion */
+
+            &-active {
+              background-color: #FC9445;
+            }
+          }
+        }
+      }
+    }
+
+  }
+
+  &.overley-layout {
+    .council-testimonials-content-wrapper {
+      /* @apply -mb-[184px] - needs manual conversion */
+
+      @include media(">=lg-plus") {
+       /* @apply -mb-[75px] - needs manual conversion */
+     }
+    }
+  }
+}

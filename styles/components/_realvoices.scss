@@ -1,0 +1,305 @@
+@import '../utils.scss';
+
+@include block('real-voices') {
+  /* @apply py-14 - needs manual conversion */
+
+  .block-container {
+    /* @apply mx-5 - needs manual conversion */
+
+          @include media(">=lg") {
+            margin-left: auto; margin-right: auto;
+          }
+
+    &.container-size-small {
+      max-width: rem(1267);
+    }
+
+    &.container-size-medium {
+      max-width: rem(1485);
+    }
+
+    h2 {
+      .component-rich-text {
+        font-size: fluid(38, 64);
+        line-height: fluid(42, 68);
+        letter-spacing: fluid(-1.14, -1.92);
+        color: #1D1D1D;
+          font-weight: 400;
+          font-family: 'Libre', serif;
+          margin-bottom: 1.5rem;
+          /* @apply max-w-64 - needs manual conversion */
+          margin-left: auto; margin-right: auto;
+
+          @include media(">=md") {
+            max-width: 100%;
+          }
+
+          @include media(">=lg") {
+            margin-bottom: 2rem;
+          }
+      }
+
+      span {
+        color: #B6572E;
+          font-style: italic;
+      }
+    }
+
+    .real-voices-container {
+      max-width: rem(850);
+      /* @apply overflow-y-auto - needs manual conversion */
+
+      @include media('>=2xl') {
+        max-width: rem(1024);
+      }
+
+      @include media('>=3xl') {
+        max-width: rem(1267);
+      }
+
+      .swiper-wrapper {
+        .swiper-slide {
+          .real-voices-card-item {
+            border-radius: 0.75rem;
+          height: 100%;
+          padding-left: 1.25rem; padding-right: 1.25rem;
+          /* @apply py-9 - needs manual conversion */
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: flex-start;
+          margin-left: auto; margin-right: auto;
+          /* @apply bg-softwhite - needs manual conversion */
+
+          @include media(">=lg") {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+            /* @apply lg:py-14 - needs manual conversion */
+          }
+
+            @include media('>=lg') {
+              padding-left: rem(135);
+              padding-right: rem(135);
+              min-height: rem(423);
+            }
+
+            h3 {
+              font-size: fluid(22, 54);
+              line-height: fluid(30, 65);
+              color: #1D1D1D;
+          font-weight: 500;
+          padding-bottom: 1rem;
+          font-style: italic;
+          font-family: 'Libre', serif;
+
+          @include media(">=lg") {
+            padding-bottom: 1.75rem;
+          }
+            }
+
+            .short-description {
+              text-align: left;
+
+          @include media(">=lg") {
+            text-align: center;
+          }
+              .component-rich-text {
+                font-size: fluid(14, 22);
+                line-height: 1.5;
+          font-weight: 400;
+          color: #1D1D1D;
+          font-family: 'Proxima', sans-serif;
+          /* @apply inline - needs manual conversion */
+              }
+
+              span {
+                &.read-btn {
+                  font-size: fluid(14, 22);
+                  color: #B6572E;
+          line-height: 1.5;
+          font-weight: 400;
+          font-family: 'Proxima', sans-serif;
+          text-decoration: underline;
+          text-transform: capitalize;
+          cursor: pointer;
+
+          @include media(">=lg") {
+            color: #1D1D1D;
+          }
+                }
+              }
+
+              .more-text {
+                transition: max-height 0.25s ease-out;
+                /* @apply max-h-0 - needs manual conversion */
+          overflow: hidden;
+              }
+
+              &.expanded {
+                .more-text {
+                  /* @apply max-h-max - needs manual conversion */
+                }
+              }
+            }
+
+            h4 {
+              font-size: fluid(16, 22);
+              line-height: fluid(30, 45);
+              color: #1D1D1D;
+          font-weight: 700;
+          font-style: normal;
+          font-family: 'Proxima', sans-serif;
+          line-height: 1.5;
+          position: relative;
+          text-transform: capitalize;
+
+              &::before {
+                content: '';
+                height: rem(7);
+                width: rem(29);
+                background-color: #FC9445;
+          display: block;
+          margin-top: 1rem;
+          margin-bottom: 0.625rem;
+
+          @include media(">=lg") {
+            margin-left: auto; margin-right: auto;
+            /* @apply lg:my-6 - needs manual conversion */
+          }
+
+                @include media('>=lg') {
+                  height: rem(5);
+                  width: rem(61);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .realvoices-arrow-navigation {
+      position: relative;
+          height: 100%;
+          margin-bottom: 5rem;
+          width: 100%;
+          /* @apply top-1 - needs manual conversion */
+
+          @include media(">=lg") {
+            position: absolute;
+            top: 0;
+            margin-bottom: 0;
+          }
+
+      .swiper-button-prev,
+      .swiper-button-next {
+        outline: none;
+        /* @apply top-[45%] - needs manual conversion */
+          /* @apply opacity-100 - needs manual conversion */
+          /* @apply text-link - needs manual conversion */
+          /* @apply w-14 - needs manual conversion */
+          /* @apply h-14 - needs manual conversion */
+          background-color: #fff;
+          border-radius: 9999px;
+
+        &::after {
+          font-weight: 600;
+          font-size: 1.5rem;
+          position: relative;
+        }
+      }
+
+      .swiper-button-next {
+        right: 0;
+
+          @include media(">=lg") {
+            /* @apply lg:-right-[30px] - needs manual conversion */
+          }
+
+        @include media('>=lg') {
+          /* @apply -right-[75px] - needs manual conversion */
+        }
+
+        @include media('>=xl') {
+          /* @apply -right-[90px] - needs manual conversion */
+        }
+
+        &::after {
+          /* @apply -right-0.5 - needs manual conversion */
+        }
+      }
+
+      .swiper-button-prev {
+        left: 0;
+
+          @include media(">=lg") {
+            /* @apply lg:-left-[30px] - needs manual conversion */
+          }
+
+        @include media('>=lg') {
+          /* @apply -left-[75px] - needs manual conversion */
+        }
+
+        @include media('>=xl') {
+          /* @apply -left-[90px] - needs manual conversion */
+        }
+
+        &::after {
+          /* @apply -left-0.5 - needs manual conversion */
+        }
+      }
+    }
+
+    .swiper-pagination {
+      top: rem(18);
+      position: relative;
+          /* @apply mt-11 - needs manual conversion */
+
+          @include media(">=lg") {
+            top: 0;
+          }
+
+      .swiper-pagination-bullet {
+        width: rem(9);
+        height: rem(9);
+        border-radius: 9999px;
+          /* @apply bg-sandy - needs manual conversion */
+
+        &-active {
+          /* @apply bg-secondary - needs manual conversion */
+        }
+      }
+    }
+
+    .component-button {
+      font-size: rem(15);
+      letter-spacing: rem(1.5);
+      min-width: 20rem;
+          color: #1D1D1D;
+
+      span {
+        font-weight: 700;
+          /* @apply leading-8 - needs manual conversion */
+          font-family: 'Proxima', sans-serif;
+      }
+    }
+  }
+
+  &.section-white {
+    .block-container {
+      .swiper-wrapper {
+        .swiper-slide {
+          .real-voices-card-item {
+            /* @apply bg-subtlesand - needs manual conversion */
+          }
+        }
+      }
+
+      .swiper-button-prev,
+      .swiper-button-next {
+        /* @apply bg-subtlesand - needs manual conversion */
+      }
+    }
+  }
+}

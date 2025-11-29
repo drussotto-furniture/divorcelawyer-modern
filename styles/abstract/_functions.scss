@@ -1,0 +1,70 @@
+@import 'breakpoints';
+
+// Strip the unit from a number
+@function no-unit($number) {
+  @if type-of($number) == 'number' and not unitless($number) {
+    @return $number / ($number * 0 + 1);
+  }
+  @return $number;
+}
+
+// Convert a pixel value to rem
+@function calculate-rem-value($px-value) {
+  $value: $px-value / 16;
+  @return $value;
+}
+
+// Convert pixel values to rem
+@function rem($values, $return-unit: true) {
+  @if type-of($values) == 'number' {
+    $rem-value: calculate-rem-value($values);
+    @if $return-unit {
+      @return #{$rem-value}rem;
+    } @else {
+      @return $rem-value;
+    }
+  }
+  @return $values;
+}
+
+// Calculate fluid typography between 2 values
+@function fluid($min, $max, $min-breakpoint: 'xs', $max-breakpoint: '2xl') {
+  // Strip units
+  $min-value: no-unit($min);
+  $max-value: no-unit($max);
+
+  @if $min-value == 0 {
+    $min-value: 0.001;
+  }
+
+  @if $max-value == 0 {
+    $max-value: 0.001;
+  }
+
+  // Convert to rem if needed
+  @if unit($min) != 'rem' {
+    $min-value: calculate-rem-value($min-value);
+  }
+
+  @if unit($max) != 'rem' {
+    $max-value: calculate-rem-value($max-value);
+  }
+
+  // Get the fluid vw values for the breakpoints
+  $min-vw: get-breakpoint($min-breakpoint);
+  $max-vw: get-breakpoint($max-breakpoint);
+
+  // Calculate the fluid base
+  $fluid-base: calc(
+    #{$min-value}rem + #{($max-value - $min-value)} *
+      ((100vw - #{$min-vw}) / #{no-unit($max-vw - $min-vw)})
+  );
+
+  // Return result
+  @if $min-value < $max-value {
+    @return min(#{$fluid-base}, #{$max-value}rem);
+  } @else {
+    @return clamp(#{$max-value}rem, #{$fluid-base}, #{$min-value}rem);
+  }
+}
+

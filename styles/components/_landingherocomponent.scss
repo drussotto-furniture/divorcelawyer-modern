@@ -1,0 +1,162 @@
+@import '../utils.scss';
+
+@include block('landing-hero-component') {
+  /* @apply pt-[92px] - needs manual conversion */
+
+  .container-fluid {
+    /* @apply max-w-[1920px] - needs manual conversion */
+          height: 100%;
+  }
+
+  .block-container {
+    /* @apply min-h-full - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:min-h-[785px] - needs manual conversion */
+          }
+    .heading {
+      letter-spacing: rem(2.2);
+      text-transform: uppercase;
+    }
+
+    &.content-top {
+      align-items: flex-start;
+
+      .hero-content-wrapper {
+        padding-top: 3rem;
+
+          @include media(">=lg") {
+            /* @apply lg:pt-40 - needs manual conversion */
+            padding-right: 0;
+          }
+
+        &.box-view {
+          
+
+          @include media(">=lg") {
+            /* @apply lg:mt-28 - needs manual conversion */
+          }
+        }
+      }
+    }
+
+    &.container-size-small {
+      max-width: rem(1686);
+    }
+
+    &.container-size-medium {
+      max-width: initial;
+    }
+
+    &.hero-content-wrapper {
+      padding-left: 1.25rem; padding-right: 1.25rem;
+
+          @include media(">=lg") {
+            /* @apply lg:px-[70px] - needs manual conversion */
+          }
+
+          @include media(">=2xl") {
+            /* @apply 2xl:px-[120px] - needs manual conversion */
+          }
+
+      .component-rich-text {
+        font-size: fluid(16, 24);
+        line-height: fluid(20, 30);
+        font-weight: 400;
+          font-family: 'Proxima', sans-serif;
+          color: #fff;
+          padding-left: 1.25rem; padding-right: 1.25rem;
+          margin-top: 1.5rem;
+          margin-bottom: 0;
+
+          @include media(">=lg") {
+            padding-left: 0; padding-right: 0;
+            /* @apply lg:my-2 - needs manual conversion */
+          }
+      }
+
+      h1 {
+        .component-rich-text {
+          font-size: fluid(44, 110);
+          line-height: fluid(47, 102);
+          color: #fff;
+          font-weight: 400;
+          font-style: normal;
+          font-family: 'Libre', serif;
+          padding-top: 0; padding-bottom: 0;
+          padding-left: 1.25rem; padding-right: 1.25rem;
+          /* @apply -tracking-[1.44px] - needs manual conversion */
+          max-width: 100%;
+          /* @apply my-2.5 - needs manual conversion */
+
+          @include media(">=lg") {
+            padding-left: 0; padding-right: 0;
+            /* @apply lg:-tracking-[2.7px] - needs manual conversion */
+          }
+        }
+
+        span {
+          color: #FC9445;
+          font-style: italic;
+        }
+
+        &.news-page-heading{
+          .component-rich-text {
+          font-size: fluid(38, 82);
+          }
+        }
+      }
+
+      .component-button {
+        padding: rem(14) rem(28);
+        letter-spacing: rem(1.4);
+        /* @apply min-w-52 - needs manual conversion */
+          font-family: 'Proxima', sans-serif;
+          /* @apply text-[15px] - needs manual conversion */
+          text-transform: uppercase;
+
+        @include media('>=sm') {
+          letter-spacing: rem(2.3);
+          font-size: 0.875rem;
+        }
+
+        &.style-primary {
+          color: #000;
+          border-color: transparent;
+          border-width: 3px;
+
+          &:hover {
+            background-color: #1D1D1D;
+            color: #fff;
+            border-color: transparent;
+          }
+        }
+
+        &.style-secondary {
+          color: #fff;
+          border-color: #fff;
+          border-width: 3px;
+
+          &:hover {
+            background-color: #1D1D1D;
+            color: #fff;
+            border-color: transparent;
+          }
+        }
+      }
+    }
+  }
+
+  .dls-home-hero-image-wrapper {
+    justify-content: center;
+          width: 100%;
+          align-items: center;
+          height: auto;
+
+    .hero-image {
+      overflow: hidden;
+          width: auto;
+          max-width: 100%;
+    }
+  }
+}

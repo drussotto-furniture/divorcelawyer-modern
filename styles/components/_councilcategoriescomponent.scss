@@ -1,0 +1,59 @@
+@import '../utils.scss';
+
+@include block("council-categories-component") {
+
+  /* @apply bg-cloudgray - needs manual conversion */
+
+  .block-container {
+    .council-categories-content-wrapper {
+      /* @apply grid - needs manual conversion */
+          /* @apply grid-cols-1 - needs manual conversion */
+          column-gap: 1.25rem;
+          row-gap: 2rem;
+
+          @include media(">=sm") {
+            /* @apply sm:grid-cols-2 - needs manual conversion */
+          }
+
+          @include media(">=lg") {
+            /* @apply lg:grid-cols-3 - needs manual conversion */
+          }
+      .council-categories-item {
+
+        width: 100%;
+
+        h2 {
+          font-size: rem(20);
+          line-height: normal;
+          padding: rem(16) rem(20);
+          margin-bottom: rem(26);
+          color: #fff;
+          background-color: #1D1D1D;
+          font-weight: 400;
+          /* @apply font-dmserifText - needs manual conversion */
+          text-transform: uppercase;
+          width: 100%;
+          /* @apply rounded-[30px] - needs manual conversion */
+          text-align: center;
+        }
+
+        .short-description {
+          .component-rich-text {
+            font-size: rem(14);
+            line-height: rem(24);
+            max-width: rem(1090);
+            letter-spacing: normal;
+            max-width: rem(397);
+            font-family: 'Roboto', sans-serif;
+          color: #1D1D1D;
+          font-weight: 400;
+          text-align: center;
+        }
+      }
+
+      }
+
+    }
+
+  }
+}

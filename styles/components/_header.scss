@@ -1,0 +1,372 @@
+@import "../utils.scss";
+
+.topheader {
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 0;
+  padding: rem(10) 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  background-color: #235561; // Figma: bluishlight
+  height: rem(101); // Figma: 101px
+  min-height: rem(101);
+
+  @include media(">=md") {
+    padding: rem(14) 0;
+  }
+
+  .toplogo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+
+    @include media(">=lg") {
+      flex: 1;
+      justify-content: flex-start;
+    }
+
+    img {
+      max-width: rem(200);
+      width: auto;
+      height: auto;
+
+      @include media(">=lg") {
+        max-width: rem(375);
+      }
+    }
+  }
+
+  nav {
+    padding: rem(12) rem(32);
+    width: 100%;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    > div:last-child {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .desktop-menu {
+      display: none;
+
+      @include media(">=lg") {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
+
+      ul {
+        display: flex;
+        align-items: center;
+        gap: 0;
+
+        li {
+          margin-right: rem(10);
+
+          @include media(">=lg") {
+            margin-right: rem(20);
+          }
+          @include media(">=xl") {
+            margin-right: rem(38);
+          }
+
+          a {
+            font-size: fluid(12, 14); // Figma: 14px
+            line-height: fluid(14, 16);
+            padding-bottom: rem(40);
+            color: #FFFFFF; // Figma: white
+            font-family: 'Proxima', sans-serif;
+            font-weight: 700; // Figma: 700
+            text-transform: capitalize;
+            white-space: nowrap;
+            position: relative;
+
+            &::before {
+              content: "";
+              bottom: rem(33);
+              background-color: #F5F0E8;
+              position: absolute;
+              width: 0;
+              height: 0;
+              transition: all 0.3s ease;
+            }
+
+            &:hover::before {
+              width: 100%;
+              height: 1px;
+            }
+          }
+
+          &.menu-item-has-children {
+            position: relative;
+
+            > a {
+              position: relative;
+
+              &::after {
+                content: url('/images/arrow-bottom-icon.svg');
+                right: rem(-7);
+                filter: brightness(0) saturate(100%) invert(98%) sepia(7%)
+                  saturate(946%) hue-rotate(332deg) brightness(99%)
+                  contrast(90%);
+                position: relative;
+                top: 0;
+              }
+            }
+
+            ul.sub-menu {
+              list-style: none;
+              z-index: 99;
+              padding-top: rem(52);
+              margin-top: rem(20);
+              margin-left: rem(-20);
+              padding-bottom: rem(10);
+              display: none;
+              position: absolute;
+              top: 100%;
+              left: 0;
+              background-color: #1C4A52;
+              border-radius: rem(12);
+              min-width: rem(220);
+
+              li {
+                margin-bottom: rem(16);
+                display: block;
+                position: relative;
+                margin-right: 0;
+
+                a {
+                  border-radius: rem(22);
+                  font-size: fluid(12, 16);
+                  padding: rem(12) rem(24);
+                  display: block;
+                  font-weight: 600;
+                  padding-bottom: rem(12);
+
+                  &:hover {
+                    background-color: #fff;
+                    color: #FC9445;
+                  }
+
+                  &::before {
+                    display: none;
+                  }
+
+                  &::after {
+                    display: none;
+                  }
+                }
+              }
+
+              &.visible-submenu {
+                display: block;
+              }
+            }
+
+            &:hover ul.sub-menu {
+              display: block;
+            }
+          }
+
+          &.current-menu-item > a {
+            &::before {
+              height: rem(2.5);
+              width: 100%;
+            }
+          }
+
+          &.active-menu > a {
+            &::before {
+              width: 100%;
+              height: 1px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .search-header-box {
+    @include media(">=xl") {
+      margin-left: rem(40);
+    }
+
+    label {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      input[type="search"] {
+        width: rem(180);
+        height: rem(35);
+        border-radius: rem(1000); // Figma: 1000px (fully rounded)
+        outline: none;
+        padding-left: rem(20);
+        font-size: fluid(12, 14);
+        line-height: fluid(14, 16);
+        background-color: #F6F6F6; // Figma: #F6F6F6
+        font-family: 'Proxima', sans-serif;
+        font-weight: 400;
+        padding-right: rem(40);
+        border: none;
+
+        @include media(">=lg") {
+          width: rem(273);
+          height: rem(44);
+        }
+
+        &:focus {
+          outline: none;
+        }
+
+        &::placeholder {
+          font-family: 'Proxima', sans-serif;
+          font-weight: 400;
+          color: #332E24;
+        }
+      }
+
+      button.search-submit {
+        top: 50%;
+        transform: translateY(-50%);
+        border-radius: 50%;
+        width: rem(37);
+        height: rem(45);
+        outline: none;
+        position: absolute;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &::after {
+          content: url('/images/search-icon.svg');
+        }
+      }
+    }
+  }
+
+  .nav-overlay {
+    z-index: 99;
+    box-shadow: 0px 4px 15px 0px rgba(0, 0, 0, 0.12);
+    background-color: #1C4A52;
+    display: none;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    top: rem(80);
+
+    @include media(">=lg") {
+      top: rem(95);
+    }
+  }
+
+  &.sticky-top-header {
+    position: fixed;
+    background-color: #fff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    .toplogo {
+      .white-logo {
+        display: none;
+      }
+      .black-logo {
+        display: block !important;
+      }
+    }
+
+    .desktop-menu {
+      ul {
+        li {
+          a {
+            color: #000;
+          }
+
+          &.menu-item-has-children {
+            > a {
+              &::after {
+                filter: brightness(0) saturate(100%) invert(80%) sepia(5%) saturate(1651%) hue-rotate(151deg) brightness(93%) contrast(68%);
+              }
+            }
+
+            ul.sub-menu {
+              background-color: #F5F0E8;
+
+              li a {
+                color: #1D1D1D;
+
+                &:hover {
+                  background-color: #fff;
+                  color: #FC9445;
+                }
+              }
+            }
+          }
+
+          &.current-menu-item > a {
+            &::before {
+              background-color: #1C4A52;
+            }
+          }
+        }
+      }
+    }
+
+    .search-header-box {
+      label {
+        input[type="search"] {
+          color: #1C4A52;
+          background-color: #F5F0E8;
+
+          &::placeholder {
+            color: #1C4A52;
+          }
+        }
+
+        button.search-submit {
+          &::after {
+            filter: brightness(0) saturate(100%) invert(20%) sepia(11%) saturate(2968%) hue-rotate(147deg) brightness(85%) contrast(86%);
+          }
+        }
+      }
+    }
+
+    .nav-overlay {
+      background-color: #F5F0E8;
+    }
+  }
+}
+
+/* Mobile Navigation - Bottom Bar */
+.dls-mobile-nav {
+  min-height: rem(82);
+  border-top-left-radius: rem(50);
+  border-top-right-radius: rem(50);
+  z-index: 999;
+  transition: max-height 0.6s ease;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #fff;
+  overflow: hidden;
+  max-height: 0;
+
+  @include media(">=lg") {
+    display: none;
+  }
+
+  &.menu-collapse {
+    max-height: 100vh;
+  }
+}

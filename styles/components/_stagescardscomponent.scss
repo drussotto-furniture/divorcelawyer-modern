@@ -1,0 +1,173 @@
+@import '../utils.scss';
+
+@include block("stages-cards-component") {
+  .block-container {
+    position: relative;
+          z-index: 10;
+          /* @apply overflow-x-hidden - needs manual conversion */
+
+    .stages-landing-cards-wrapper {
+      /* @apply grid - needs manual conversion */
+          /* @apply grid-cols-1 - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:grid-cols-2 - needs manual conversion */
+          }
+
+          @include media(">=xl") {
+            /* @apply xl:grid-cols-3 - needs manual conversion */
+          }
+
+      .stages-landing-card {
+        text-align: left;
+          /* @apply bg-softblue - needs manual conversion */
+          padding-top: 2.5rem;
+          padding-bottom: 2.5rem;
+          /* @apply min-h-max - needs manual conversion */
+          padding-left: 0.5rem; padding-right: 0.5rem;
+
+        @include media(">=lg") {
+          min-height: rem(628);
+          padding-top: rem(100);
+          padding-bottom: rem(100);
+        }
+
+        &:nth-child(2) {
+          /* @apply bg-softblue-500 - needs manual conversion */
+        }
+
+        &:nth-child(3) {
+          /* @apply bg-softblue-400 - needs manual conversion */
+        }
+
+        &:nth-child(4) {
+          /* @apply bg-softblue-300 - needs manual conversion */
+        }
+
+        &:nth-child(5) {
+          /* @apply bg-softblue-200 - needs manual conversion */
+        }
+
+        &:nth-child(6) {
+          /* @apply bg-softblue-100 - needs manual conversion */
+        }
+
+        .landingcard-inner-content {
+          margin-left: auto; margin-right: auto;
+          height: 100%;
+          position: relative;
+          max-width: 100%;
+          @include media(">=md") {
+            max-width: rem(370);
+          }
+          @include media(">=xl") {
+            max-width: rem(270);
+          }
+          @include media(">=2xl") {
+            max-width: rem(320);
+          }
+          @include media(">=4xl") {
+            max-width: rem(370);
+          }
+
+          h2 {
+            display: flex;
+          align-items: center;
+          position: relative;
+
+            .component-rich-text {
+              font-size: fluid(32, 44);
+              line-height: fluid(36, 48);
+              letter-spacing: fluid(-0.96, -1.32);
+              font-family: 'Libre', serif;
+          color: #1D1D1D;
+          font-weight: 500;
+          text-align: left;
+          margin-bottom: 0;
+
+              span {
+                color: #B6572E;
+          font-style: italic;
+              }
+            }
+
+            .stage-card-icon {
+              width: rem(70);
+              position: relative;
+          margin-right: 1rem;
+
+          @include media(">=lg") {
+            margin-right: 0;
+            /* @apply lg:-left-14 - needs manual conversion */
+            position: absolute;
+            width: auto;
+          }
+
+          @include media(">=xl") {
+            /* @apply xl:-left-16 - needs manual conversion */
+          }
+
+              img {
+                filter: brightness(0) saturate(100%) invert(71%) sepia(82%)
+                  saturate(1967%) hue-rotate(328deg) brightness(102%)
+                  contrast(98%);
+              }
+            }
+          }
+
+          .card-text {
+            .component-rich-text {
+              font-size: fluid(16, 18);
+              line-height: fluid(20, 22);
+              /* @apply text-darkgray - needs manual conversion */
+          /* @apply font-light - needs manual conversion */
+          font-family: 'Proxima', sans-serif;
+          text-align: left;
+          /* @apply mb-7 - needs manual conversion */
+          margin-top: 0.75rem;
+
+          @include media(">=lg") {
+            font-weight: 400;
+            margin-top: 1.5rem;
+          }
+
+              @include media(">=xl") {
+                min-height: rem(240);
+              }
+            }
+          }
+        }
+
+        .component-button {
+          /* @apply leading-8 - needs manual conversion */
+          bottom: 0;
+          white-space: nowrap;
+          max-width: 100%;
+          /* @apply mx-3 - needs manual conversion */
+          /* @apply min-w-60 - needs manual conversion */
+          text-decoration: none;
+
+          @include media(">=lg") {
+            margin-left: 0; margin-right: 0;
+          }
+
+          @include media(">=xl") {
+            min-width: 20rem;
+          }
+        }
+      }
+    }
+  }
+
+  .overley-layout {
+    top: -3.5rem;
+          /* @apply -mb-11 - needs manual conversion */
+          position: relative;
+          border-radius: 0.75rem;
+
+          @include media(">=lg") {
+            margin-bottom: 0;
+            /* @apply lg:-top-20 - needs manual conversion */
+          }
+  }
+}

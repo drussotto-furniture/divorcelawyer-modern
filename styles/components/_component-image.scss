@@ -1,0 +1,17 @@
+@import '../utils.scss';
+
+@include component('image') {
+  .img {
+    content: unset !important;
+  }
+
+  .link {
+    @include fit;
+  }
+
+  &.has-overlay::after {
+    @include fit;
+
+    background: linear-gradient(90deg, rgb(0 0 0 / 40%) 23.38%, rgb(102 102 102 / 6%) 99.9%), no-repeat;
+  }
+}

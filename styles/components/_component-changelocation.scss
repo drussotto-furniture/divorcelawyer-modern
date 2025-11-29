@@ -1,0 +1,81 @@
+@import '../utils.scss';
+
+@include component('change-location') {
+  #modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 200;
+
+    .pac-container {
+      z-index: 300;
+    }
+
+    &.modal-open {
+      #modal {
+        opacity: 1;
+        top: 50%;
+      }
+    }
+
+    #modal {
+      position: fixed;
+      min-width: rem(360);
+      max-width: rem(360);
+      top: 55%;
+      left: 50%;
+      text-align: center;
+      box-sizing: border-box;
+      opacity: 0;
+      transform: translate(-50%, -50%);
+      transition: all 300ms ease-in-out;
+      padding: 2rem;
+          background-color: #fff;
+
+      @include media(">=lg") {
+        min-width: rem(445);
+        max-width: rem(445);
+      }
+
+      ul.city-list {
+        li {
+          a {
+            max-width: 100%;
+
+            @include media(">=lg") {
+              max-width: fit-content;
+            }
+          }
+        }
+
+      }
+    }
+
+    .clp-submit-button {
+      border-radius: 9999px;
+          padding-left: 2.5rem; padding-right: 2.5rem;
+          padding-top: 1rem; padding-bottom: 1rem;
+          background-color: #FC9445;
+          line-height: 1rem;
+          text-transform: uppercase;
+          font-size: 0.75rem;
+    }
+
+    .clp-search-field {
+      border-radius: 9999px;
+          padding-left: 0.75rem; padding-right: 0.75rem;
+          padding-top: 0.75rem; padding-bottom: 0.75rem;
+
+      @include media(">=lg") {
+        padding-left: 2.5rem; padding-right: 2.5rem;
+      }
+    }
+
+    a.component-button {
+      font-family: 'Proxima', sans-serif;
+    }
+  }
+}

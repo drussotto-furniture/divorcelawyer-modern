@@ -1,0 +1,156 @@
+@import '../utils.scss';
+
+@include block("common-questions") {
+
+  .block-container {
+    border-radius: rem(20);
+    padding-top: 2rem; padding-bottom: 2rem;
+          position: relative;
+          z-index: 10;
+
+          @include media(">=lg") {
+            padding: 4rem;
+          }
+
+    &.container-size-small {
+      max-width: rem(1516);
+    }
+
+    &.container-size-medium {
+      max-width: 100%;
+    }
+
+    h2 {
+      .component-rich-text {
+        font-size: fluid(38, 64);
+        line-height: fluid(42, 68);
+        letter-spacing: fluid(-1.14, -1.92);
+        color: #1D1D1D;
+          font-weight: 400;
+          padding-left: 1.25rem; padding-right: 1.25rem;
+          font-family: 'Libre', serif;
+          text-align: center;
+          margin-bottom: 0.75rem;
+          margin-left: auto; margin-right: auto;
+      }
+
+      span {
+        color: #B6572E;
+          font-style: italic;
+      }
+    }
+
+    .short-description {
+
+    }
+
+    .common-questions-wrapper {
+      max-width: rem(1516);
+      margin-left: auto; margin-right: auto;
+          /* @apply mb-7 - needs manual conversion */
+          margin-top: 2.5rem;
+
+          @include media(">=lg") {
+            margin-bottom: 3rem;
+            /* @apply lg:mt-14 - needs manual conversion */
+          }
+
+      .common-questions-item {
+        /* @apply border-t - needs manual conversion */
+          /* @apply border-greenShadesLight - needs manual conversion */
+          border-style: solid;
+
+        .common-questions {
+          font-size: fluid(16, 20);
+          line-height: fluid(20, 26);
+          color: #1D1D1D;
+          font-family: 'Proxima', sans-serif;
+          font-weight: 700;
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding-top: 1.25rem; padding-bottom: 1.25rem;
+          cursor: pointer;
+          text-align: left;
+
+          &::after {
+            content: url("/images/Faq-arroa-down.svg");
+          }
+        }
+
+        .common-answer {
+          transition: all 0.15s linear;
+          /* @apply h-0 - needs manual conversion */
+          overflow: hidden;
+          text-align: left;
+
+          .component-rich-text {
+            font-size: fluid(16, 20);
+            color: #1D1D1D;
+          font-family: 'Proxima', sans-serif;
+          font-weight: 400;
+          line-height: 1.5;
+          }
+
+          .article-link {
+            text-align: right;
+          margin-top: 1rem;
+
+            a {
+              font-size: fluid(16, 18);
+              color: #16596D;
+          text-transform: capitalize;
+          font-style: italic;
+          text-decoration: underline;
+
+          @include media(">=lg") {
+            margin-right: 3rem;
+          }
+            }
+          }
+        }
+
+        &:last-child {
+          /* @apply border-b - needs manual conversion */
+        }
+
+        &.active {
+          .common-questions {
+            &::after {
+              content: url("/images/Faq-arroa-up.svg");
+            }
+          }
+
+          .common-answer {
+            padding-bottom: 1.25rem;
+          height: auto;
+          }
+        }
+      }
+    }
+
+    .component-button {
+      font-size: rem(15);
+      letter-spacing: rem(1.5);
+      min-width: 20rem;
+          color: #1D1D1D;
+
+      span {
+        font-weight: 700;
+          /* @apply leading-8 - needs manual conversion */
+          font-family: 'Proxima', sans-serif;
+      }
+    }
+
+    &.overley-layout {
+      /* @apply -top-20 - needs manual conversion */
+          /* @apply -mb-28 - needs manual conversion */
+
+          @include media(">=lg") {
+            top: -9rem;
+            /* @apply lg:-mb-36 - needs manual conversion */
+          }
+    }
+  }
+}

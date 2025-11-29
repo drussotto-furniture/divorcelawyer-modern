@@ -1,0 +1,161 @@
+@import '../utils.scss';
+
+@include block('emotions') {
+  &.bg-split {
+    background: rgb(255,255,255);
+    background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 85%, rgba(241,241,241,1) 85%, rgba(241,241,241,1) 100%);
+
+    @include media('>=md') {
+      background: rgb(255,255,255);
+      background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, rgba(241,241,241,1) 60%, rgba(241,241,241,1) 100%);
+    }
+  }
+
+  .block-container {
+    &.container-dark {
+      background: radial-gradient(circle,
+        #08555c 0%, /* Center lighter color */
+        #074046 25%, /* Darker color spreading outwards */
+        #01171d 100% /* Ends with darker color */
+      );
+      border-radius: 0.75rem;
+
+      .component-rich-text {
+        font-size: fluid(16, 20);
+        line-height: fluid(20, 26);
+        padding-top: rem(4);
+        padding-bottom: rem(4);
+        color: #fff;
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      
+      // Spacing between h2 and component-rich-text
+      h2 + .component-rich-text,
+      h2 ~ .component-rich-text {
+        margin-top: rem(12);
+        
+        @include media(">=lg") {
+          margin-top: rem(16);
+        }
+      }
+
+      &.container-size-small {
+        max-width: rem(1536);
+      }
+
+      &.container-size-medium {
+        max-width: rem(1830);
+      }
+
+      h2 {
+        .component-rich-text {
+          font-size: fluid(38, 64); // Figma: 64px
+          line-height: fluid(42, 68); // Figma: 68px (106%)
+          letter-spacing: -0.03em; // Figma: -0.03em
+          color: #fff;
+          font-weight: 400; // Figma: 400
+          padding-left: 0;
+          padding-bottom: 0;
+          font-style: normal;
+          font-family: 'Libre', serif;
+        }
+
+        span {
+          color: #FC9445;
+          font-style: italic;
+        }
+      }
+
+      .component-button {
+        min-width: 11rem;
+          font-family: 'Proxima', sans-serif;
+          font-size: 0.875rem;
+          text-transform: uppercase;
+        @include media('>=sm') {
+          font-size: 0.875rem;
+        }
+
+        &.style-primary {
+          color: #000;
+
+          &:hover {
+            background-color: #1D1D1D;
+            color: #fff;
+          }
+        }
+
+        &.style-secondary {
+          color: #fff;
+          border-color: #fff;
+          border-width: 3px;
+
+          &:hover {
+            background-color: #1D1D1D;
+            color: #fff;
+            border-color: transparent;
+          }
+        }
+      }
+    }
+
+    .emotions-list {
+      ul {
+        li {
+          font-size: fluid(22, 28); // Figma: 28px
+          line-height: 1.5;
+          font-weight: 700; // Figma: 700
+          font-family: 'Proxima', sans-serif;
+          padding-left: 0.5rem; padding-right: 0.5rem;
+
+          @include media(">=lg") {
+            padding-left: 0; padding-right: 0;
+          }
+
+          a {
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            background: #6191A3; // Figma: tealhaze
+            border: 0px 1px 1px 0px solid #2F778C; // Figma: darkcyan
+            border-radius: rem(100); // Figma: 100px
+            padding: rem(12) rem(24); // Figma: 12px 24px
+            color: #FFFFFF; // Figma: white
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.12); // Figma: box shadow
+          }
+
+          &:nth-child(odd) {
+            text-align: right;
+
+          @include media(">=md") {
+            text-align: center;
+          }
+          }
+
+          &:nth-child(even) {
+            text-align: left;
+
+          @include media(">=md") {
+            text-align: center;
+          }
+          }
+        }
+      }
+    }
+  }
+
+  &.section-style-full {
+    padding: 0;
+          border-radius: 0;
+          /* @apply w-screen - needs manual conversion */
+          max-width: 100%;
+
+    .block-container {
+      border-radius: 0;
+          width: auto;
+          max-width: 100%;
+          margin: 0;
+          /* @apply #{!important} - needs manual conversion */
+    }
+  }
+}

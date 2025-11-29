@@ -1,0 +1,10 @@
+// Transition utilities
+@mixin transition($properties: all, $duration: 0.3s, $timing: ease) {
+  transition: $properties $duration $timing;
+}
+
+// Smooth transitions
+@mixin smooth-transition {
+  @include transition(all, 0.3s, ease-in-out);
+}
+

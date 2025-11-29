@@ -1,0 +1,32 @@
+// Positioning mixins
+@mixin fit($position: cover, $align: center) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: $position;
+  object-position: $align;
+}
+
+// Block naming convention helper
+@mixin block($name) {
+  .block-#{$name} {
+    @content;
+  }
+}
+
+// Element naming convention helper
+@mixin element($name) {
+  &__#{$name} {
+    @content;
+  }
+}
+
+// Modifier naming convention helper
+@mixin modifier($name) {
+  &--#{$name} {
+    @content;
+  }
+}
+

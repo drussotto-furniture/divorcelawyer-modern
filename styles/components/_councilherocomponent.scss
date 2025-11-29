@@ -1,0 +1,143 @@
+@import '../utils.scss';
+
+@include block("council-hero-component") {
+  margin-top: rem(100);
+  /* @apply bg-no-repeat - needs manual conversion */
+          /* @apply bg-center - needs manual conversion */
+          /* @apply bg-cover - needs manual conversion */
+
+  .block-container {
+    .counil-hero-content-wrapper {
+      text-align: center;
+
+      .council-hero-logo-wrapper {
+        margin-bottom: rem(60);
+        .council-logo-image {
+          width: rem(402);
+          max-width: 100%;
+          img{
+            width: 100%;
+          max-width: 100%;
+          }
+        }
+
+        span {
+          font-size: fluid(20, 46);
+          line-height: fluid(26, 56);
+          display: block;
+          max-width: 100%;
+          color: #fff;
+          font-weight: 400;
+          /* @apply font-arial - needs manual conversion */
+          /* @apply pl-5 - needs manual conversion */
+          /* @apply border-l - needs manual conversion */
+          border-color: #fff;
+          border-style: solid;
+        }
+      }
+
+      h1{
+        .component-rich-text{
+        font-size: fluid(42, 70);
+        line-height: fluid(52, 81);
+        margin-bottom:rem(36);
+        letter-spacing: normal;
+        color: #fff;
+          /* @apply font-dmserifText - needs manual conversion */
+          font-weight: 400;
+          text-transform: capitalize;
+          /* @apply max-w-[344] - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:max-w-[1175px] - needs manual conversion */
+          }
+        }
+      }
+
+      h2{
+        .component-rich-text{
+        font-size: fluid(28, 36);
+        line-height: fluid(35, 44);
+        margin-bottom:rem(36);
+        letter-spacing: normal;
+        color: #FC9445;
+          /* @apply font-dmsans - needs manual conversion */
+          font-weight: 400;
+          text-transform: uppercase;
+
+          @include media(">=lg") {
+            /* @apply lg:max-w-[1090px] - needs manual conversion */
+          }
+        a{
+          text-decoration: underline;
+          &:hover{
+            color: #FC9445;
+          }
+        }
+        }
+        &.hide-subheading{
+          display: none;
+
+          @include media(">=lg") {
+            display: block;
+          }
+        }
+      }
+      .short-description{
+        margin-bottom:rem(44);
+
+        .component-rich-text{
+          font-size: rem(24);
+          line-height: rem(30);
+          font-size: fluid(24, 18);
+          line-height: fluid(35, 24);
+          letter-spacing: normal;
+          color: #fff;
+          /* @apply font-dmserifText - needs manual conversion */
+          font-weight: 400;
+          /* @apply max-w-[316] - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:max-w-[1090px] - needs manual conversion */
+          }
+
+          a{
+            color: #fff;
+          text-decoration: underline;
+            &:hover{
+              color: #fff;
+            }
+          }
+        }
+      }
+
+      .component-button{
+        padding: rem(21) rem(36);
+
+        &.style-primary,.style-secondary{
+          /* @apply max-w-max - needs manual conversion */
+          margin-left: auto; margin-right: auto;
+          border-width: 1px;
+          border-color: #FC9445;
+          border-style: solid;
+
+          span.button-text{
+            font-size: 1.125rem;
+          font-weight: 700;
+          color: #fff;
+          /* @apply font-dmsans - needs manual conversion */
+          text-transform: capitalize;
+          display: flex;
+          gap: 0.5rem;
+            &::after{
+              content: url('/images/ArrowRight-white.svg);
+              position: relative;
+          /* @apply top-1 - needs manual conversion */
+            }
+          }
+        }
+      }
+
+    }
+  }
+}

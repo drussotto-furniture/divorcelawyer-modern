@@ -1,0 +1,119 @@
+@import '../utils.scss';
+
+@include block("search-hero") {
+  position: relative;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-size: 50%;
+  background-position: right center;
+  padding-top: fluid(80, 100);
+
+  @apply bg-right-bottom pb-0;
+
+  &::before {
+    @include fit(cover, center);
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: 50%;
+    border-radius: 713px;
+    background: rgba(25, 223, 236, 0.15);
+    mix-blend-mode: plus-lighter;
+    filter: blur(125px);
+  }
+
+  .block-container {
+    position: relative;
+    z-index: 1;
+
+    @apply items-end lg:items-center;
+
+  }
+
+  @include media('<lg') {
+    background-image: unset !important;
+  }
+
+  .text-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: rem(30);
+    max-width: rem(690);
+
+
+
+    >h1 {
+      font-size: fluid(40, 82);
+      color: #FFF;
+      letter-spacing: -2.46px;
+      line-height: fluid(52, 84);
+      text-align: center;
+
+      @include media('>=lg') {
+        text-align: left;
+      }
+
+      >span {
+        color: #FC9445;
+        font-style: italic;
+        font-weight: 400;
+      }
+    }
+
+    .search-input {
+      width: 100%;
+
+      form {
+        label {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: rem(16);
+
+          @include media('>=lg') {
+            flex-direction: row;
+            gap: 0;
+          }
+
+          input {
+            appearance: none;
+            background-color: #FAFAFA;
+            border-radius: rem(100);
+            padding: rem(16) rem(24);
+            border: 1px solid #E2D5C5;
+            width: 100%;
+            max-width: rem(400);
+
+            @include media('>=lg') {
+              max-width: unset;
+            }
+          }
+
+          button {
+            background-color: #FC9445;
+            border-radius: rem(100);
+            padding: rem(16) rem(24);
+            min-width: rem(220);
+            text-align: center;
+            @apply font-bold hover:text-white uppercase hover:bg-dark;
+          }
+        }
+      }
+    }
+  }
+
+  .image-wrapper {
+    position: relative;
+    @apply w-full;
+
+    @include media('>=lg') {
+      display: none;
+    }
+  }
+
+
+}
+

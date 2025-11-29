@@ -1,0 +1,620 @@
+@import '../utils.scss';
+
+@include block("contact-form") {
+  .block-container {
+    border-radius: 1.5rem;
+          padding-top: 2rem; padding-bottom: 2rem;
+          padding-left: 0; padding-right: 0;
+          position: relative;
+          z-index: 10;
+
+          @include media(">=lg") {
+            padding: 4rem;
+          }
+
+          @include media(">=2xl") {
+            /* @apply 2xl:py-[6%] - needs manual conversion */
+            /* @apply 2xl:px-[10%] - needs manual conversion */
+          }
+
+    h2, h3 {
+      .component-rich-text {
+        span {
+          color: #B6572E;
+          font-style: italic;
+        }
+      }
+    }
+    h3 {
+      .component-rich-text {
+        font-size: fluid(38, 64);
+        line-height: fluid(36, 68);
+        color: #000;
+          font-weight: 400;
+          font-style: normal;
+          font-family: 'Libre', serif;
+          padding-top: 0; padding-bottom: 0;
+          /* @apply -tracking-[1.44px] - needs manual conversion */
+          max-width: 100%;
+          /* @apply my-2.5 - needs manual conversion */
+
+          @include media(">=lg") {
+            padding-left: 0; padding-right: 0;
+            /* @apply lg:-tracking-[2.7px] - needs manual conversion */
+          }
+      }
+    }
+
+    h2 {
+      .component-rich-text {
+        font-size: fluid(12, 15);
+        line-height: fluid(18, 32);
+        color: #000;
+          padding-bottom: 0.25rem;
+          text-transform: uppercase;
+          /* @apply leading-5 - needs manual conversion */
+          font-weight: 700;
+          padding-left: 0.75rem; padding-right: 0.75rem;
+          /* @apply tracking-[0.48px] - needs manual conversion */
+
+          @include media(">=lg") {
+            padding-left: 0; padding-right: 0;
+            /* @apply lg:tracking-[2.4px] - needs manual conversion */
+          }
+      }
+    }
+
+    a {
+      text-decoration: underline;
+    }
+
+    .component-rich-text {
+      /* @apply text-darkgray - needs manual conversion */
+
+      p {
+        padding-top: 0.625rem; padding-bottom: 0.625rem;
+      }
+
+      a {
+        color: #B6572E;
+          text-decoration: none;
+      }
+    }
+
+    &.background-dark {
+      background-color: #000;
+
+      h2, h3 {
+        .component-rich-text {
+          span {
+            color: #FC9445;
+          }
+        }
+      }
+
+      .component-rich-text {
+        color: #fff;
+      }
+
+      .contact-form {
+        .field-area {
+          .field {
+            /* @apply my-2 - needs manual conversion */
+
+            label {
+              /* @apply text-lightsand - needs manual conversion */
+            }
+
+            .wpcf7-form-control-wrap {
+              input {
+                background-color: #000;
+          border-radius: 0.5rem;
+          /* @apply border-electricblue - needs manual conversion */
+          /* @apply text-lightsand - needs manual conversion */
+
+                &::placeholder {
+                  /* @apply text-lightsand - needs manual conversion */
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    &.background-bluish {
+      background: linear-gradient(97deg, #030D10 4.79%, #031819 62.76%);
+
+      h2, h3 {
+        .component-rich-text {
+          span {
+            color: #FC9445;
+          }
+        }
+      }
+
+      .component-rich-text {
+        color: #fff;
+      }
+
+      .contact-form {
+        .field-area {
+          .field {
+            /* @apply my-2 - needs manual conversion */
+
+            label {
+              /* @apply text-lightsand - needs manual conversion */
+            }
+
+            .wpcf7-form-control-wrap {
+              input {
+                background-color: #000;
+          border-radius: 0.5rem;
+          /* @apply border-electricblue - needs manual conversion */
+          /* @apply text-lightsand - needs manual conversion */
+
+                &::placeholder {
+                  /* @apply text-lightsand - needs manual conversion */
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    &.background-subtlesand {
+      /* @apply bg-subtlesand - needs manual conversion */
+    }
+
+    &.background-white {
+      background-color: #fff;
+    }
+
+  }
+
+  &.sec-background-dark {
+    background-color: #000;
+
+    .component-rich-text {
+      color: #fff;
+    }
+  }
+
+  &.sec-background-bluish {
+    /* @apply bg-darkblue - needs manual conversion */
+
+    .component-rich-text {
+      color: #fff;
+    }
+  }
+
+  &.sec-background-subtlesand {
+    /* @apply bg-subtlesand - needs manual conversion */
+  }
+
+  &.sec-background-white {
+    background-color: #fff;
+  }
+
+  .overley-layout {
+    /* @apply -top-20 - needs manual conversion */
+          /* @apply -mb-28 - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:-top-28 - needs manual conversion */
+            /* @apply lg:-mb-36 - needs manual conversion */
+          }
+  }
+
+  .contact-form {
+    width: 100%;
+          margin-left: auto; margin-right: auto;
+
+          @include media(">=lg") {
+            /* @apply lg:w-3/4 - needs manual conversion */
+          }
+
+    input,
+    select,
+    textarea {
+      /* @apply border-0 - needs manual conversion */
+    }
+
+    .wpcf7-not-valid-tip {
+      font-size: 0.875rem;
+          text-align: left;
+    }
+
+    .wpcf7-acceptance {
+      .wpcf7-list-item {
+        margin: 0px;
+      }
+    }
+
+    .wpcf7 {
+      form {
+        .wpcf7-response-output {
+          border-radius: 1.5rem;
+          /* @apply border-[1px] - needs manual conversion */
+          /* @apply border-errorRed - needs manual conversion */
+          font-family: 'Proxima', sans-serif;
+          font-size: 1.125rem;
+
+        }
+
+        &.submitting {
+          .wpcf7-submit {
+            /* @apply cursor-progress - needs manual conversion */
+          /* @apply text-gray - needs manual conversion */
+          }
+        }
+
+        &.failed, &.aborted, &.invalid, &.spam {
+           .wpcf7-response-output {
+             /* @apply border-errorRed - needs manual conversion */
+          /* @apply text-errorRed - needs manual conversion */
+           }
+        }
+        &.sent:not(.spam) {
+          .wpcf7-response-output {
+            /* @apply border-successGreen - needs manual conversion */
+          /* @apply text-successGreen - needs manual conversion */
+          }
+        }
+      }
+    }
+
+    .field-area {
+      label {
+        &.required {
+          &::after {
+            content: " *";
+            color: red;
+          }
+        }
+      }
+      .field {
+        position: relative;
+          /* @apply h-[70px] - needs manual conversion */
+          /* @apply min-h-[70px] - needs manual conversion */
+          /* @apply mx-2 - needs manual conversion */
+          /* @apply my-3 - needs manual conversion */
+          /* @apply basis-full - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:basis-1/2 - needs manual conversion */
+          }
+
+        label {
+          position: absolute;
+          /* @apply top-[8px] - needs manual conversion */
+          /* @apply left-[29px] - needs manual conversion */
+          z-index: 10;
+          font-size: 1.125rem;
+          font-family: 'Proxima', sans-serif;
+          /* @apply text-gray - needs manual conversion */
+          /* @apply transition-all - needs manual conversion */
+          /* @apply duration-300 - needs manual conversion */
+        }
+
+        .wpcf7-form-control-wrap {
+          position: absolute;
+          width: 100%;
+          top: 0;
+          left: 0;
+          /* @apply h-[70px] - needs manual conversion */
+
+          input {
+            padding: rem(33) rem(28) rem(15);
+            width: 100%;
+          height: 100%;
+          font-size: 1.125rem;
+          font-family: 'Proxima', sans-serif;
+          /* @apply text-gray - needs manual conversion */
+          /* @apply bg-transparent - needs manual conversion */
+          /* @apply outline-0 - needs manual conversion */
+          background-color: #fff;
+          border-radius: 9999px;
+          /* @apply border-[1px] - needs manual conversion */
+          border-style: solid;
+          /* @apply border-lightsand - needs manual conversion */
+
+            &.wpcf7-not-valid {
+              /* @apply text-errorRed - needs manual conversion */
+          /* @apply border-errorRed - needs manual conversion */
+            }
+
+            &::placeholder {
+              font-size: 1.125rem;
+          font-family: 'Proxima', sans-serif;
+          /* @apply text-gray - needs manual conversion */
+            }
+          }
+        }
+      }
+
+      .field-select {
+        /* @apply flex-auto - needs manual conversion */
+          position: relative;
+          /* @apply h-[50px] - needs manual conversion */
+          /* @apply mx-2 - needs manual conversion */
+          /* @apply my-3 - needs manual conversion */
+
+        .wpcf7-form-control-wrap {
+          position: absolute;
+          width: 100%;
+          top: 0;
+          left: 0;
+          /* @apply h-[50px] - needs manual conversion */
+          line-height: 1.5;
+
+          .wpcf7-select {
+            padding: rem(10) rem(28) rem(10);
+            background: url('/images/arrow-bottom-icon.svg);
+            /* @apply bg-no-repeat - needs manual conversion */
+          /* @apply bg-[center_right_1.5rem] - needs manual conversion */
+          position: relative;
+          height: 100%;
+          width: 100%;
+          font-size: 1.125rem;
+          font-family: 'Proxima', sans-serif;
+          /* @apply text-gray - needs manual conversion */
+          /* @apply bg-transparent - needs manual conversion */
+          /* @apply outline-0 - needs manual conversion */
+          /* @apply appearance-none - needs manual conversion */
+          background-color: #fff;
+          border-radius: 9999px;
+          /* @apply border-[1px] - needs manual conversion */
+          border-style: solid;
+          /* @apply border-lightsand - needs manual conversion */
+          }
+
+          .wpcf7-not-valid-tip {
+            width: 100%;
+          height: 100%;
+          font-size: 0.875rem;
+          font-family: 'Proxima', sans-serif;
+          text-align: left;
+          }
+        }
+      }
+
+      .field-textarea {
+        /* @apply flex-auto - needs manual conversion */
+          position: relative;
+          /* @apply h-[200px] - needs manual conversion */
+          /* @apply mx-2 - needs manual conversion */
+          /* @apply my-3 - needs manual conversion */
+
+        label {
+          position: absolute;
+          /* @apply top-[21px] - needs manual conversion */
+          /* @apply left-[29px] - needs manual conversion */
+          z-index: 10;
+          font-size: 1.125rem;
+          font-family: 'Proxima', sans-serif;
+          /* @apply text-gray - needs manual conversion */
+        }
+
+        .wpcf7-form-control-wrap {
+          position: absolute;
+          width: 100%;
+          top: 0;
+          left: 0;
+
+          .wpcf7-textarea {
+            padding: rem(44) rem(28) rem(20);
+            width: 100%;
+          /* @apply h-[200px] - needs manual conversion */
+          font-size: 1.125rem;
+          line-height: 1.5;
+          font-family: 'Proxima', sans-serif;
+          /* @apply text-gray - needs manual conversion */
+          /* @apply bg-transparent - needs manual conversion */
+          /* @apply outline-0 - needs manual conversion */
+          background-color: #fff;
+          border-radius: 1.5rem;
+          /* @apply border-[1px] - needs manual conversion */
+          border-style: solid;
+          /* @apply border-lightsand - needs manual conversion */
+
+            &::placeholder {
+              font-size: 1.125rem;
+          font-family: 'Proxima', sans-serif;
+          /* @apply text-gray - needs manual conversion */
+            }
+          }
+        }
+      }
+
+      .field-submit {
+        padding-top: 2rem;
+
+        .wpcf7-submit {
+          /* @apply min-w-72 - needs manual conversion */
+          /* @apply h-14 - needs manual conversion */
+          margin-left: auto; margin-right: auto;
+          display: flex;
+          /* @apply align-middle - needs manual conversion */
+          justify-content: center;
+          border-radius: 9999px;
+          background-color: #FC9445;
+          color: #000;
+          font-family: 'Helvetica', sans-serif;
+          /* @apply text-[15px] - needs manual conversion */
+          font-weight: 700;
+          text-transform: uppercase;
+          cursor: pointer;
+
+        }
+
+        span.wpcf7-spinner {
+          /* @apply invisible - needs manual conversion */
+        }
+      }
+    }
+  }
+
+  &.second-style {
+    
+
+          @include media(">=lg") {
+            padding-bottom: 0;
+          }
+
+    .block-container {
+
+      margin-left: auto; margin-right: auto;
+
+          @include media(">=2xl") {
+            /* @apply 2xl:py-[3%] - needs manual conversion */
+            padding-left: 0; padding-right: 0;
+          }
+
+      .contact-form-text-box {
+        max-width: rem(440);
+        text-align: center;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+
+          @include media(">=lg") {
+            text-align: left;
+          }
+
+        .component-rich-text {
+          text-align: center;
+
+          @include media(">=lg") {
+            text-align: left;
+          }
+        }
+      }
+
+      .container {
+        max-width: rem(1450);
+      }
+
+      .contact-form {
+        max-width: rem(650);
+        width: 100%;
+          margin-left: 0;
+          margin-right: 0;
+
+        .wpcf7-form-control-wrap {
+          input {
+            border-radius: 0.75rem;
+          }
+
+        }
+
+        .field-submit {
+          .wpcf7-submit {
+            min-width: rem(235);
+            cursor: pointer;
+
+          &:hover {
+            background-color: #1D1D1D;
+            color: #fff;
+          }
+
+          @include media(">=lg") {
+            margin-left: 0;
+            margin-right: 0;
+          }
+          }
+        }
+
+        .radio-wrapper {
+          @include media(">=lg") {
+            min-width: rem(200);
+          }
+
+          .wpcf7-form-control-wrap {
+            .wpcf7-radio {
+              .wpcf7-list-item {
+                display: block;
+          /* @apply w-max - needs manual conversion */
+
+          @include media(">=lg") {
+            display: inline-block;
+          }
+
+                &:first-child {
+                  position: relative;
+          /* @apply bottom-6 - needs manual conversion */
+
+          @include media(">=lg") {
+            bottom: 0;
+          }
+                }
+
+                input {
+                  /* @apply appearance-auto - needs manual conversion */
+                }
+              }
+            }
+          }
+        }
+
+        .formx-text {
+          text-align: left;
+          margin-top: 1.25rem;
+          margin-bottom: 0.5rem;
+          margin-left: 0.5rem;
+          font-size: 0.875rem;
+          font-family: 'Proxima', sans-serif;
+        }
+
+        .text-fade {
+          .formx-text,
+
+          .radio-wrapper {
+            .wpcf7-radio {
+              .wpcf7-list-item {
+                display: inline-block;
+
+                &:first-child {
+                  bottom: 0;
+                }
+              }
+            }
+          }
+
+          &.active {
+            .formx-text,
+            label {
+              /* @apply opacity-100 - needs manual conversion */
+            }
+          }
+        }
+
+        .field-area {
+          .field {
+            &.number-field, &.email-field {
+              /* @apply basis-full - needs manual conversion */
+
+              input {
+                padding: rem(33) rem(28);
+              }
+            }
+          }
+        }
+      }
+    }
+    .field-area {
+      .field-select {
+        .wpcf7-form-control-wrap {
+          .wpcf7-select {
+            border-radius: 0.75rem;
+          }
+        }
+      }
+    }
+    .overley-layout {
+      top: 0;
+          margin-bottom: 0;
+    }
+  }
+}

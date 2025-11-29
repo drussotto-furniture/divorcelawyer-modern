@@ -1,0 +1,55 @@
+@import '../utils.scss';
+
+@include block('text-and-image') {
+  .block-container {
+
+    h2 {
+      position: relative;
+      .component-rich-text {
+        font-size: fluid(29, 64);
+        line-height: fluid(42, 68);
+        letter-spacing: fluid(-0.96, -1.92);
+      }
+    }
+
+    .component-rich-text {
+      /* @apply text-darkgray - needs manual conversion */
+
+      p {
+        padding-top: 0.625rem; padding-bottom: 0.625rem;
+      }
+    }
+
+    .component-image {
+      width: 100%;
+          height: auto;
+    }
+
+    .left-padding {
+      padding-left: 1.25rem; padding-right: 1.25rem;
+
+          @include media(">=md") {
+            /* @apply md:px-14 - needs manual conversion */
+          }
+
+          @include media(">=2xl") {
+            /* @apply 2xl:pl-52 - needs manual conversion */
+            padding-right: 0;
+          }
+    }
+
+    .right-padding {
+      padding-left: 1.25rem; padding-right: 1.25rem;
+
+          @include media(">=md") {
+            /* @apply md:px-14 - needs manual conversion */
+          }
+
+          @include media(">=2xl") {
+            /* @apply 2xl:pr-52 - needs manual conversion */
+            padding-left: 0;
+          }
+    }
+
+  }
+}

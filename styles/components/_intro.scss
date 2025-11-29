@@ -1,0 +1,88 @@
+@import '../utils.scss';
+
+@include block('intro') {
+  .block-container {
+    border-radius: 1.5rem;
+          padding-top: 2rem; padding-bottom: 2rem;
+          padding-left: 1.25rem; padding-right: 1.25rem;
+          position: relative;
+          z-index: 10;
+
+          @include media(">=lg") {
+            padding: 4rem;
+          }
+
+          @include media(">=2xl") {
+            /* @apply 2xl:py-[3%] - needs manual conversion */
+            /* @apply 2xl:px-[10%] - needs manual conversion */
+          }
+
+    h2 {
+      position: relative;
+          padding-bottom: 1.5rem;
+
+          @include media(">=lg") {
+            /* @apply lg:pb-9 - needs manual conversion */
+          }
+      .component-rich-text {
+        font-size: fluid(38, 64);
+        line-height: fluid(42, 68);
+      }
+      &::after {
+        content: '';
+        height: rem(7);
+        position: absolute;
+          /* @apply bg-sandy - needs manual conversion */
+          /* @apply w-11 - needs manual conversion */
+          /* @apply bottom-2 - needs manual conversion */
+          margin-left: auto; margin-right: auto;
+          left: 0;
+          right: 0;
+
+          @include media(">=lg") {
+            /* @apply lg:-bottom-0 - needs manual conversion */
+          }
+      }
+    }
+
+    .component-rich-text {
+      /* @apply text-darkgray - needs manual conversion */
+
+      p {
+        padding-top: 0.625rem; padding-bottom: 0.625rem;
+      }
+      a{
+        color: #B6572E;
+          text-decoration: none;
+      }
+    }
+
+    .component-button{
+      font-weight: 700;
+
+      &.style-secondary{
+        /* @apply border-stormyblue - needs manual conversion */
+          /* @apply text-stormyblue - needs manual conversion */
+
+          &:hover {
+            border-color: #1D1D1D;
+            color: #fff;
+          }
+      }
+    }
+  }
+
+  .overley-layout {
+    /* @apply -top-20 - needs manual conversion */
+          /* @apply -mb-28 - needs manual conversion */
+
+          @include media(">=lg") {
+            /* @apply lg:-top-28 - needs manual conversion */
+            /* @apply lg:-mb-36 - needs manual conversion */
+          }
+
+          @include media(">=2xl") {
+            /* @apply 2xl:py-[6%] - needs manual conversion */
+          }
+  }
+}

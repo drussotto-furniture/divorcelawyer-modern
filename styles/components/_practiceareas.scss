@@ -1,0 +1,103 @@
+@import '../utils.scss';
+
+@include block('practice-areas') {
+  z-index: 10;
+  .block-container {
+
+    .category-block {
+      ul {
+        flex-wrap: wrap;
+
+          @include media(">=2xl") {
+            /* @apply 2xl:flex-nowrap - needs manual conversion */
+          }
+        li {
+          /* @apply basis-auto - needs manual conversion */
+          /* @apply max-w-max - needs manual conversion */
+          /* @apply bg-seashell - needs manual conversion */
+          /* @apply m-2 - needs manual conversion */
+          border-radius: 9999px;
+
+          @include media(">=lg") {
+            /* @apply lg:basis-auto - needs manual conversion */
+          }
+
+          .cat-block {
+            font-size: fluid(14, 14);
+            line-height: fluid(18, 18);
+            color: #000;
+          font-weight: 600;
+          height: auto;
+          padding-top: 0.75rem; padding-bottom: 0.75rem;
+          padding-left: 1.5rem; padding-right: 1.5rem;
+          text-align: center;
+          text-decoration: none;
+
+          @include media(">=lg") {
+            height: auto;
+          }
+
+          }
+        }
+      }
+    }
+  }
+
+  &.second-layout {
+    background-color: #163B46;
+
+    .block-container {
+      h2 {
+        .component-rich-text {
+          color: #fff;
+        }
+
+        span {
+          color: #FC9445;
+        }
+      }
+
+      .component-rich-text {
+        color: #fff;
+      }
+
+      .category-block {
+        ul {
+          flex-wrap: wrap;
+
+          @include media(">=2xl") {
+            /* @apply 2xl:flex-nowrap - needs manual conversion */
+          }
+          li {
+            /* @apply basis-auto - needs manual conversion */
+          /* @apply max-w-max - needs manual conversion */
+          /* @apply bg-seashell - needs manual conversion */
+          /* @apply m-2 - needs manual conversion */
+          border-radius: 9999px;
+
+          @include media(">=lg") {
+            /* @apply lg:basis-auto - needs manual conversion */
+          }
+
+            .cat-block {
+              font-size: fluid(14, 14);
+              line-height: fluid(18, 18);
+              color: #000;
+          font-weight: 600;
+          height: auto;
+          padding-top: 0.75rem; padding-bottom: 0.75rem;
+          padding-left: 1.5rem; padding-right: 1.5rem;
+          text-align: center;
+          text-decoration: none;
+
+          @include media(">=lg") {
+            height: auto;
+          }
+
+            }
+          }
+        }
+      }
+    }
+  }
+}
