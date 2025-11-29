@@ -312,7 +312,7 @@ export default function LawFirmEditForm({ firm, auth, isNew = false }: LawFirmEd
                 {PRACTICE_AREAS.map((area) => {
                   // Case-insensitive comparison to handle slight variations
                   const isChecked = formData.practice_areas.some(
-                    p => p.toLowerCase().trim() === area.toLowerCase().trim()
+                    (p: string) => p.toLowerCase().trim() === area.toLowerCase().trim()
                   )
                   return (
                     <label key={area} className="flex items-center gap-2 text-sm">

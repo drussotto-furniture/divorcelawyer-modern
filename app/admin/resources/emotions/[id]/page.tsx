@@ -34,7 +34,7 @@ export default async function EmotionEditPage({ params }: PageProps) {
         <p className="mt-2 text-gray-600">{emotion.name}</p>
       </div>
 
-      <EmotionEditForm emotion={emotion} />
+      <EmotionEditForm emotion={emotion as any} />
     </div>
   )
 }

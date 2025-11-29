@@ -38,15 +38,15 @@ export default function MarketEditForm({ market }: MarketEditFormProps) {
       let result
       if (isNew) {
         result = await supabase
-          .from('markets')
+          .from('markets' as any)
           .insert(dataToSave)
           .select()
           .single()
       } else {
         result = await supabase
-          .from('markets')
+          .from('markets' as any)
           .update(dataToSave)
-          .eq('id', market.id)
+          .eq('id', (market as any).id)
       }
 
       if (result.error) {
@@ -57,7 +57,7 @@ export default function MarketEditForm({ market }: MarketEditFormProps) {
 
       setSuccess(isNew ? 'Market created successfully!' : 'Market updated successfully!')
       if (isNew && result.data) {
-        router.push(`/admin/directory/locations/markets/${result.data.id}`)
+        router.push(`/admin/directory/locations/markets/${(result.data as any).id}`)
       } else {
         router.refresh()
       }

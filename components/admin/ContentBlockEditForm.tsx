@@ -81,7 +81,7 @@ export default function ContentBlockEditForm({ block, defaultType }: ContentBloc
 
         if (error) throw error
         setMessage({ type: 'success', text: 'Content block created successfully!' })
-        router.push(`/admin/components/${data.id}`)
+        router.push(`/admin/components/${(data as any).id}`)
       }
     } catch (error: any) {
       setMessage({ type: 'error', text: error.message || 'An error occurred' })

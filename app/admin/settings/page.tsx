@@ -25,7 +25,7 @@ export default async function SettingsPage() {
         <p className="mt-2 text-gray-600">Manage site-wide settings and configuration</p>
       </div>
 
-      <SettingsEditor settings={settings || []} />
+      <SettingsEditor settings={(settings || []) as any} />
     </div>
   )
 }

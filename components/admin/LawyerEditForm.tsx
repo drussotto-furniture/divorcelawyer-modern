@@ -590,7 +590,7 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
                 {LAW_SPECIALTIES.map((specialty) => {
                   // Case-insensitive comparison to handle slight variations
                   const isChecked = formData.specializations.some(
-                    s => s.toLowerCase().trim() === specialty.toLowerCase().trim()
+                    (s: string) => s.toLowerCase().trim() === specialty.toLowerCase().trim()
                   )
                   return (
                     <label key={specialty} className="flex items-center gap-2 text-sm">
@@ -633,7 +633,7 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-h-48 overflow-y-auto border border-gray-300 rounded-md p-3">
                 {US_STATES.map((state) => {
                   // Match by state code (GA) or state name (Georgia) in the bar admission text
-                  const isChecked = formData.bar_admissions.some(s => {
+                  const isChecked = formData.bar_admissions.some((s: string) => {
                     const normalized = s.toUpperCase().trim()
                     return normalized === state.value.toUpperCase().trim() || 
                            normalized.includes(state.label.toUpperCase()) ||
@@ -697,7 +697,7 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
                 {PROFESSIONAL_MEMBERSHIPS.map((membership) => {
                   // Match by exact name or if the membership text contains the predefined name
                   // (handles cases like "Fellow, American Academy of Matrimonial Lawyers")
-                  const isChecked = formData.professional_memberships.some(m => {
+                  const isChecked = formData.professional_memberships.some((m: string) => {
                     const normalizedM = m.toLowerCase().trim()
                     const normalizedMembership = membership.toLowerCase().trim()
                     return normalizedM === normalizedMembership || 
@@ -734,7 +734,7 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-32 overflow-y-auto border border-gray-300 rounded-md p-3">
                 {CERTIFICATIONS.map((cert) => {
                   const isChecked = formData.certifications.some(
-                    c => c.toLowerCase().trim() === cert.toLowerCase().trim()
+                    (c: string) => c.toLowerCase().trim() === cert.toLowerCase().trim()
                   )
                   return (
                     <label key={cert} className="flex items-center gap-2 text-sm">
@@ -814,7 +814,7 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 max-h-48 overflow-y-auto border border-gray-300 rounded-md p-3">
                 {LANGUAGES.map((lang) => {
                   const isChecked = formData.languages.some(
-                    l => l.toLowerCase().trim() === lang.toLowerCase().trim()
+                    (l: string) => l.toLowerCase().trim() === lang.toLowerCase().trim()
                   )
                   return (
                     <label key={lang} className="flex items-center gap-2 text-sm">

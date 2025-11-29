@@ -25,7 +25,7 @@ export default async function MediaPage() {
         <p className="mt-2 text-gray-600">Manage images and media files</p>
       </div>
 
-      <MediaLibrary media={media || []} />
+      <MediaLibrary media={(media || []) as any} />
     </div>
   )
 }

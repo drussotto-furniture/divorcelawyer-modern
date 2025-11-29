@@ -21,6 +21,19 @@ export default function CityEditForm({ city }: CityEditFormProps) {
   const [loadingStates, setLoadingStates] = useState(false)
   const [loadingCounties, setLoadingCounties] = useState(false)
 
+  const [formData, setFormData] = useState({
+    name: city?.name || '',
+    slug: city?.slug || '',
+    state_id: city?.state_id || '',
+    county_id: city?.county_id || '',
+    content: city?.content || '',
+    meta_title: city?.meta_title || '',
+    meta_description: city?.meta_description || '',
+    population: city?.population?.toString() || '',
+    latitude: city?.latitude?.toString() || '',
+    longitude: city?.longitude?.toString() || '',
+  })
+
   useEffect(() => {
     const loadStates = async () => {
       setLoadingStates(true)
@@ -55,19 +68,6 @@ export default function CityEditForm({ city }: CityEditFormProps) {
       setCounties([])
     }
   }, [formData.state_id])
-
-  const [formData, setFormData] = useState({
-    name: city?.name || '',
-    slug: city?.slug || '',
-    state_id: city?.state_id || '',
-    county_id: city?.county_id || '',
-    content: city?.content || '',
-    meta_title: city?.meta_title || '',
-    meta_description: city?.meta_description || '',
-    population: city?.population?.toString() || '',
-    latitude: city?.latitude?.toString() || '',
-    longitude: city?.longitude?.toString() || '',
-  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

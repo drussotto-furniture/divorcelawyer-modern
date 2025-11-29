@@ -24,10 +24,13 @@ export default function Header() {
           .eq('id', user.id)
           .single()
         
-        if (profile) {
-          setUserRole(profile.role as 'super_admin' | 'law_firm' | 'lawyer')
-          setLawFirmId(profile.law_firm_id)
-          setLawyerId(profile.lawyer_id)
+        // Type assertion for profile
+        const typedProfile = profile as unknown as { role?: string; law_firm_id?: string | null; lawyer_id?: string | null } | null
+        
+        if (typedProfile) {
+          setUserRole(typedProfile.role as 'super_admin' | 'law_firm' | 'lawyer')
+          setLawFirmId(typedProfile.law_firm_id || null)
+          setLawyerId(typedProfile.lawyer_id || null)
         }
       }
       

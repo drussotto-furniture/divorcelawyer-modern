@@ -66,7 +66,7 @@ export default function MediaLibrary({ media: initialMedia }: MediaLibraryProps)
 
       if (dbError) throw dbError
 
-      setMedia([data, ...media])
+      setMedia([data as any, ...media])
       setMessage({ type: 'success', text: 'File uploaded successfully!' })
       e.target.value = '' // Reset input
     } catch (error: any) {

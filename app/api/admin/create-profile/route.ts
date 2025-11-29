@@ -42,7 +42,7 @@ export async function POST(request: Request) {
 
     // Check if this is the first profile (no profiles exist)
     const { count } = await supabaseAdmin
-      .from('profiles')
+      .from('profiles' as any)
       .select('*', { count: 'exact', head: true })
 
     // If no profiles exist, make this user super_admin
@@ -51,12 +51,12 @@ export async function POST(request: Request) {
 
     // Create profile using admin client (bypasses RLS)
     const { data: profile, error } = await supabaseAdmin
-      .from('profiles')
+      .from('profiles' as any)
       .upsert({
         id: user.id,
         email: user.email || '',
         role: defaultRole,
-      }, {
+      } as any, {
         onConflict: 'id'
       })
       .select()

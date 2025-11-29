@@ -27,14 +27,20 @@ export default async function TeamMemberEditPage({ params }: PageProps) {
     notFound()
   }
 
+  // Ensure active is boolean (not null)
+  const typedMember = {
+    ...member,
+    active: member.active ?? true
+  }
+
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Edit Team Member</h1>
-        <p className="mt-2 text-gray-600">{member.name}</p>
+        <p className="mt-2 text-gray-600">{typedMember.name}</p>
       </div>
 
-      <TeamMemberEditForm member={member} />
+      <TeamMemberEditForm member={typedMember as any} />
     </div>
   )
 }

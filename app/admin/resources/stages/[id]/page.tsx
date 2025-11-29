@@ -34,7 +34,7 @@ export default async function StageEditPage({ params }: PageProps) {
         <p className="mt-2 text-gray-600">{stage.name}</p>
       </div>
 
-      <StageEditForm stage={stage} />
+      <StageEditForm stage={stage as any} />
     </div>
   )
 }

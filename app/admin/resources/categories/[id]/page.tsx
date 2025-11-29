@@ -41,7 +41,7 @@ export default async function CategoryEditPage({ params }: PageProps) {
         <p className="mt-2 text-gray-600">{category.name}</p>
       </div>
 
-      <CategoryEditForm category={category} allCategories={allCategories || []} />
+      <CategoryEditForm category={category as any} allCategories={allCategories || []} />
     </div>
   )
 }
