@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import type { Metadata } from 'next'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import DiscoverSlider from '@/components/DiscoverSlider'
@@ -20,6 +21,74 @@ import {
   getContentCategories
 } from '@/lib/supabase'
 import { organizeHomepageContent, getContentItem, getSectionItems } from '@/lib/homepage-helpers'
+
+// SEO Metadata for Homepage
+export const metadata: Metadata = {
+  title: 'DivorceLawyer.com - The Best Divorce Lawyers and Expert Resources',
+  description: 'Connect with vetted divorce lawyers in your area. Access expert resources, articles, and guidance to navigate your divorce journey with confidence. Find top-rated family law attorneys near you.',
+  keywords: [
+    'divorce lawyer',
+    'divorce attorney',
+    'family law attorney',
+    'divorce lawyer near me',
+    'child custody lawyer',
+    'divorce resources',
+    'divorce process',
+    'family law',
+    'divorce help',
+    'divorce guidance'
+  ],
+  authors: [{ name: 'DivorceLawyer.com' }],
+  creator: 'DivorceLawyer.com',
+  publisher: 'DivorceLawyer.com',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://divorcelawyer.com',
+    siteName: 'DivorceLawyer.com',
+    title: 'DivorceLawyer.com - The Best Divorce Lawyers and Expert Resources',
+    description: 'Connect with vetted divorce lawyers in your area. Access expert resources, articles, and guidance to navigate your divorce journey with confidence.',
+    images: [
+      {
+        url: 'https://divorcelawyer.com/media/home-1.webp',
+        width: 1200,
+        height: 630,
+        alt: 'DivorceLawyer.com - Expert Divorce Resources and Vetted Attorneys',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'DivorceLawyer.com - The Best Divorce Lawyers and Expert Resources',
+    description: 'Connect with vetted divorce lawyers in your area. Access expert resources and guidance.',
+    images: ['https://divorcelawyer.com/media/home-1.webp'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: 'https://divorcelawyer.com',
+  },
+  verification: {
+    // Add your verification codes here when available
+    // google: 'your-google-verification-code',
+    // yandex: 'your-yandex-verification-code',
+    // bing: 'your-bing-verification-code',
+  },
+}
 
 export default async function Home() {
   // Fetch data for homepage - wrap in try/catch for better error handling
@@ -135,8 +204,75 @@ export default async function Home() {
         }
       ]
 
+  // Generate Structured Data (JSON-LD)
+  const organizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'DivorceLawyer.com',
+    url: 'https://divorcelawyer.com',
+    logo: 'https://divorcelawyer.com/images/HeaderWhte-logo.svg',
+    description: 'Connect with vetted divorce lawyers in your area. Access expert resources, articles, and guidance to navigate your divorce journey with confidence.',
+    sameAs: [
+      // Add social media profiles when available
+      // 'https://www.facebook.com/divorcelawyer',
+      // 'https://twitter.com/divorcelawyerhq',
+      // 'https://www.linkedin.com/company/divorcelawyer',
+    ],
+  }
+
+  const websiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'DivorceLawyer.com',
+    url: 'https://divorcelawyer.com',
+    description: 'The best divorce lawyers and expert resources to help you navigate your divorce journey.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: 'https://divorcelawyer.com/search?q={search_term_string}',
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
+  // FAQ Schema if questions exist
+  const faqSchema = questions.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: questions.slice(0, 5).map((q) => ({
+      '@type': 'Question',
+      name: q.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: q.answer || '',
+      },
+    })),
+  } : null
+
   return (
     <>
+      {/* Structured Data (JSON-LD) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(organizationSchema),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(websiteSchema),
+        }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(faqSchema),
+          }}
+        />
+      )}
       <Header />
       <main className="min-h-screen bg-white">
         {/* Hero Section - HeroComponentSecondary */}
