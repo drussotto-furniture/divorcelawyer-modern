@@ -2,9 +2,8 @@
 
 import Link from 'next/link'
 import FirmCard from './FirmCard'
-import VettingProcessCard from './VettingProcessCard'
 import ComingSoonCard from './ComingSoonCard'
-import NeedAssistanceCard from './NeedAssistanceCard'
+import InfoCard from './InfoCard'
 
 interface Lawyer {
   id: string
@@ -68,6 +67,22 @@ export default function ThreePackComponent({
     cards.push({ type: 'need-assistance' })
   }
 
+  // Vetting Process Card Content
+  const vettingProcessBody = (
+    <ul>
+      <li>We do the hard work of selecting only the best.</li>
+      <li>Featured firms are leaders in family law, proven in their field.</li>
+      <li>These lawyers helped create this educational content library.</li>
+    </ul>
+  )
+
+  // Need Assistance Card Content
+  const needAssistanceBody = (
+    <p>
+      We're still building our network in your area – it takes time to select the best divorce lawyers. If you need support now, reach out and we'll make a connection.
+    </p>
+  )
+
   return (
     <section id="3pack" className="top-law-firms-section block-spacing spacing-top-large spacing-bottom-none px-4 lg:px-10 xl:px-10">
       <div className={`pack-component block-container px-4 sm:px-6 py-12 lg:py-20 rounded-xl slideup ${backgroundColor} overley-layout`}>
@@ -104,7 +119,19 @@ export default function ThreePackComponent({
                 }
 
                 if (card.type === 'vetting-process') {
-                  return <VettingProcessCard key={cardIndex} bgCondition={bgCondition} textCondition={textCondition} />
+                  return (
+                    <InfoCard
+                      key={cardIndex}
+                      title="Our Vetting Process:"
+                      subtitle="Ensuring Only the Best"
+                      body={vettingProcessBody}
+                      ctaButton={{
+                        text: `EXPLORE ALL IN ${city.toUpperCase()}, ${stateCode}`,
+                        href: `/locations/${stateCode.toLowerCase()}/${city.toLowerCase().replace(/ /g, '-')}`,
+                        className: 'bg-primary text-black hover:bg-primary/90'
+                      }}
+                    />
+                  )
                 }
 
                 if (card.type === 'coming-soon') {
@@ -112,22 +139,23 @@ export default function ThreePackComponent({
                 }
 
                 if (card.type === 'need-assistance') {
-                  return <NeedAssistanceCard key={cardIndex} />
+                  return (
+                    <InfoCard
+                      key={cardIndex}
+                      title="Need Assistance Sooner?"
+                      subtitle="We can help!"
+                      body={needAssistanceBody}
+                      ctaButton={{
+                        text: 'REQUEST AN INTRODUCTION',
+                        href: '/about-us/request-a-call/',
+                        className: 'bg-bluish hover:bg-dark-bluish'
+                      }}
+                    />
+                  )
                 }
 
                 return null
               })}
-            </div>
-            
-            <div className="flex justify-center mb-0 text-center mt-8 lg:mt-12 px-4">
-              <Link
-                href={`/locations/${stateCode.toLowerCase()}/${city.toLowerCase().replace(/ /g, '-')}`}
-                className="component-button style-bottom-button w-full sm:w-auto text-center bg-primary text-black font-proxima font-bold py-4 px-8 rounded-full hover:bg-primary/90 transition-colors text-sm lg:text-base uppercase tracking-wide"
-              >
-                <span className="button-wrapper">
-                  <span>Explore All in {city}, {stateCode}</span>
-                </span>
-              </Link>
             </div>
           </div>
         </div>
