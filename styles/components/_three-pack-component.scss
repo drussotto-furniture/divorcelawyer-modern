@@ -475,7 +475,7 @@
       display: flex;
       gap: 1.25rem;
       justify-content: center;
-      align-items: stretch;
+      align-items: stretch; // Make all children same height
       
       @include media('>=lg') {
         gap: 10px;
@@ -490,7 +490,8 @@
       > * {
         display: flex;
         flex-direction: column;
-        height: 100%;
+        flex: 1 1 auto; // Allow flex growth
+        min-height: 100%; // Ensure minimum height
         
         @include media('>=lg') {
           display: flex;
@@ -634,10 +635,17 @@
           &.explore {
             h2 {
               font-size: fluid(24, 32) !important;
+              color: #163B46 !important; // bluish (teal) - ensure it's teal
+              font-style: normal !important; // not italic
             }
             h3 {
               font-size: fluid(24, 32) !important;
               line-height: fluid(28, 40) !important;
+              color: #FC9445 !important; // primary orange
+              font-style: italic !important; // italic
+            }
+            p {
+              color: #000000 !important; // black
             }
           }
         }
@@ -715,6 +723,7 @@
         display: flex;
         flex-direction: column;
         align-self: stretch;
+        height: 100%; // Ensure full height at all breakpoints
         
         @include media(">=lg") {
           height: 100%;
