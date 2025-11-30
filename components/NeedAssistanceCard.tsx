@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 export default function NeedAssistanceCard() {
   return (
-    <div className="flex-1 min-w-[280px] sm:min-w-[320px] lg:min-w-0 max-w-[450px] lg:max-w-none w-full lawyer-card-pack flex flex-col lg:h-full law-firmscard comming-soon explore bg-seashell rounded-lg p-6 lg:p-8">
+    <div className="flex-1 min-w-[280px] sm:min-w-[320px] lg:min-w-0 max-w-[450px] lg:max-w-none w-full lawyer-card-pack flex flex-col lg:h-full law-firmscard comming-soon explore bg-white rounded-lg p-6 lg:p-8 shadow-sm">
       <h2 className="text-2xl lg:text-3xl xl:text-4xl font-serif italic text-primary mb-2 font-normal">
         Need Assistance Sooner?
       </h2>
