@@ -15,10 +15,10 @@ interface InfoCardProps {
 
 export default function InfoCard({ title, subtitle, body, ctaButton }: InfoCardProps) {
   return (
-    <div className="flex-1 min-w-[280px] sm:min-w-[320px] lg:min-w-0 max-w-[450px] lg:max-w-none w-full flex flex-col h-full bg-white rounded-lg p-6 lg:p-8 shadow-sm">
+    <div className="flex-1 min-w-[280px] sm:min-w-[320px] lg:min-w-0 max-w-[450px] lg:max-w-none w-full flex flex-col bg-white rounded-lg p-6 lg:p-8 shadow-sm h-full">
       <div className="flex flex-col h-full">
         {/* Section 1: Title - Top justified */}
-        <div className="mb-2 flex-shrink-0">
+        <div className="mb-4 flex-shrink-0">
           <h2 className="text-2xl lg:text-3xl xl:text-4xl font-serif text-bluish font-normal text-left">
             {title}
           </h2>
@@ -31,8 +31,8 @@ export default function InfoCard({ title, subtitle, body, ctaButton }: InfoCardP
           </h3>
         </div>
 
-        {/* Section 3: Body - Top justified, aligned with above sections */}
-        <div className="flex-1 text-left mb-6 lg:mb-8 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:lg:pl-8 [&_ul]:space-y-3 [&_ul]:lg:space-y-4 [&_li]:text-black [&_li]:font-proxima [&_li]:text-sm [&_li]:lg:text-base [&_li::marker]:text-primary [&_p]:text-black [&_p]:font-proxima [&_p]:text-base [&_p]:lg:text-lg">
+        {/* Section 3: Body - Flexible height with min-height to ensure equal card heights */}
+        <div className="flex-1 text-left mb-6 lg:mb-8 min-h-[120px] [&_p]:!text-black [&_p]:font-proxima [&_p]:text-base [&_p]:lg:text-lg [&_p]:leading-relaxed">
           {body}
         </div>
 

@@ -69,11 +69,9 @@ export default function ThreePackComponent({
 
   // Vetting Process Card Content
   const vettingProcessBody = (
-    <ul>
-      <li>We do the hard work of selecting only the best.</li>
-      <li>Featured firms are leaders in family law, proven in their field.</li>
-      <li>These lawyers helped create this educational content library.</li>
-    </ul>
+    <p>
+      We do the hard work of selecting only the best. Featured firms are leaders in family law, proven in their field. These lawyers helped create this educational content library.
+    </p>
   )
 
   // Need Assistance Card Content
