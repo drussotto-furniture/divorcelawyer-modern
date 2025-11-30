@@ -488,6 +488,10 @@
       }
       
       > * {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        
         @include media('>=lg') {
           display: flex;
           flex-direction: column;
@@ -579,8 +583,8 @@
           h2 {
             font-size: fluid(24, 32) !important;
             line-height: fluid(28, 40) !important;
-            font-style: italic;
-            color: #FC9445 !important; // primary orange
+            font-style: normal !important; // not italic for title
+            color: #163B46 !important; // bluish (teal) - same as vetting process
             min-height: max-content;
             font-weight: 400 !important;
             font-family: 'Libre', serif !important;
@@ -595,7 +599,8 @@
           h3 {
             font-size: fluid(24, 32) !important;
             line-height: fluid(28, 40) !important;
-            color: #163B46 !important; // bluish
+            color: #FC9445 !important; // primary orange - same as vetting process
+            font-style: italic !important; // italic to match vetting process
             font-weight: 400 !important;
             margin-bottom: 1.5rem !important;
             font-family: 'Libre', serif !important;
@@ -614,7 +619,7 @@
           p {
             font-size: 1rem !important;
             line-height: 1.5 !important;
-            color: #163B46 !important; // bluish
+            color: #000000 !important; // black
             font-family: 'Proxima', sans-serif !important;
             font-weight: 400 !important;
             text-align: left !important;
@@ -691,7 +696,7 @@
               font-size: 0.875rem !important;
               font-family: 'Proxima', sans-serif !important;
               margin-bottom: 0.75rem !important;
-              color: #163B46 !important; // bluish
+              color: #000000 !important; // black
               
               @include media('>=lg') {
                 font-size: 1rem !important;
