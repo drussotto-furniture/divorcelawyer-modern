@@ -91,3 +91,5 @@ async function updateCitiesWithWordPressId() {
 
 updateCitiesWithWordPressId().catch(console.error)
 
+
+

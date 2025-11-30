@@ -162,3 +162,5 @@ CREATE POLICY "Super admins can read all markets" ON markets
 CREATE POLICY "Super admins can manage markets" ON markets
   FOR ALL TO authenticated USING (is_super_admin()) WITH CHECK (is_super_admin());
 
+
+

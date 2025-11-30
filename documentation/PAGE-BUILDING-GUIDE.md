@@ -895,3 +895,5 @@ rounded-full      // Fully rounded
 
 **Remember**: When in doubt, reference the homepage (`app/page.tsx`) as it follows all these patterns and best practices!
 
+
+

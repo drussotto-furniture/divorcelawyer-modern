@@ -92,7 +92,7 @@ export default function ThreePackComponent({
             </div>
             
             <div className="px-0 mb-8 lg:mb-10 text-center xl:px-64 lg:px-64 md:px-20 sm:px-4">
-              <div className={`max-w-6xl text-center p-0 component-rich-text text-sm lg:text-base font-proxima ${backgroundColor === 'bg-bluish' ? 'text-white' : 'text-gray-700'}`}>
+              <div className={`max-w-6xl text-center p-0 component-rich-text text-sm lg:text-base xl:text-lg font-proxima font-light ${backgroundColor === 'bg-bluish' ? 'text-white' : 'text-gray-700'}`}>
                 Divorce can be complex, and choosing a lawyer among many is often overwhelming. We've done the initial screening for you, selecting the right representation, carefully vetted and handpicked for you.
               </div>
             </div>

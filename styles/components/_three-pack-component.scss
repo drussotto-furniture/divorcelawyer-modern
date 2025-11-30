@@ -561,123 +561,145 @@
         &.comming-soon {
           box-shadow: 0px 8px 20px 0px rgba(98, 74, 52, 0.15);
           background: none;
-          background-color: #fff;
-          text-align: center;
-          padding-bottom: 3rem;
-          padding-left: 2.25rem;
-          padding-right: 2.25rem;
+          background-color: #F5F1ED !important; // seashell to match vetting process card
+          text-align: left !important;
+          padding: 1.5rem !important;
           margin-bottom: 0.75rem;
           max-width: 400px;
-          border: 1px solid #08555c;
+          border: none !important;
+          
+          @include media('>=lg') {
+            padding: 2rem !important;
+          }
           
           @include media('>=2xl') {
             max-width: 450px;
           }
 
           h2 {
-            font-size: 1.5rem;
+            font-size: fluid(24, 32) !important;
+            line-height: fluid(28, 40) !important;
             font-style: italic;
-            color: #B6572E;
+            color: #FC9445 !important; // primary orange
             min-height: max-content;
+            font-weight: 400 !important;
+            font-family: 'Libre', serif !important;
+            margin-bottom: 0.5rem !important;
+            text-align: left !important;
             
             @include media('>=lg') {
-              font-size: 2.25rem;
+              font-size: fluid(24, 32) !important;
             }
           }
 
           h3 {
-            font-size: fluid(22, 34);
-            line-height: fluid(24, 40);
-            color: #1D1D1D;
-            font-weight: 400;
-            margin-bottom: 1rem;
-            font-family: 'Libre', serif;
+            font-size: fluid(24, 32) !important;
+            line-height: fluid(28, 40) !important;
+            color: #163B46 !important; // bluish
+            font-weight: 400 !important;
+            margin-bottom: 1.5rem !important;
+            font-family: 'Libre', serif !important;
+            text-align: left !important;
+            
+            @include media('>=lg') {
+              margin-bottom: 2rem !important;
+            }
 
             &.no-firms {
               font-size: fluid(22, 26);
               line-height: fluid(24, 32);
             }
           }
+          
+          p {
+            font-size: 1rem !important;
+            line-height: 1.5 !important;
+            color: #163B46 !important; // bluish
+            font-family: 'Proxima', sans-serif !important;
+            font-weight: 400 !important;
+            text-align: left !important;
+            margin-bottom: 1.5rem !important;
+            
+            @include media('>=lg') {
+              font-size: 1.125rem !important;
+              margin-bottom: 2rem !important;
+            }
+          }
 
           &.explore {
             h2 {
-              font-size: 28px;
+              font-size: fluid(24, 32) !important;
             }
             h3 {
-              font-size: fluid(22, 28);
-              line-height: fluid(24, 32);
+              font-size: fluid(24, 32) !important;
+              line-height: fluid(28, 40) !important;
             }
           }
         }
 
         &.vetting-process {
-          padding-top: 2rem;
-          padding-bottom: 2rem;
-          background: none;
-          padding-left: 1.75rem;
-          padding-right: 1.75rem;
-          margin-bottom: 0.75rem;
-          max-width: 400px;
-          min-height: rem(380);
+          // Override with Tailwind classes - styles are in component
+          background: #F5F1ED !important; // seashell
+          padding: 1.5rem !important;
           
           @include media('>=lg') {
-            padding-top: 3rem;
-            padding-bottom: 3rem;
-            padding-left: 0;
-            padding-right: 0;
-          }
-          
-          @include media('>=2xl') {
-            max-width: 450px;
+            padding: 2rem !important;
           }
 
           h2 {
-            font-size: fluid(24, 28);
-            line-height: fluid(26, 37);
-            background-color: #fff;
-            border-bottom-left-radius: 0.75rem;
-            border-bottom-right-radius: 0.75rem;
-            padding: 1.5rem 1.25rem;
-            text-align: center;
-            max-width: 100%;
-            margin-bottom: 1.25rem;
-            min-height: auto;
+            // Remove white background box - titles should be inside card
+            background: transparent !important;
+            padding: 0 !important;
+            margin-bottom: 0.5rem !important;
+            text-align: left !important;
+            max-width: 100% !important;
+            border-radius: 0 !important;
+            font-size: fluid(24, 32) !important;
+            line-height: fluid(28, 40) !important;
+            color: #163B46 !important; // bluish
             
             @include media('>=lg') {
-              border-bottom-right-radius: 0.75rem;
-              border-bottom-left-radius: 0;
-              border-top-right-radius: 0.75rem;
-              padding: 3rem 1.5rem 5rem 1rem;
-              text-align: right;
-              max-width: 12rem;
-              margin-bottom: 0;
+              text-align: left !important;
+              max-width: 100% !important;
+              padding: 0 !important;
             }
+          }
+          
+          h3 {
+            font-size: fluid(24, 32) !important;
+            line-height: fluid(28, 40) !important;
+            color: #FC9445 !important; // primary orange
+            font-style: italic;
+            margin-bottom: 1.5rem !important;
             
-            span {
-              color: #B6572E;
+            @include media('>=lg') {
+              margin-bottom: 2rem !important;
             }
           }
 
           ul {
-            padding-left: 1.75rem;
-            padding-right: 1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            list-style: disc;
+            padding-left: 1.5rem !important;
+            padding-right: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            list-style: disc !important;
+            margin: 0 !important;
 
             li {
-              text-align: left;
-              font-size: 0.875rem;
-              font-family: 'Proxima', sans-serif;
-              margin-bottom: 0.5rem;
+              text-align: left !important;
+              font-size: 0.875rem !important;
+              font-family: 'Proxima', sans-serif !important;
+              margin-bottom: 0.75rem !important;
+              color: #163B46 !important; // bluish
               
               @include media('>=lg') {
-                font-size: 1rem;
+                font-size: 1rem !important;
+                margin-bottom: 1rem !important;
               }
 
               &::marker {
-                color: #FC9445;
+                color: #FC9445 !important; // primary orange
               }
             }
           }

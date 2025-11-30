@@ -76,8 +76,24 @@ export default function MediaLibrary({ media: initialMedia }: MediaLibraryProps)
     }
   }
 
-  const imageMedia = media.filter((item) => item.mime_type?.startsWith('image/'))
-  const otherMedia = media.filter((item) => !item.mime_type?.startsWith('image/'))
+  // Filter media: images vs other files
+  // If mime_type is null, check if original_url looks like an image
+  const imageMedia = media.filter((item) => {
+    if (item.mime_type?.startsWith('image/')) return true
+    if (!item.mime_type && item.original_url) {
+      const url = item.original_url.toLowerCase()
+      return url.match(/\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?|$)/i)
+    }
+    return false
+  })
+  const otherMedia = media.filter((item) => {
+    if (item.mime_type?.startsWith('image/')) return false
+    if (!item.mime_type && item.original_url) {
+      const url = item.original_url.toLowerCase()
+      return !url.match(/\.(jpg|jpeg|png|gif|webp|svg|bmp)(\?|$)/i)
+    }
+    return true
+  })
 
   return (
     <div className="space-y-6">
@@ -122,16 +138,17 @@ export default function MediaLibrary({ media: initialMedia }: MediaLibraryProps)
                 className="bg-white rounded-lg shadow overflow-hidden hover:shadow-md transition-shadow"
               >
                 <div className="aspect-square relative bg-gray-100">
-                  {item.storage_url ? (
+                  {item.original_url ? (
                     <Image
                       src={item.original_url}
                       alt={item.alt_text || item.filename}
                       fill
                       className="object-cover"
+                      unoptimized // WordPress URLs may not be optimized
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      No Image
+                      No Image URL
                     </div>
                   )}
                 </div>

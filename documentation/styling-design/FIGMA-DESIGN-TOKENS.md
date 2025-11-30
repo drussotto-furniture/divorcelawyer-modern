@@ -285,3 +285,5 @@
 3. **Card Backgrounds**: Use `#F8F1EA` (Peach Cream) for article cards
 4. **Category Cards**: Use `#F4F2EC` (Subtle Sand) background
 
+
+

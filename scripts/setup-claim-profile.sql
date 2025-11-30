@@ -41,3 +41,5 @@ $$ LANGUAGE plpgsql;
 -- Verify table was created
 SELECT 'claim_tokens table created successfully!' as status;
 
+
+

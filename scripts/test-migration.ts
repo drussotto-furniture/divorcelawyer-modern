@@ -13,3 +13,5 @@ if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_
 console.log('✅ Environment variables are set')
 console.log('Ready to run migration...')
 
+
+

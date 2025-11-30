@@ -122,3 +122,5 @@ CREATE INDEX IF NOT EXISTS idx_lawyers_meta_description ON lawyers(meta_descript
 --   - meta_title (TEXT)
 --   - meta_description (TEXT)
 
+
+

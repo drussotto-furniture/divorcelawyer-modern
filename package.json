@@ -26,6 +26,8 @@
           "check:location-counts": "tsx scripts/check-location-data-counts.ts",
           "update:cities-wp-id": "tsx scripts/update-cities-wordpress-id.ts",
           "link:zip-codes": "tsx scripts/link-zip-codes-to-cities.ts",
+          "import:media": "tsx scripts/import-media-from-json.ts",
+          "check:media": "tsx scripts/check-media-count.ts",
           "create:test-users": "node scripts/create-test-users.js",
     "reset:claim-profile": "node scripts/reset-claim-profile.js",
           "add:drussotto-lawyer": "node scripts/add-drussotto-lawyer.js"
