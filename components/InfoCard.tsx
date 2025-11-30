@@ -32,7 +32,7 @@ export default function InfoCard({ title, subtitle, body, ctaButton }: InfoCardP
         </div>
 
         {/* Section 3: Body - Flexible height with min-height to ensure equal card heights */}
-        <div className="flex-1 text-left mb-6 lg:mb-8 min-h-[120px] [&_p]:!text-black [&_p]:font-proxima [&_p]:text-base [&_p]:lg:text-lg [&_p]:leading-relaxed">
+        <div className="flex-1 text-left mb-6 lg:mb-8 min-h-[120px] [&_p]:!text-black [&_p]:font-proxima [&_p]:text-lg [&_p]:lg:text-xl [&_p]:leading-relaxed">
           {body}
         </div>
 

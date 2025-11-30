@@ -269,19 +269,92 @@ components/
 
 ### Reusable Component Patterns
 
-#### 1. **Card Components**
+#### 1. **InfoCard Component** ⭐ Reusable
+A flexible card component with 4 sections: title, subtitle, body, and optional CTA button. Perfect for side-by-side information cards.
+
+**Location**: `components/InfoCard.tsx`
+
+**Usage**:
+```typescript
+import InfoCard from '@/components/InfoCard'
+
+// Example 1: With CTA button
+<InfoCard
+  title="Our Vetting Process:"
+  subtitle="Ensuring Only the Best"
+  body={
+    <p>
+      We do the hard work of selecting only the best. Featured firms are leaders in family law, proven in their field.
+    </p>
+  }
+  ctaButton={{
+    text: 'EXPLORE ALL IN ATLANTA, GA',
+    href: '/locations/ga/atlanta',
+    className: 'bg-primary text-black hover:bg-primary/90'
+  }}
+/>
+
+// Example 2: With teal button
+<InfoCard
+  title="Need Assistance Sooner?"
+  subtitle="We can help!"
+  body={
+    <p>
+      We're still building our network in your area – it takes time to select the best divorce lawyers.
+    </p>
+  }
+  ctaButton={{
+    text: 'REQUEST AN INTRODUCTION',
+    href: '/about-us/request-a-call/',
+    className: 'bg-bluish text-white hover:bg-dark-bluish'
+  }}
+/>
+```
+
+**Props**:
+- `title` (string, required): Teal-colored title text
+- `subtitle` (string, required): Orange italic subtitle text
+- `body` (ReactNode, required): Body content (paragraph or list)
+- `ctaButton` (object, optional): Button configuration
+  - `text` (string): Button text
+  - `href` (string): Link destination
+  - `className` (string, optional): Custom button classes
+
+**Features**:
+- ✅ White background with shadow
+- ✅ Equal heights when used side-by-side
+- ✅ Top-justified sections with consistent spacing
+- ✅ Responsive typography (text-lg on mobile, text-xl on desktop)
+- ✅ Black body text for readability
+- ✅ Flexible body content (supports paragraphs or lists)
+- ✅ Optional CTA button at bottom
+
+**Styling**:
+- Title: Teal (`text-bluish`), serif font, large size
+- Subtitle: Orange (`text-primary`), italic, serif font
+- Body: Black text, Proxima font, larger size for legibility
+- Card: White background, rounded corners, shadow
+- Button: Customizable via className prop
+
+**Best Practices**:
+- Use in pairs for side-by-side layouts
+- Ensure body text lengths are similar for visual balance
+- Use `items-stretch` on parent container for equal heights
+- Provide meaningful button text and accessible hrefs
+
+#### 2. **Card Components**
 - Use consistent padding: `p-6` or `p-8`
 - Background: `bg-peach-cream` or `bg-subtle-sand`
 - Border radius: `rounded-lg` or `rounded-xl`
 - Hover effects: `hover:shadow-lg transition-shadow`
 
-#### 2. **Button Components**
+#### 3. **Button Components**
 - Primary: `bg-primary text-black font-bold uppercase`
 - Secondary: `border-3 border-white text-white`
 - Always use `rounded-full` for buttons
 - Include proper spacing: `px-6 py-3`
 
-#### 3. **Section Wrappers**
+#### 4. **Section Wrappers**
 ```typescript
 <section className="py-16 lg:py-24 bg-subtle-sand">
   <div className="container mx-auto px-4">
