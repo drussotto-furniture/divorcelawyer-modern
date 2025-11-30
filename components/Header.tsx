@@ -161,26 +161,47 @@ export default function Header() {
             {/* Auth Buttons */}
             {!loading && (
               <>
-                {userRole === 'super_admin' && (
+                {userRole ? (
+                  <>
+                    {userRole === 'super_admin' && (
+                      <Link
+                        href="/admin"
+                        className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                      >
+                        Admin Panel
+                      </Link>
+                    )}
+                    {(userRole === 'law_firm' || userRole === 'lawyer') && (
+                      <Link
+                        href={
+                          userRole === 'law_firm' && lawFirmId
+                            ? `/admin/directory/law-firms/${lawFirmId}`
+                            : userRole === 'lawyer' && lawyerId
+                            ? `/admin/directory/lawyers/${lawyerId}`
+                            : '/admin'
+                        }
+                        className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+                      >
+                        Manage Profile
+                      </Link>
+                    )}
+                    <button
+                      onClick={async () => {
+                        const supabase = createClient()
+                        await supabase.auth.signOut()
+                        window.location.href = '/'
+                      }}
+                      className="px-4 py-2 text-white hover:text-primary transition-colors text-sm font-medium"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
                   <Link
-                    href="/admin"
+                    href="/admin/login"
                     className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
                   >
-                    Admin Panel
-                  </Link>
-                )}
-                {(userRole === 'law_firm' || userRole === 'lawyer') && (
-                  <Link
-                    href={
-                      userRole === 'law_firm' && lawFirmId
-                        ? `/admin/directory/law-firms/${lawFirmId}`
-                        : userRole === 'lawyer' && lawyerId
-                        ? `/admin/directory/lawyers/${lawyerId}`
-                        : '/admin'
-                    }
-                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
-                  >
-                    Manage Profile
+                    Login
                   </Link>
                 )}
               </>
@@ -281,28 +302,51 @@ export default function Header() {
               {/* Mobile Auth Buttons */}
               {!loading && (
                 <div className="pt-4 border-t border-white/20">
-                  {userRole === 'super_admin' && (
+                  {userRole ? (
+                    <>
+                      {userRole === 'super_admin' && (
+                        <Link
+                          href="/admin"
+                          className="block px-4 py-2 bg-primary text-white rounded-lg text-center text-sm font-medium mb-2"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Admin Panel
+                        </Link>
+                      )}
+                      {(userRole === 'law_firm' || userRole === 'lawyer') && (
+                        <Link
+                          href={
+                            userRole === 'law_firm' && lawFirmId
+                              ? `/admin/directory/law-firms/${lawFirmId}`
+                              : userRole === 'lawyer' && lawyerId
+                              ? `/admin/directory/lawyers/${lawyerId}`
+                              : '/admin'
+                          }
+                          className="block px-4 py-2 bg-primary text-white rounded-lg text-center text-sm font-medium mb-2"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          Manage Profile
+                        </Link>
+                      )}
+                      <button
+                        onClick={async () => {
+                          const supabase = createClient()
+                          await supabase.auth.signOut()
+                          setMobileMenuOpen(false)
+                          window.location.href = '/'
+                        }}
+                        className="w-full px-4 py-2 text-white hover:text-primary transition-colors text-sm font-medium"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
                     <Link
-                      href="/admin"
-                      className="block px-4 py-2 bg-primary text-white rounded-lg text-center text-sm font-medium mb-2"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Admin Panel
-                    </Link>
-                  )}
-                  {(userRole === 'law_firm' || userRole === 'lawyer') && (
-                    <Link
-                      href={
-                        userRole === 'law_firm' && lawFirmId
-                          ? `/admin/directory/law-firms/${lawFirmId}`
-                          : userRole === 'lawyer' && lawyerId
-                          ? `/admin/directory/lawyers/${lawyerId}`
-                          : '/admin'
-                      }
+                      href="/admin/login"
                       className="block px-4 py-2 bg-primary text-white rounded-lg text-center text-sm font-medium"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Manage Profile
+                      Login
                     </Link>
                   )}
                 </div>

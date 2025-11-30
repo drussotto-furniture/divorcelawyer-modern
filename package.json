@@ -25,7 +25,10 @@
           "create:test-data": "tsx scripts/create-test-data.ts",
           "check:location-counts": "tsx scripts/check-location-data-counts.ts",
           "update:cities-wp-id": "tsx scripts/update-cities-wordpress-id.ts",
-          "link:zip-codes": "tsx scripts/link-zip-codes-to-cities.ts"
+          "link:zip-codes": "tsx scripts/link-zip-codes-to-cities.ts",
+          "create:test-users": "node scripts/create-test-users.js",
+    "reset:claim-profile": "node scripts/reset-claim-profile.js",
+          "add:drussotto-lawyer": "node scripts/add-drussotto-lawyer.js"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",

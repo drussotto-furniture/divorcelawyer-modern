@@ -320,7 +320,11 @@ export async function getFeaturedLawyersWithFirmsByCity(citySlug: string, limit 
       .single()
     
     if (cityError || !cityData) {
-      console.error('City not found:', citySlug, cityError)
+      // Only log if it's not a "not found" error (PGRST116 is PostgREST "not found")
+      // Missing cities are expected and handled gracefully
+      if (cityError && cityError.code !== 'PGRST116') {
+        console.error('Error fetching city:', citySlug, cityError)
+      }
       return []
     }
     

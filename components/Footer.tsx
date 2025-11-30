@@ -89,6 +89,7 @@ export default function Footer() {
                     <li><Link href="/about-us/news-and-press">News and Press</Link></li>
                     <li><Link href="/councils">Councils</Link></li>
                     <li><Link href="/for-lawyers" className="font-bold">For Lawyers</Link></li>
+                    <li><Link href="/claim-profile" className="font-bold">Claim Your Profile</Link></li>
                     <li><Link href="/contact">Contact Us</Link></li>
                   </ul>
                 </div>

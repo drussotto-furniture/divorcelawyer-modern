@@ -1,6 +1,7 @@
 import { getAuthUser } from '@/lib/auth/server'
 import AdminSidebar from '@/components/admin/AdminSidebar'
-import AdminHeader from '@/components/admin/AdminHeader'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
 export default async function AdminLayout({
   children,
@@ -21,14 +22,17 @@ export default async function AdminLayout({
   // If we have valid auth with admin role, show full layout
   if (auth && auth.user && auth.profile && (auth.isSuperAdmin || auth.isLawFirm || auth.isLawyer)) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <AdminHeader auth={auth} />
-        <div className="flex pt-16">
+      <div className="min-h-screen bg-subtle-sand">
+        <Header />
+        <div className="flex pt-[101px]">
           <AdminSidebar auth={auth} />
-          <main className="flex-1 ml-64 p-6 lg:p-8">
-            {children}
+          <main className="flex-1 ml-0 lg:ml-64 p-4 md:p-6 lg:p-8 transition-all duration-300 min-h-[calc(100vh-101px)]">
+            <div className="max-w-7xl mx-auto">
+              {children}
+            </div>
           </main>
         </div>
+        <Footer />
       </div>
     )
   }

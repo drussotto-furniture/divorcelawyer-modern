@@ -63,7 +63,7 @@ export default function ThreePackComponent({
       cards.push({ type: 'vetting-process' })
     }
   } else {
-    // No law firms - show default cards
+    // No law firms - show default cards side-by-side (matching original design)
     cards.push({ type: 'vetting-process' })
     cards.push({ type: 'need-assistance' })
   }
@@ -74,30 +74,30 @@ export default function ThreePackComponent({
         <div className="flex justify-center align-center">
           <div className="container-size-small w-full">
             <div className="px-0 text-center lg:px-0">
-              <h2 className={`${textColor} title-pack text-xl lg:text-3xl mb-2`}>
+              <h2 className={`${textColor} title-pack text-3xl lg:text-5xl xl:text-6xl font-serif mb-3 lg:mb-4`}>
                 The Top Divorce Lawyers in your Area
               </h2>
-              <h2 className={`${textColor} title-pack text-xl lg:text-3xl mb-4`}>
-                <span>{city}, {stateCode}</span>
+              <h2 className={`text-primary title-pack text-3xl lg:text-5xl xl:text-6xl font-serif italic mb-4 lg:mb-6`}>
+                {city}, {stateCode}
               </h2>
-              <div className="mb-4 lg:px-24">
+              <div className="mb-6 lg:mb-8">
                 <a 
                   href="#" 
                   id="open-change-location-modal" 
-                  className="italic underline underline-offset-2 cursor-pointer text-white font-proxima hover:text-primary text-sm lg:text-base"
+                  className={`italic underline underline-offset-2 cursor-pointer font-proxima hover:text-primary text-sm lg:text-base ${backgroundColor === 'bg-bluish' ? 'text-white' : 'text-bluish'}`}
                 >
                   Change location
                 </a>
               </div>
             </div>
             
-            <div className="px-0 mb-6 lg:mb-3 text-center xl:px-64 lg:px-64 md:px-20 sm:px-4">
-              <div className={`max-w-6xl text-center p-0 component-rich-text text-sm lg:text-base ${backgroundColor === 'bg-bluish' ? 'text-white' : ''}`}>
+            <div className="px-0 mb-8 lg:mb-10 text-center xl:px-64 lg:px-64 md:px-20 sm:px-4">
+              <div className={`max-w-6xl text-center p-0 component-rich-text text-sm lg:text-base font-proxima ${backgroundColor === 'bg-bluish' ? 'text-white' : 'text-gray-700'}`}>
                 Divorce can be complex, and choosing a lawyer among many is often overwhelming. We've done the initial screening for you, selecting the right representation, carefully vetted and handpicked for you.
               </div>
             </div>
             
-            <div className="container flex flex-row flex-nowrap gap-3 sm:gap-4 px-0 top-law-firmscard-wrapper slide-container overflow-x-auto lg:overflow-x-visible lg:gap-2 lg:px-0 xl:gap-4 xl:px-0 lg:items-stretch justify-start lg:justify-center pb-4 lg:pb-0">
+            <div className={`container flex flex-row flex-nowrap gap-4 sm:gap-6 px-0 top-law-firmscard-wrapper slide-container overflow-x-auto lg:overflow-x-visible lg:gap-6 lg:px-0 xl:gap-8 xl:px-0 lg:items-stretch ${lawFirms.length === 0 ? 'justify-center' : 'justify-start lg:justify-center'} pb-4 lg:pb-0`}>
               {cards.map((card, cardIndex) => {
                 if (card.type === 'firm' && card.data) {
                   return <FirmCard key={cardIndex} firm={card.data} cardIndex={cardIndex} />
@@ -119,10 +119,10 @@ export default function ThreePackComponent({
               })}
             </div>
             
-            <div className="flex justify-center mb-0 text-center mt-6 lg:mt-9 px-4">
+            <div className="flex justify-center mb-0 text-center mt-8 lg:mt-12 px-4">
               <Link
                 href={`/locations/${stateCode.toLowerCase()}/${city.toLowerCase().replace(/ /g, '-')}`}
-                className="component-button style-bottom-button w-full sm:w-auto text-center"
+                className="component-button style-bottom-button w-full sm:w-auto text-center bg-primary text-black font-proxima font-bold py-4 px-8 rounded-full hover:bg-primary/90 transition-colors text-sm lg:text-base uppercase tracking-wide"
               >
                 <span className="button-wrapper">
                   <span>Explore All in {city}, {stateCode}</span>

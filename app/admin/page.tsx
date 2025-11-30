@@ -65,11 +65,11 @@ export default async function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-2 text-gray-600">
-          Welcome back, {auth.profile?.name || auth.profile?.email}
+    <div className="space-y-8">
+      <div className="bg-white rounded-lg shadow-sm p-6 lg:p-8">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-bluish mb-4">Dashboard</h1>
+        <p className="text-lg text-gray-700 font-proxima">
+          Welcome back, <span className="font-semibold text-bluish">{auth.profile?.name || auth.profile?.email}</span>
         </p>
       </div>
 
@@ -144,31 +144,31 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="bg-white rounded-lg shadow-sm p-6 lg:p-8">
+        <h2 className="text-2xl md:text-3xl font-serif text-bluish mb-6">Quick Actions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {auth.isSuperAdmin && (
             <>
               <Link
                 href="/admin/content/homepage"
-                className="p-4 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors"
+                className="p-6 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-peach-cream transition-all hover:shadow-md"
               >
-                <div className="font-medium text-gray-900">Edit Homepage</div>
-                <div className="text-sm text-gray-600 mt-1">Update homepage content</div>
+                <div className="font-bold text-lg text-bluish mb-2">Edit Homepage</div>
+                <div className="text-sm text-gray-600 font-proxima">Update homepage content</div>
               </Link>
               <Link
                 href="/admin/directory/law-firms/new"
-                className="p-4 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors"
+                className="p-6 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-peach-cream transition-all hover:shadow-md"
               >
-                <div className="font-medium text-gray-900">Add Law Firm</div>
-                <div className="text-sm text-gray-600 mt-1">Create a new law firm</div>
+                <div className="font-bold text-lg text-bluish mb-2">Add Law Firm</div>
+                <div className="text-sm text-gray-600 font-proxima">Create a new law firm</div>
               </Link>
               <Link
                 href="/admin/directory/lawyers/new"
-                className="p-4 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors"
+                className="p-6 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-peach-cream transition-all hover:shadow-md"
               >
-                <div className="font-medium text-gray-900">Add Lawyer</div>
-                <div className="text-sm text-gray-600 mt-1">Create a new lawyer profile</div>
+                <div className="font-bold text-lg text-bluish mb-2">Add Lawyer</div>
+                <div className="text-sm text-gray-600 font-proxima">Create a new lawyer profile</div>
               </Link>
             </>
           )}
@@ -176,20 +176,20 @@ export default async function AdminDashboard() {
           {auth.isLawFirm && (
             <Link
               href={`/admin/directory/law-firms/${auth.lawFirmId}`}
-              className="p-4 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors"
+              className="p-6 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-peach-cream transition-all hover:shadow-md"
             >
-              <div className="font-medium text-gray-900">Edit My Firm</div>
-              <div className="text-sm text-gray-600 mt-1">Update firm information</div>
+              <div className="font-bold text-lg text-bluish mb-2">Edit My Firm</div>
+              <div className="text-sm text-gray-600 font-proxima">Update firm information</div>
             </Link>
           )}
 
           {auth.isLawyer && (
             <Link
               href={`/admin/directory/lawyers/${auth.lawyerId}`}
-              className="p-4 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors"
+              className="p-6 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-peach-cream transition-all hover:shadow-md"
             >
-              <div className="font-medium text-gray-900">Edit My Profile</div>
-              <div className="text-sm text-gray-600 mt-1">Update your profile information</div>
+              <div className="font-bold text-lg text-bluish mb-2">Edit My Profile</div>
+              <div className="text-sm text-gray-600 font-proxima">Update your profile information</div>
             </Link>
           )}
         </div>
