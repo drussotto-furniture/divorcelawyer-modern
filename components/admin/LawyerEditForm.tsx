@@ -231,7 +231,7 @@ const normalizedLawyer = {
 
       if (!dmaId) {
         // If no DMA found, check global limits only
-        const { data: globalLimit } = await supabase
+        const { data: globalLimit } = await (supabase as any)
           .from('subscription_limits')
           .select('max_lawyers')
           .eq('location_type', 'global')
@@ -265,7 +265,7 @@ const normalizedLawyer = {
         }
       } else {
         // Check DMA-specific limits
-        const { data: dmaLimit } = await supabase
+        const { data: dmaLimit } = await (supabase as any)
           .from('subscription_limits')
           .select('max_lawyers')
           .eq('location_type', 'dma')
@@ -549,7 +549,7 @@ const normalizedLawyer = {
       if (!zipCodeData) return
 
       // Get DMA for this zip code
-      const { data: dmaMapping } = await supabase
+      const { data: dmaMapping } = await (supabase as any)
         .from('zip_code_dmas')
         .select(`
           dma_id,
@@ -581,7 +581,7 @@ const normalizedLawyer = {
   // Load subscription types
   useEffect(() => {
     const loadSubscriptionTypes = async () => {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from('subscription_types')
         .select('name, display_name, sort_order')
         .eq('is_active', true)
@@ -615,7 +615,7 @@ const normalizedLawyer = {
             
             // Load subscriptions for each DMA
             const dmaIds = serviceAreasData.map(sa => sa.dma_id).filter((id): id is string => !!id)
-            const { data: subscriptionsData } = await supabase
+            const { data: subscriptionsData } = await (supabase as any)
               .from('lawyer_dma_subscriptions')
               .select('dma_id, subscription_type')
               .eq('lawyer_id', lawyer.id)
@@ -779,7 +779,7 @@ const normalizedLawyer = {
           .eq('lawyer_id', lawyerId)
 
         // Delete existing DMA subscriptions
-        await supabase
+        await (supabase as any)
           .from('lawyer_dma_subscriptions')
           .delete()
           .eq('lawyer_id', lawyerId)
@@ -813,7 +813,7 @@ const normalizedLawyer = {
           }))
 
           // Use upsert instead of insert to handle any race conditions or duplicates
-          const { error: subsError } = await supabase
+          const { error: subsError } = await (supabase as any)
             .from('lawyer_dma_subscriptions')
             .upsert(subscriptionsToSave, {
               onConflict: 'lawyer_id,dma_id'
