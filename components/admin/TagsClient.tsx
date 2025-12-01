@@ -84,7 +84,7 @@ export default function TagsClient({ initialTags }: TagsClientProps) {
 
       if (editingTag) {
         // Update existing tag
-        const { data, error: updateError } = await supabase
+        const { data, error: updateError } = await (supabase as any)
           .from('tags')
           .update(tagData)
           .eq('id', editingTag.id)
@@ -97,7 +97,7 @@ export default function TagsClient({ initialTags }: TagsClientProps) {
         handleCancel()
       } else {
         // Create new tag
-        const { data, error: insertError } = await supabase
+        const { data, error: insertError } = await (supabase as any)
           .from('tags')
           .insert(tagData)
           .select()
@@ -124,7 +124,7 @@ export default function TagsClient({ initialTags }: TagsClientProps) {
     setError(null)
 
     try {
-      const { error: deleteError } = await supabase
+      const { error: deleteError } = await (supabase as any)
         .from('tags')
         .delete()
         .eq('id', tag.id)

@@ -13,7 +13,7 @@ export default async function TagsPage() {
 
   const supabase = await createClient()
   
-  const { data: tags, error } = await supabase
+  const { data: tags, error } = await (supabase as any)
     .from('tags')
     .select('*')
     .order('name', { ascending: true })
@@ -27,7 +27,7 @@ export default async function TagsPage() {
         </div>
       </div>
 
-      <TagsClient initialTags={tags || []} />
+      <TagsClient initialTags={(tags as any) || []} />
     </div>
   )
 }
