@@ -2233,9 +2233,9 @@ export async function getLawyersByNameWithDistance(
 
   console.log(`✅ Found ${(lawyersData || []).length} lawyers matching name "${name}" (before distance filter)`)
 
-  // Step 7: Filter lawyers to only those within maxMiles (using city coordinates)
+  // Step 7: Filter lawyers to only those within maxMiles (using city coordinates or zip code geocoding)
   const filteredLawyers = (lawyersData || []).filter((lawyer: any) => {
-    // Check firm city
+    // Check firm city coordinates first
     const firmCity = lawyer.law_firms?.cities
     if (firmCity?.latitude && firmCity?.longitude) {
       const distance = calculateDistance(
@@ -2255,6 +2255,22 @@ export async function getLawyersByNameWithDistance(
           { latitude: city.latitude, longitude: city.longitude }
         )
         if (distance <= maxMiles) return true
+      }
+    }
+
+    // Fallback: If no city coordinates, try geocoding the office zip code
+    if (lawyer.office_zip_code) {
+      // Check if this zip code is in our list of zip codes within radius
+      // (we already have this list from Step 4)
+      if (zipCodeList.includes(lawyer.office_zip_code)) {
+        return true
+      }
+    }
+
+    // Also check firm zip code
+    if (lawyer.law_firms?.zip_code) {
+      if (zipCodeList.includes(lawyer.law_firms.zip_code)) {
+        return true
       }
     }
 

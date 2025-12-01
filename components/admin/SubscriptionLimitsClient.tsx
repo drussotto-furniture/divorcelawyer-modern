@@ -54,7 +54,7 @@ export default function SubscriptionLimitsClient() {
 
   const loadDMAs = async () => {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('dmas')
         .select('id, name, code, slug')
         .order('name')

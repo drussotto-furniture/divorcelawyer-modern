@@ -14,7 +14,7 @@ export default async function DMAsPage() {
   const supabase = await createClient()
   
   // Fetch DMAs
-  const { data: dmas, error } = await supabase
+  const { data: dmas, error } = await (supabase as any)
     .from('dmas')
     .select(`
       id,

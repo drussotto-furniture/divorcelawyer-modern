@@ -19,7 +19,7 @@ export default async function LocationsPage() {
     supabase.from('cities').select('id', { count: 'exact', head: true }),
     supabase.from('zip_codes').select('id', { count: 'exact', head: true }),
     supabase.from('markets' as any).select('id', { count: 'exact', head: true }),
-    supabase.from('dmas').select('id', { count: 'exact', head: true }),
+    (supabase as any).from('dmas').select('id', { count: 'exact', head: true }),
   ])
 
   const stats = {

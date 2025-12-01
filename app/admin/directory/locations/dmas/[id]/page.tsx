@@ -20,7 +20,7 @@ export default async function DMAEditPage({ params }: PageProps) {
   
   let dma = null
   if (!isNew) {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('dmas')
       .select('*')
       .eq('id', resolvedParams.id)

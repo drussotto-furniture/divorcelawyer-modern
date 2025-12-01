@@ -92,13 +92,13 @@ export default function DMAEditForm({ dma }: DMAEditFormProps) {
 
       let result
       if (isNew) {
-        result = await supabase
+        result = await (supabase as any)
           .from('dmas')
           .insert(dataToSave)
           .select()
           .single()
       } else {
-        result = await supabase
+        result = await (supabase as any)
           .from('dmas')
           .update(dataToSave)
           .eq('id', dma.id)

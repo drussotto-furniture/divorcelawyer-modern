@@ -13,7 +13,7 @@ export default async function SubscriptionLimitsCheckerPage() {
   const supabase = await createClient()
 
   // Get all DMAs
-  const { data: dmas, error: dmasError } = await supabase
+  const { data: dmas, error: dmasError } = await (supabase as any)
     .from('dmas')
     .select('id, name, code')
     .order('name')

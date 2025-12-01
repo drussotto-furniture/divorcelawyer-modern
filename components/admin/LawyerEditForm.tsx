@@ -466,7 +466,7 @@ const normalizedLawyer = {
   useEffect(() => {
     const loadDmas = async () => {
       setLoadingDmas(true)
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from('dmas')
         .select('id, name, code')
         .order('name')
