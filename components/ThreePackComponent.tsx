@@ -48,17 +48,20 @@ export default function ThreePackComponent({
   // Build cards array based on lawFirms
   const cards: Array<{ type: 'firm' | 'vetting-process' | 'coming-soon' | 'need-assistance'; data?: LawFirm }> = []
   
-  if (lawFirms.length > 0) {
+  // Filter out firms with no lawyers
+  const firmsWithLawyers = lawFirms.filter(firm => firm.lawyers && firm.lawyers.length > 0)
+  
+  if (firmsWithLawyers.length > 0) {
     // Add law firm cards first
-    lawFirms.slice(0, 3).forEach((firm) => {
+    firmsWithLawyers.slice(0, 3).forEach((firm) => {
       cards.push({ type: 'firm', data: firm })
     })
     
     // Fill remaining slots based on how many firms we have
-    if (lawFirms.length === 1) {
+    if (firmsWithLawyers.length === 1) {
       cards.push({ type: 'coming-soon' })
       cards.push({ type: 'vetting-process' })
-    } else if (lawFirms.length === 2) {
+    } else if (firmsWithLawyers.length === 2) {
       cards.push({ type: 'vetting-process' })
     }
   } else {
@@ -110,10 +113,11 @@ export default function ThreePackComponent({
               </div>
             </div>
             
-            <div className={`container flex flex-row flex-nowrap gap-4 sm:gap-6 px-0 top-law-firmscard-wrapper slide-container overflow-x-auto lg:overflow-x-visible lg:gap-6 lg:px-0 xl:gap-8 xl:px-0 items-stretch ${lawFirms.length === 0 ? 'justify-center' : 'justify-start lg:justify-center'} pb-4 lg:pb-0`}>
+            <div className={`container flex flex-row flex-nowrap gap-4 sm:gap-6 px-0 top-law-firmscard-wrapper slide-container overflow-x-auto lg:overflow-x-visible lg:gap-6 lg:px-0 xl:gap-8 xl:px-0 items-stretch ${firmsWithLawyers.length === 0 ? 'justify-center' : 'justify-start lg:justify-center'} pb-4 lg:pb-0`}>
               {cards.map((card, cardIndex) => {
                 if (card.type === 'firm' && card.data) {
-                  return <FirmCard key={cardIndex} firm={card.data} cardIndex={cardIndex} />
+                  // Use firm ID as key for better React reconciliation
+                  return <FirmCard key={`firm-${card.data.id}`} firm={card.data} cardIndex={cardIndex} />
                 }
 
                 if (card.type === 'vetting-process') {

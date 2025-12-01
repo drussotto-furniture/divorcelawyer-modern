@@ -2,6 +2,7 @@ import { getAuthUser, requireSuperAdmin } from '@/lib/auth/server'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import LawFirmsGridClient from '@/components/admin/LawFirmsGridClient'
 
 export default async function LawFirmsPage() {
   const auth = await getAuthUser()
@@ -48,68 +49,7 @@ export default async function LawFirmsPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Location
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {firms && firms.length > 0 ? (
-              firms.map((firm: any) => (
-                <tr key={firm.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{firm.name}</div>
-                    <div className="text-sm text-gray-500">{firm.slug}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {firm.cities?.name && firm.cities.states?.abbreviation
-                      ? `${firm.cities.name}, ${firm.cities.states.abbreviation}`
-                      : '—'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {firm.verified ? (
-                      <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded">
-                        Verified
-                      </span>
-                    ) : (
-                      <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded">
-                        Not Verified
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <Link
-                      href={`/admin/directory/law-firms/${firm.id}`}
-                      className="text-primary hover:text-primary/80"
-                    >
-                      Edit
-                    </Link>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
-                  No law firms found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <LawFirmsGridClient initialFirms={firms} />
     </div>
   )
 }

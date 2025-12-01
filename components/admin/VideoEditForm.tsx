@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { stripHtml } from '@/lib/utils/strip-html'
 
 interface Video {
   id: string
@@ -33,13 +34,15 @@ export default function VideoEditForm({ video }: VideoEditFormProps) {
   const [formData, setFormData] = useState({
     title: video?.title || '',
     slug: video?.slug || '',
-    description: video?.description || '',
+    // Use main field if it exists (should have plain text after migration), otherwise strip from _html
+    description: video?.description || stripHtml(video?.description_html || ''),
     video_url: video?.video_url || '',
     video_provider: video?.video_provider || 'youtube',
     video_id: video?.video_id || '',
     thumbnail_url: video?.thumbnail_url || '',
     duration_seconds: video?.duration_seconds || null,
-    transcript: video?.transcript || '',
+    // Use main field if it exists (should have plain text after migration), otherwise strip from _html
+    transcript: video?.transcript || stripHtml(video?.transcript_html || ''),
     status: video?.status || 'draft',
     published_at: video?.published_at ? new Date(video.published_at).toISOString().split('T')[0] : '',
   })
@@ -54,6 +57,9 @@ export default function VideoEditForm({ video }: VideoEditFormProps) {
         ...formData,
         published_at: formData.published_at ? new Date(formData.published_at).toISOString() : null,
         duration_seconds: formData.duration_seconds ? parseInt(formData.duration_seconds.toString()) : null,
+        // Preserve existing HTML if it exists, otherwise set to null
+        description_html: video?.description_html || null,
+        transcript_html: video?.transcript_html || null,
       }
 
       if (video) {

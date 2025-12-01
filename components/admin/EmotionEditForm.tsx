@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { stripHtml } from '@/lib/utils/strip-html'
 
 interface Emotion {
   id: string
@@ -32,8 +33,9 @@ export default function EmotionEditForm({ emotion }: EmotionEditFormProps) {
   const [formData, setFormData] = useState({
     name: emotion?.name || '',
     slug: emotion?.slug || '',
-    description: emotion?.description || '',
-    content: emotion?.content || '',
+    // Strip HTML from main field if it exists, or use _html field as fallback
+    description: emotion?.description ? stripHtml(emotion.description) : stripHtml(emotion?.description_html || ''),
+    content: emotion?.content ? stripHtml(emotion.content) : stripHtml(emotion?.content_html || ''),
     coping_strategies: emotion?.coping_strategies?.join(', ') || '',
     related_resources: emotion?.related_resources?.join(', ') || '',
     icon_name: emotion?.icon_name || '',
@@ -56,6 +58,9 @@ export default function EmotionEditForm({ emotion }: EmotionEditFormProps) {
         related_resources: formData.related_resources
           ? formData.related_resources.split(',').map((s) => s.trim()).filter(Boolean)
           : null,
+        // Preserve existing HTML if it exists, otherwise set to null
+        description_html: emotion?.description_html || null,
+        content_html: emotion?.content_html || null,
       }
 
       if (emotion) {

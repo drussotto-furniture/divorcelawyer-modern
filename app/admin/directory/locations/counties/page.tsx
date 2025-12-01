@@ -2,6 +2,7 @@ import { getAuthUser } from '@/lib/auth/server'
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import CountiesGridClient from '@/components/admin/CountiesGridClient'
 
 export default async function CountiesPage() {
   const auth = await getAuthUser()
@@ -39,57 +40,7 @@ export default async function CountiesPage() {
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                State
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Slug
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {counties && counties.length > 0 ? (
-              counties.map((county: any) => (
-                <tr key={county.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{county.name}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {county.states?.name} ({county.states?.abbreviation})
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {county.slug}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <Link
-                      href={`/admin/directory/locations/counties/${county.id}`}
-                      className="text-primary hover:text-primary/80"
-                    >
-                      Edit
-                    </Link>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
-                  No counties found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+      <CountiesGridClient initialCounties={counties || []} />
     </div>
   )
 }

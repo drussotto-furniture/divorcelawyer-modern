@@ -13,12 +13,13 @@ export default async function LocationsPage() {
   const supabase = await createClient()
   
   // Get counts for each location type
-  const [statesResult, countiesResult, citiesResult, zipCodesResult, marketsResult] = await Promise.all([
+  const [statesResult, countiesResult, citiesResult, zipCodesResult, marketsResult, dmasResult] = await Promise.all([
     supabase.from('states').select('id', { count: 'exact', head: true }),
     supabase.from('counties').select('id', { count: 'exact', head: true }),
     supabase.from('cities').select('id', { count: 'exact', head: true }),
     supabase.from('zip_codes').select('id', { count: 'exact', head: true }),
     supabase.from('markets' as any).select('id', { count: 'exact', head: true }),
+    supabase.from('dmas').select('id', { count: 'exact', head: true }),
   ])
 
   const stats = {
@@ -27,6 +28,7 @@ export default async function LocationsPage() {
     cities: citiesResult.count || 0,
     zipCodes: zipCodesResult.count || 0,
     markets: marketsResult.count || 0,
+    dmas: dmasResult.count || 0,
   }
 
   return (
@@ -34,7 +36,7 @@ export default async function LocationsPage() {
       <div>
         <h1 className="text-3xl font-bold text-gray-900">Locations</h1>
         <p className="mt-2 text-gray-600">
-          Manage geographic locations: states, counties, cities, zip codes, and markets
+          Manage geographic locations: states, counties, cities, zip codes, markets, and DMAs
         </p>
       </div>
 
@@ -121,6 +123,23 @@ export default async function LocationsPage() {
           <div className="mt-4">
             <div className="text-2xl font-bold text-primary">{stats.markets}</div>
             <div className="text-sm text-gray-500">Total markets</div>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/directory/locations/dmas"
+          className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow border border-gray-200 hover:border-primary"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">DMAs</h2>
+              <p className="text-sm text-gray-600 mt-1">Designated Marketing Areas</p>
+            </div>
+            <div className="text-3xl">📡</div>
+          </div>
+          <div className="mt-4">
+            <div className="text-2xl font-bold text-primary">{stats.dmas}</div>
+            <div className="text-sm text-gray-500">Total DMAs</div>
           </div>
         </Link>
       </div>

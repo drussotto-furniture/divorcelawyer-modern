@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { stripHtml } from '@/lib/utils/strip-html'
 
 interface TeamMember {
   id: string
@@ -34,7 +35,8 @@ export default function TeamMemberEditForm({ member }: TeamMemberEditFormProps) 
     name: member?.name || '',
     slug: member?.slug || '',
     title: member?.title || '',
-    bio: member?.bio || '',
+    // Strip HTML from main field if it exists, or use _html field as fallback
+    bio: member?.bio ? stripHtml(member.bio) : stripHtml(member?.bio_html || ''),
     photo_url: member?.photo_url || '',
     email: member?.email || '',
     phone: member?.phone || '',
@@ -53,6 +55,8 @@ export default function TeamMemberEditForm({ member }: TeamMemberEditFormProps) 
       const dataToSave = {
         ...formData,
         order_index: formData.order_index ? parseInt(formData.order_index.toString()) : null,
+        // Preserve existing HTML if it exists, otherwise set to null
+        bio_html: member?.bio_html || null,
       }
 
       if (member) {

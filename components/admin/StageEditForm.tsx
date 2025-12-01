@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { stripHtml } from '@/lib/utils/strip-html'
 
 interface Stage {
   id: string
@@ -31,8 +32,9 @@ export default function StageEditForm({ stage }: StageEditFormProps) {
   const [formData, setFormData] = useState({
     name: stage?.name || '',
     slug: stage?.slug || '',
-    description: stage?.description || '',
-    content: stage?.content || '',
+    // Strip HTML from main field if it exists, or use _html field as fallback
+    description: stage?.description ? stripHtml(stage.description) : stripHtml(stage?.description_html || ''),
+    content: stage?.content ? stripHtml(stage.content) : stripHtml(stage?.content_html || ''),
     icon_name: stage?.icon_name || '',
     order_index: stage?.order_index || 0,
     estimated_duration: stage?.estimated_duration || '',
@@ -49,6 +51,9 @@ export default function StageEditForm({ stage }: StageEditFormProps) {
       const dataToSave = {
         ...formData,
         order_index: formData.order_index ? parseInt(formData.order_index.toString()) : null,
+        // Preserve existing HTML if it exists, otherwise set to null
+        description_html: stage?.description_html || null,
+        content_html: stage?.content_html || null,
       }
 
       if (stage) {
@@ -182,7 +187,9 @@ export default function StageEditForm({ stage }: StageEditFormProps) {
                 rows={10}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary font-mono text-sm"
               />
-              <p className="mt-1 text-sm text-gray-500">HTML content is supported</p>
+              <p className="mt-1 text-xs text-gray-500">
+                HTML has been removed from this field. Original HTML is preserved separately for display purposes.
+              </p>
             </div>
           </div>
         </div>

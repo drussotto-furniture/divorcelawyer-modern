@@ -95,11 +95,20 @@ export default function AdminSidebar({ auth }: AdminSidebarProps) {
       { name: 'Law Firms', href: '/admin/directory/law-firms' },
       { name: 'Lawyers', href: '/admin/directory/lawyers' },
       { name: 'Locations', href: '/admin/directory/locations' },
+      { name: 'Fallback Lawyers', href: '/admin/fallback-lawyers' },
+    ]},
+    { name: 'Subscriptions', href: '/admin/subscriptions', icon: '💳', children: [
+      { name: 'Subscription Types', href: '/admin/subscriptions/types' },
+      { name: 'Subscription Limits', href: '/admin/subscriptions/limits' },
     ]},
     { name: 'Resources', href: '/admin/resources', icon: '📚', children: [
       { name: 'Stages', href: '/admin/resources/stages' },
       { name: 'Emotions', href: '/admin/resources/emotions' },
       { name: 'Categories', href: '/admin/resources/categories' },
+    ]},
+    { name: 'Tags', href: '/admin/tags', icon: '🏷️', children: [
+      { name: 'Manage Tags', href: '/admin/tags' },
+      { name: 'Page Tags', href: '/admin/tags/pages' },
     ]},
     { name: 'Media Library', href: '/admin/media', icon: '🖼️' },
     { name: 'Components', href: '/admin/components', icon: '🧩' },
@@ -133,7 +142,7 @@ export default function AdminSidebar({ auth }: AdminSidebarProps) {
       {/* Sidebar */}
       <aside 
         id="admin-sidebar"
-        className="w-64 bg-bluish text-white min-h-[calc(100vh-101px)] fixed left-0 top-[101px] z-30 overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300"
+        className="w-64 bg-bluish text-white max-h-[calc(100vh-101px)] fixed lg:sticky top-[101px] left-0 lg:left-auto z-30 overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300 flex-shrink-0"
       >
         <nav className="p-4">
           <div className="mb-6 px-4 py-3 border-b border-white/20">

@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { stripHtml } from '@/lib/utils/strip-html'
+import TagAssignment from '@/components/admin/TagAssignment'
 
 interface Article {
   id: string
@@ -44,8 +46,9 @@ export default function ArticleEditForm({ article, categories }: ArticleEditForm
   const [formData, setFormData] = useState({
     title: article?.title || '',
     slug: article?.slug || '',
-    content: article?.content || '',
-    excerpt: article?.excerpt || '',
+    // Strip HTML from main field if it exists, or use _html field as fallback
+    content: article?.content ? stripHtml(article.content) : stripHtml(article?.content_html || ''),
+    excerpt: article?.excerpt ? stripHtml(article.excerpt) : stripHtml(article?.excerpt_html || ''),
     category_id: article?.category_id || '',
     featured_image_url: article?.featured_image_url || '',
     status: article?.status || 'draft',
@@ -64,6 +67,9 @@ export default function ArticleEditForm({ article, categories }: ArticleEditForm
         ...formData,
         published_at: formData.published_at ? new Date(formData.published_at).toISOString() : null,
         category_id: formData.category_id || null,
+        // Preserve existing HTML if it exists, otherwise set to null
+        content_html: article?.content_html || null,
+        excerpt_html: article?.excerpt_html || null,
       }
 
       if (article) {
@@ -224,9 +230,11 @@ export default function ArticleEditForm({ article, categories }: ArticleEditForm
               value={formData.content}
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
               rows={20}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary font-mono text-sm"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
             />
-            <p className="mt-1 text-sm text-gray-500">HTML content is supported</p>
+            <p className="mt-1 text-xs text-gray-500">
+              HTML has been removed from this field. Original HTML is preserved separately for display purposes.
+            </p>
           </div>
         </div>
 
@@ -258,6 +266,14 @@ export default function ArticleEditForm({ article, categories }: ArticleEditForm
             </div>
           </div>
         </div>
+
+        {/* Tags */}
+        {article && (
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Tags</h2>
+            <TagAssignment contentType="article" contentId={article.id} />
+          </div>
+        )}
       </div>
 
       {/* Actions */}

@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { AuthUser } from '@/lib/auth/server'
 import { FIRM_SIZES, PRACTICE_AREAS } from '@/lib/constants/lawyer-fields'
+import { decodeHtmlEntities } from '@/lib/utils/html-entities'
+import { stripHtml } from '@/lib/utils/strip-html'
 
 interface LawFirmEditFormProps {
   firm: any
@@ -31,10 +33,19 @@ export default function LawFirmEditForm({ firm, auth, isNew = false }: LawFirmEd
   const [success, setSuccess] = useState('')
   const [activeSection, setActiveSection] = useState<string>('basic')
 
-  // Normalize firm data on mount
+  // Normalize firm data on mount, decode HTML entities, and strip HTML from text fields
   const normalizedFirm = {
     ...firm,
     practice_areas: normalizeArray(firm?.practice_areas),
+    name: decodeHtmlEntities(firm?.name),
+    // Strip HTML from main field if it exists, or use _html field as fallback
+    description: firm?.description ? stripHtml(firm.description) : stripHtml(firm?.description_html || ''),
+    content: firm?.content ? stripHtml(firm.content) : stripHtml(firm?.content_html || ''),
+    address: decodeHtmlEntities(firm?.address),
+    street_address: decodeHtmlEntities(firm?.street_address),
+    address_line_2: decodeHtmlEntities(firm?.address_line_2),
+    meta_title: decodeHtmlEntities(firm?.meta_title),
+    meta_description: decodeHtmlEntities(firm?.meta_description),
   }
 
   const [formData, setFormData] = useState({
@@ -43,7 +54,11 @@ export default function LawFirmEditForm({ firm, auth, isNew = false }: LawFirmEd
     description: normalizedFirm.description || '',
     content: normalizedFirm.content || '',
     address: normalizedFirm.address || '',
+    street_address: normalizedFirm.street_address || '',
+    address_line_2: normalizedFirm.address_line_2 || '',
     city_id: normalizedFirm.city_id || '',
+    state_id: normalizedFirm.state_id || '',
+    zip_code: normalizedFirm.zip_code || '',
     phone: normalizedFirm.phone || '',
     email: normalizedFirm.email || '',
     website: normalizedFirm.website || '',
@@ -62,7 +77,8 @@ export default function LawFirmEditForm({ firm, auth, isNew = false }: LawFirmEd
     meta_description: firm.meta_description || '',
   })
   
-  const [cities, setCities] = useState<Array<{ id: string; name: string; states: { abbreviation: string } }>>([])
+  const [cities, setCities] = useState<Array<{ id: string; name: string; state_id: string; states: { abbreviation: string } }>>([])
+  const [states, setStates] = useState<Array<{ id: string; name: string; abbreviation: string }>>([])
   const [loadingCities, setLoadingCities] = useState(false)
 
   // Load cities on mount
@@ -71,7 +87,7 @@ export default function LawFirmEditForm({ firm, auth, isNew = false }: LawFirmEd
       setLoadingCities(true)
       const { data } = await supabase
         .from('cities')
-        .select('id, name, states(abbreviation)')
+        .select('id, name, state_id, states(abbreviation)')
         .order('name')
         .limit(500)
       if (data) {
@@ -80,6 +96,20 @@ export default function LawFirmEditForm({ firm, auth, isNew = false }: LawFirmEd
       setLoadingCities(false)
     }
     loadCities()
+  }, [])
+
+  // Load states on mount
+  useEffect(() => {
+    const loadStates = async () => {
+      const { data } = await supabase
+        .from('states')
+        .select('id, name, abbreviation')
+        .order('name')
+      if (data) {
+        setStates(data)
+      }
+    }
+    loadStates()
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -92,10 +122,18 @@ export default function LawFirmEditForm({ firm, auth, isNew = false }: LawFirmEd
       const dataToSave: any = {
         name: formData.name,
         slug: formData.slug || formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+        // Save plain text to main fields (HTML is stored separately in _html fields)
         description: formData.description || null,
         content: formData.content || null,
+        // Preserve existing HTML if it exists, otherwise set to null
+        description_html: firm?.description_html || null,
+        content_html: firm?.content_html || null,
         address: formData.address || null,
+        street_address: formData.street_address || null,
+        address_line_2: formData.address_line_2 || null,
         city_id: formData.city_id || null,
+        state_id: formData.state_id || null,
+        zip_code: formData.zip_code || null,
         phone: formData.phone || null,
         email: formData.email || null,
         website: formData.website || null,
@@ -125,7 +163,8 @@ export default function LawFirmEditForm({ firm, auth, isNew = false }: LawFirmEd
         
         error = insertError
         if (!error && data) {
-          router.push(`/admin/directory/law-firms/${data.id}`)
+          // Success - redirect to law firms grid
+          router.push('/admin/directory/law-firms')
           return
         }
       } else {
@@ -139,16 +178,36 @@ export default function LawFirmEditForm({ firm, auth, isNew = false }: LawFirmEd
       }
 
       if (error) {
-        setError(error.message)
-      } else {
-        setSuccess(isNew ? 'Law firm created successfully!' : 'Law firm updated successfully!')
-        if (!isNew) {
-          router.refresh()
+        // Provide more descriptive error messages
+        let errorMessage = error.message || 'An error occurred while saving.'
+        
+        // Common error patterns and user-friendly messages
+        if (error.message?.includes('duplicate key') || error.message?.includes('unique constraint')) {
+          if (error.message?.includes('slug')) {
+            errorMessage = 'A law firm with this slug already exists. Please change the slug to a unique value.'
+          } else if (error.message?.includes('name')) {
+            errorMessage = 'A law firm with this name already exists. Please use a different name.'
+          } else {
+            errorMessage = 'This record already exists. Please check for duplicate entries.'
+          }
+        } else if (error.message?.includes('foreign key') || error.message?.includes('violates foreign key')) {
+          errorMessage = 'Invalid reference selected. Please check the city or state selections.'
+        } else if (error.message?.includes('null value') || error.message?.includes('not null')) {
+          errorMessage = 'Required fields are missing. Please fill in all required fields (name is required).'
+        } else if (error.message?.includes('invalid input')) {
+          errorMessage = 'Invalid data format. Please check your input and try again.'
         }
+        
+        setError(errorMessage)
+      } else {
+        // Success - redirect to law firms grid
+        router.push('/admin/directory/law-firms')
       }
-    } catch (err) {
-      setError('An error occurred. Please try again.')
-      console.error(err)
+    } catch (err: any) {
+      // Handle unexpected errors
+      const errorMessage = err?.message || 'An unexpected error occurred. Please try again.'
+      setError(errorMessage)
+      console.error('Unexpected error:', err)
     } finally {
       setLoading(false)
     }
@@ -241,23 +300,29 @@ export default function LawFirmEditForm({ firm, auth, isNew = false }: LawFirmEd
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-                placeholder="Brief description of the firm (plain text, not HTML)..."
+                placeholder="Brief description of the firm (plain text only, no HTML)..."
               />
+              <p className="mt-1 text-xs text-gray-500">
+                HTML has been removed from this field. Original HTML is preserved separately for display purposes.
+              </p>
             </div>
 
             {auth.isSuperAdmin && (
               <div className="md:col-span-2">
                 <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Content (HTML - Super Admin Only)
+                  Full Content (Plain Text)
                 </label>
                 <textarea
                   id="content"
                   rows={8}
                   value={formData.content}
                   onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary font-mono text-sm"
-                  placeholder="Full HTML content..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                  placeholder="Full content (plain text only, no HTML)..."
                 />
+                <p className="mt-1 text-xs text-gray-500">
+                  HTML has been removed from this field. Original HTML is preserved separately for display purposes.
+                </p>
               </div>
             )}
 
@@ -343,6 +408,55 @@ export default function LawFirmEditForm({ firm, auth, isNew = false }: LawFirmEd
         {activeSection === 'contact' && (
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
+              <label htmlFor="street_address" className="block text-sm font-medium text-gray-700 mb-1">
+                Street Address
+              </label>
+              <input
+                type="text"
+                id="street_address"
+                value={formData.street_address}
+                onChange={(e) => setFormData({ ...formData, street_address: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                placeholder="e.g., 123 Main Street"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label htmlFor="address_line_2" className="block text-sm font-medium text-gray-700 mb-1">
+                Address Line 2 (Optional)
+              </label>
+              <input
+                type="text"
+                id="address_line_2"
+                value={formData.address_line_2}
+                onChange={(e) => setFormData({ ...formData, address_line_2: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                placeholder="e.g., Suite 100"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="state_id" className="block text-sm font-medium text-gray-700 mb-1">
+                State
+              </label>
+              <select
+                id="state_id"
+                value={formData.state_id}
+                onChange={(e) => {
+                  setFormData({ ...formData, state_id: e.target.value, city_id: '' })
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+              >
+                <option value="">Select a state...</option>
+                {states.map((state) => (
+                  <option key={state.id} value={state.id}>
+                    {state.name} ({state.abbreviation})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
               <label htmlFor="city_id" className="block text-sm font-medium text-gray-700 mb-1">
                 City
               </label>
@@ -351,20 +465,36 @@ export default function LawFirmEditForm({ firm, auth, isNew = false }: LawFirmEd
                 value={formData.city_id}
                 onChange={(e) => setFormData({ ...formData, city_id: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-                disabled={loadingCities}
+                disabled={loadingCities || !formData.state_id}
               >
                 <option value="">Select a city...</option>
-                {cities.map((city) => (
-                  <option key={city.id} value={city.id}>
-                    {city.name}, {city.states?.abbreviation || ''}
-                  </option>
-                ))}
+                {cities
+                  .filter(city => !formData.state_id || city.state_id === formData.state_id)
+                  .map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}, {city.states?.abbreviation || ''}
+                    </option>
+                  ))}
               </select>
+            </div>
+
+            <div>
+              <label htmlFor="zip_code" className="block text-sm font-medium text-gray-700 mb-1">
+                Zip Code
+              </label>
+              <input
+                type="text"
+                id="zip_code"
+                value={formData.zip_code}
+                onChange={(e) => setFormData({ ...formData, zip_code: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                placeholder="e.g., 30309"
+              />
             </div>
 
             <div className="md:col-span-2">
               <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                Address
+                Full Address (Legacy - for backward compatibility)
               </label>
               <input
                 type="text"
@@ -372,6 +502,7 @@ export default function LawFirmEditForm({ firm, auth, isNew = false }: LawFirmEd
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                placeholder="Full address string (if not using separate fields above)"
               />
             </div>
 

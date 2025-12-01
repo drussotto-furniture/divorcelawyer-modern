@@ -11,6 +11,10 @@ import {
   PROFESSIONAL_MEMBERSHIPS,
   CERTIFICATIONS,
 } from '@/lib/constants/lawyer-fields'
+import LawFirmSelector from './LawFirmSelector'
+import { MediaUpload } from './MediaUpload'
+import { decodeHtmlEntities } from '@/lib/utils/html-entities'
+import { stripHtml } from '@/lib/utils/strip-html'
 
 interface LawyerEditFormProps {
   lawyer: any
@@ -37,8 +41,67 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
   const [success, setSuccess] = useState('')
   const [activeSection, setActiveSection] = useState<string>('basic')
 
-  // Normalize lawyer data on mount
-  const normalizedLawyer = {
+  const sections = [
+    { id: 'basic', title: 'Basic Information', icon: '👤' },
+    { id: 'professional', title: 'Professional Information', icon: '⚖️' },
+    { id: 'practice', title: 'Practice & Approach', icon: '🎯' },
+    { id: 'recognition', title: 'Recognition & Media', icon: '🏆' },
+    { id: 'contact', title: 'Contact & Office Information', icon: '📞' },
+    { id: 'ratings', title: 'Ratings & Status', icon: '⭐' },
+    { id: 'seo', title: 'SEO & Meta Information', icon: '🔍' },
+    { id: 'subscription', title: 'Subscription', icon: '💳' },
+  ]
+
+  // Update active section based on scroll position
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    }
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id.replace('section-', '')
+          setActiveSection(sectionId)
+        }
+      })
+    }
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions)
+
+    // Observe all section headers
+    sections.forEach((section) => {
+      const element = document.getElementById(`section-${section.id}`)
+      if (element) {
+        observer.observe(element)
+      }
+    })
+
+    return () => {
+      sections.forEach((section) => {
+        const element = document.getElementById(`section-${section.id}`)
+        if (element) {
+          observer.unobserve(element)
+        }
+      })
+    }
+  }, [sections])
+  const [subscriptionLimitCheck, setSubscriptionLimitCheck] = useState<{
+    checking: boolean
+    canUpgrade: boolean
+    message: string
+    targetSubscription: string | null
+  }>({
+    checking: false,
+    canUpgrade: true,
+    message: '',
+    targetSubscription: null,
+  })
+
+  // Normalize lawyer data on mount and decode HTML entities
+const normalizedLawyer = {
     ...lawyer,
     specializations: normalizeArray(lawyer?.specializations),
     education: normalizeArray(lawyer?.education),
@@ -50,6 +113,20 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
     languages: normalizeArray(lawyer?.languages),
     media_mentions: normalizeArray(lawyer?.media_mentions),
     speaking_engagements: normalizeArray(lawyer?.speaking_engagements),
+    // Decode HTML entities from database and strip HTML from bio
+    first_name: decodeHtmlEntities(lawyer?.first_name),
+    last_name: decodeHtmlEntities(lawyer?.last_name),
+    title: decodeHtmlEntities(lawyer?.title),
+    // Strip HTML from main field if it exists, or use _html field as fallback
+    bio: lawyer?.bio ? stripHtml(lawyer.bio) : stripHtml(lawyer?.bio_html || ''),
+    office_address: decodeHtmlEntities(lawyer?.office_address),
+    office_street_address: decodeHtmlEntities(lawyer?.office_street_address),
+    office_address_line_2: decodeHtmlEntities(lawyer?.office_address_line_2),
+    credentials_summary: decodeHtmlEntities(lawyer?.credentials_summary),
+    practice_focus: decodeHtmlEntities(lawyer?.practice_focus),
+    approach: decodeHtmlEntities(lawyer?.approach),
+    meta_title: decodeHtmlEntities(lawyer?.meta_title),
+    meta_description: decodeHtmlEntities(lawyer?.meta_description),
   }
 
   const [formData, setFormData] = useState({
@@ -61,6 +138,9 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
     email: normalizedLawyer.email || '',
     phone: normalizedLawyer.phone || '',
     photo_url: normalizedLawyer.photo_url || '',
+    photo_storage_id: (normalizedLawyer as any).photo_storage_id || '',
+    video_url: (normalizedLawyer as any).video_url || '',
+    video_storage_id: (normalizedLawyer as any).video_storage_id || '',
     bar_number: normalizedLawyer.bar_number || '',
     years_experience: normalizedLawyer.years_experience ? String(normalizedLawyer.years_experience) : '',
     law_firm_id: normalizedLawyer.law_firm_id || '',
@@ -80,6 +160,11 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
     accepts_new_clients: normalizedLawyer.accepts_new_clients ?? true,
     consultation_available: normalizedLawyer.consultation_available ?? true,
     office_address: normalizedLawyer.office_address || '',
+    office_street_address: normalizedLawyer.office_street_address || '',
+    office_address_line_2: normalizedLawyer.office_address_line_2 || '',
+    office_city_id: normalizedLawyer.office_city_id || '',
+    office_state_id: normalizedLawyer.office_state_id || '',
+    office_zip_code: normalizedLawyer.office_zip_code || '',
     office_hours: normalizedLawyer.office_hours || '',
     credentials_summary: normalizedLawyer.credentials_summary || '',
     media_mentions: normalizedLawyer.media_mentions,
@@ -88,9 +173,221 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
     review_count: normalizedLawyer.review_count || 0,
     verified: normalizedLawyer.verified ?? false,
     featured: normalizedLawyer.featured ?? false,
+    subscription_type: normalizedLawyer.subscription_type || 'free',
     meta_title: normalizedLawyer.meta_title || '',
     meta_description: normalizedLawyer.meta_description || '',
   })
+
+  // Check subscription limits when subscription type changes
+  const checkSubscriptionLimit = async (targetSubscription: string, currentSubscription: string): Promise<{ canUpgrade: boolean; message: string }> => {
+    if (targetSubscription === currentSubscription) {
+      setSubscriptionLimitCheck({
+        checking: false,
+        canUpgrade: true,
+        message: '',
+        targetSubscription: null,
+      })
+      return { canUpgrade: true, message: '' }
+    }
+
+    setSubscriptionLimitCheck({
+      checking: true,
+      canUpgrade: true,
+      message: '',
+      targetSubscription,
+    })
+
+    try {
+      // Get the lawyer's law firm to find their DMA
+      const firmId = formData.law_firm_id || lawyer?.law_firm_id
+      const firm = firmId ? await supabase
+        .from('law_firms')
+        .select(`
+          id,
+          city_id,
+          cities (
+            id,
+            zip_codes (
+              id,
+              zip_code_dmas (
+                dma_id
+              )
+            )
+          )
+        `)
+        .eq('id', firmId)
+        .maybeSingle() : null
+
+      let dmaId: string | null = null
+
+      if (firm?.data?.cities?.zip_codes) {
+        for (const zipCode of firm.data.cities.zip_codes) {
+          if (zipCode.zip_code_dmas && zipCode.zip_code_dmas.length > 0) {
+            dmaId = (zipCode.zip_code_dmas[0] as any).dma_id
+            break
+          }
+        }
+      }
+
+      if (!dmaId) {
+        // If no DMA found, check global limits only
+        const { data: globalLimit } = await supabase
+          .from('subscription_limits')
+          .select('max_lawyers')
+          .eq('location_type', 'global')
+          .eq('location_value', 'default')
+          .eq('subscription_type', targetSubscription)
+          .maybeSingle()
+
+        if (globalLimit?.max_lawyers !== null) {
+          // Check current count globally (excluding this lawyer if editing)
+          const { count } = await supabase
+            .from('lawyers')
+            .select('*', { count: 'exact', head: true })
+            .eq('subscription_type', targetSubscription)
+            .neq('id', lawyer?.id || '')
+
+          const currentCount = count || 0
+          const maxAllowed = globalLimit.max_lawyers
+
+          if (currentCount >= maxAllowed) {
+            const result = {
+              canUpgrade: false,
+              message: `The ${targetSubscription} subscription is currently at capacity (${currentCount}/${maxAllowed}). Please contact support to be added to a waitlist.`,
+            }
+            setSubscriptionLimitCheck({
+              checking: false,
+              ...result,
+              targetSubscription,
+            })
+            return result
+          }
+        }
+      } else {
+        // Check DMA-specific limits
+        const { data: dmaLimit } = await supabase
+          .from('subscription_limits')
+          .select('max_lawyers')
+          .eq('location_type', 'dma')
+          .eq('location_value', String(dmaId))
+          .eq('subscription_type', targetSubscription)
+          .maybeSingle()
+
+        let maxAllowed: number | null = null
+        if (dmaLimit?.max_lawyers !== null) {
+          maxAllowed = dmaLimit.max_lawyers
+        } else {
+          // Fall back to global limit
+          const { data: globalLimit } = await supabase
+            .from('subscription_limits')
+            .select('max_lawyers')
+            .eq('location_type', 'global')
+            .eq('location_value', 'default')
+            .eq('subscription_type', targetSubscription)
+            .maybeSingle()
+          maxAllowed = globalLimit?.max_lawyers ?? null
+        }
+
+        if (maxAllowed !== null) {
+          // Count lawyers in this DMA with target subscription (excluding this lawyer if editing)
+          const { data: lawyersInDMA } = await supabase
+            .from('lawyers')
+            .select(`
+              id,
+              law_firms (
+                city_id,
+                cities (
+                  zip_codes (
+                    zip_code_dmas (
+                      dma_id
+                    )
+                  )
+                )
+              )
+            `)
+            .eq('subscription_type', targetSubscription)
+            .neq('id', lawyer?.id || '')
+
+          const lawyersInTargetDMA = (lawyersInDMA || []).filter(l => {
+            const firm = l.law_firms as any
+            if (firm?.cities?.zip_codes) {
+              for (const zipCode of firm.cities.zip_codes) {
+                if (zipCode.zip_code_dmas && zipCode.zip_code_dmas.length > 0) {
+                  const zipDma = zipCode.zip_code_dmas[0] as any
+                  if (zipDma.dma_id === dmaId) {
+                    return true
+                  }
+                }
+              }
+            }
+            return false
+          })
+
+          const currentCount = lawyersInTargetDMA.length
+
+          if (currentCount >= maxAllowed) {
+            const result = {
+              canUpgrade: false,
+              message: `The ${targetSubscription} subscription is currently at capacity in your market area (${currentCount}/${maxAllowed}). Please contact support to be added to a waitlist.`,
+            }
+            setSubscriptionLimitCheck({
+              checking: false,
+              ...result,
+              targetSubscription,
+            })
+            return result
+          }
+        }
+      }
+
+      const result = {
+        canUpgrade: true,
+        message: `You can upgrade to ${targetSubscription}.`,
+      }
+      setSubscriptionLimitCheck({
+        checking: false,
+        ...result,
+        targetSubscription,
+      })
+      return result
+    } catch (err: any) {
+      console.error('Error checking subscription limit:', err)
+      const result = {
+        canUpgrade: true,
+        message: 'Unable to verify subscription availability. Please contact support.',
+      }
+      setSubscriptionLimitCheck({
+        checking: false,
+        ...result,
+        targetSubscription,
+      })
+      return result
+    }
+  }
+
+  const handleUpgradeClick = async () => {
+    // Determine next subscription tier
+    const subscriptionOrder = ['free', 'basic', 'enhanced', 'premium']
+    const currentIndex = subscriptionOrder.indexOf(formData.subscription_type)
+    const nextIndex = currentIndex + 1
+
+    if (nextIndex >= subscriptionOrder.length) {
+      alert('You are already on the highest subscription tier.')
+      return
+    }
+
+    const targetSubscription = subscriptionOrder[nextIndex]
+    
+    // Check limits first
+    const result = await checkSubscriptionLimit(targetSubscription, formData.subscription_type)
+    
+    if (result.canUpgrade) {
+      // Allow the upgrade
+      setFormData({ ...formData, subscription_type: targetSubscription as any })
+      setSuccess(`Subscription upgraded to ${targetSubscription}`)
+      setTimeout(() => setSuccess(''), 3000)
+    }
+  }
 
   // Debug: Log the data when component mounts
   useEffect(() => {
@@ -124,8 +421,13 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
   const [lawFirms, setLawFirms] = useState<Array<{ id: string; name: string }>>([])
   const [loadingFirms, setLoadingFirms] = useState(false)
   const [cities, setCities] = useState<Array<{ id: string; name: string; states: { abbreviation: string } }>>([])
-  const [serviceAreas, setServiceAreas] = useState<Array<{ city_id: string }>>([])
+  const [states, setStates] = useState<Array<{ id: string; name: string; abbreviation: string }>>([])
+  const [dmas, setDmas] = useState<Array<{ id: string; name: string; code: number }>>([])
+  const [serviceAreas, setServiceAreas] = useState<Array<{ dma_id: string; subscription_type?: string }>>([])
+  const [subscriptionTypes, setSubscriptionTypes] = useState<Array<{ name: string; display_name: string; sort_order: number }>>([])
   const [loadingCities, setLoadingCities] = useState(false)
+  const [loadingDmas, setLoadingDmas] = useState(false)
+  const [selectedFirm, setSelectedFirm] = useState<any>(null)
 
   // Load law firms on mount
   useEffect(() => {
@@ -143,13 +445,13 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
     loadFirms()
   }, [])
 
-  // Load cities on mount
+  // Load cities on mount (still needed for address fields)
   useEffect(() => {
     const loadCities = async () => {
       setLoadingCities(true)
       const { data } = await supabase
         .from('cities')
-        .select('id, name, states(abbreviation)')
+        .select('id, name, state_id, states(abbreviation)')
         .order('name')
         .limit(500)
       if (data) {
@@ -160,37 +462,204 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
     loadCities()
   }, [])
 
-  // Load service areas if editing existing lawyer
+  // Load DMAs on mount
+  useEffect(() => {
+    const loadDmas = async () => {
+      setLoadingDmas(true)
+      const { data } = await supabase
+        .from('dmas')
+        .select('id, name, code')
+        .order('name')
+      if (data) {
+        setDmas(data as any)
+      }
+      setLoadingDmas(false)
+    }
+    loadDmas()
+  }, [])
+
+  // Load states on mount
+  useEffect(() => {
+    const loadStates = async () => {
+      const { data } = await supabase
+        .from('states')
+        .select('id, name, abbreviation')
+        .order('name')
+      if (data) {
+        setStates(data)
+      }
+    }
+    loadStates()
+  }, [])
+
+  // Auto-populate address when law firm is selected
+  useEffect(() => {
+    if (selectedFirm) {
+      // Fetch full firm details including address
+      const loadFirmDetails = async () => {
+        const { data } = await supabase
+          .from('law_firms')
+          .select(`
+            street_address,
+            address_line_2,
+            city_id,
+            state_id,
+            zip_code,
+            cities (
+              id,
+              name,
+              state_id,
+              states (
+                id,
+                abbreviation
+              )
+            )
+          `)
+          .eq('id', selectedFirm.id)
+          .single()
+
+        if (data) {
+          setFormData(prev => ({
+            ...prev,
+            office_street_address: data.street_address || prev.office_street_address || '',
+            office_address_line_2: data.address_line_2 || prev.office_address_line_2 || '',
+            office_city_id: data.city_id || prev.office_city_id || '',
+            office_state_id: data.state_id || prev.office_state_id || '',
+            office_zip_code: data.zip_code || prev.office_zip_code || '',
+          }))
+        }
+      }
+      loadFirmDetails()
+    }
+  }, [selectedFirm, supabase])
+
+  // Auto-populate first service area from lawyer's zip code
+  const autoPopulateServiceAreaFromZip = async () => {
+    const zipCode = formData.office_zip_code || normalizedLawyer.office_zip_code
+    if (!zipCode) return
+
+    try {
+      // Get zip code ID
+      const { data: zipCodeData } = await supabase
+        .from('zip_codes')
+        .select('id')
+        .eq('zip_code', zipCode)
+        .maybeSingle()
+
+      if (!zipCodeData) return
+
+      // Get DMA for this zip code
+      const { data: dmaMapping } = await supabase
+        .from('zip_code_dmas')
+        .select(`
+          dma_id,
+          dmas (
+            id,
+            name,
+            code
+          )
+        `)
+        .eq('zip_code_id', zipCodeData.id)
+        .maybeSingle()
+
+      if (dmaMapping && (dmaMapping as any).dmas) {
+        const dma = (dmaMapping as any).dmas
+        // Only auto-populate if no service areas exist
+        setServiceAreas(prev => {
+          if (prev.length === 0 || !prev.some(sa => sa.dma_id === dma.id)) {
+            return [{ dma_id: dma.id }]
+          }
+          return prev
+        })
+        console.log(`[LawyerEditForm] Auto-populated service area with DMA: ${dma.name} (${dma.code})`)
+      }
+    } catch (err) {
+      console.error('[LawyerEditForm] Error auto-populating service area:', err)
+    }
+  }
+
+  // Load subscription types
+  useEffect(() => {
+    const loadSubscriptionTypes = async () => {
+      const { data } = await supabase
+        .from('subscription_types')
+        .select('name, display_name, sort_order')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+      if (data) {
+        setSubscriptionTypes(data)
+      }
+    }
+    loadSubscriptionTypes()
+  }, [supabase])
+
+  // Load service areas and their subscriptions if editing existing lawyer
   useEffect(() => {
     if (!isNew && lawyer?.id) {
       console.log('[LawyerEditForm] Loading service areas for lawyer:', lawyer.id)
       const loadServiceAreas = async () => {
         try {
-          const { data, error } = await supabase
+          // Load service areas
+          const { data: serviceAreasData, error: saError } = await supabase
             .from('lawyer_service_areas')
-            .select('city_id')
+            .select('dma_id')
             .eq('lawyer_id', lawyer.id)
           
-          if (error) {
-            console.error('[LawyerEditForm] Error loading service areas:', error)
-            console.error('[LawyerEditForm] Error details:', JSON.stringify(error, null, 2))
+          if (saError) {
+            console.error('[LawyerEditForm] Error loading service areas:', saError)
+            return
           }
-          if (data) {
-            console.log('[LawyerEditForm] Loaded service areas:', data)
-            console.log('[LawyerEditForm] Service areas count:', data.length)
-            setServiceAreas(data)
+
+          if (serviceAreasData && serviceAreasData.length > 0) {
+            console.log('[LawyerEditForm] Loaded service areas:', serviceAreasData)
+            
+            // Load subscriptions for each DMA
+            const dmaIds = serviceAreasData.map(sa => sa.dma_id).filter((id): id is string => !!id)
+            const { data: subscriptionsData } = await supabase
+              .from('lawyer_dma_subscriptions')
+              .select('dma_id, subscription_type')
+              .eq('lawyer_id', lawyer.id)
+              .in('dma_id', dmaIds)
+            
+            // Create map of dma_id -> subscription_type
+            const subscriptionMap = new Map<string, string>()
+            if (subscriptionsData) {
+              subscriptionsData.forEach(sub => {
+                subscriptionMap.set(sub.dma_id, sub.subscription_type)
+              })
+            }
+            
+            // Combine service areas with their subscriptions
+            const serviceAreasWithSubs = serviceAreasData.map(sa => ({
+              dma_id: sa.dma_id || '',
+              subscription_type: subscriptionMap.get(sa.dma_id || '') || 'free'
+            }))
+            
+            setServiceAreas(serviceAreasWithSubs)
           } else {
             console.log('[LawyerEditForm] No service areas found for lawyer:', lawyer.id)
+            // Auto-populate from zip code if available
+            await autoPopulateServiceAreaFromZip()
           }
         } catch (err) {
           console.error('[LawyerEditForm] Exception loading service areas:', err)
         }
       }
       loadServiceAreas()
-    } else {
-      console.log('[LawyerEditForm] Skipping service area load - isNew:', isNew, 'lawyer.id:', lawyer?.id)
     }
-  }, [lawyer?.id, isNew, supabase])
+  }, [lawyer?.id, isNew, supabase, formData.subscription_type])
+
+  // Auto-populate service area when zip code changes (for new lawyers or when updating)
+  useEffect(() => {
+    if (formData.office_zip_code) {
+      // Only auto-populate if no service areas exist or if the zip code changed
+      const currentZip = formData.office_zip_code
+      const timer = setTimeout(() => {
+        autoPopulateServiceAreaFromZip()
+      }, 500) // Debounce to avoid too many calls
+      return () => clearTimeout(timer)
+    }
+  }, [formData.office_zip_code])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -204,10 +673,16 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
         last_name: formData.last_name,
         slug: formData.slug || `${formData.first_name}-${formData.last_name}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
         title: formData.title || null,
+        // Save plain text to main bio field (HTML is stored separately in bio_html field)
         bio: formData.bio || null,
+        // Preserve existing HTML if it exists, otherwise set to null
+        bio_html: lawyer?.bio_html || null,
         email: formData.email || null,
         phone: formData.phone || null,
         photo_url: formData.photo_url || null,
+        photo_storage_id: formData.photo_storage_id || null,
+        video_url: formData.video_url || null,
+        video_storage_id: formData.video_storage_id || null,
         bar_number: formData.bar_number || null,
         years_experience: formData.years_experience ? parseInt(formData.years_experience.toString()) : null,
         law_firm_id: formData.law_firm_id || null,
@@ -227,6 +702,11 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
         accepts_new_clients: formData.accepts_new_clients,
         consultation_available: formData.consultation_available,
         office_address: formData.office_address || null,
+        office_street_address: formData.office_street_address || null,
+        office_address_line_2: formData.office_address_line_2 || null,
+        office_city_id: formData.office_city_id || null,
+        office_state_id: formData.office_state_id || null,
+        office_zip_code: formData.office_zip_code || null,
         office_hours: formData.office_hours || null,
         credentials_summary: formData.credentials_summary || null,
         media_mentions: formData.media_mentions && formData.media_mentions.length > 0 ? formData.media_mentions : null,
@@ -235,6 +715,7 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
         review_count: formData.review_count ? parseInt(formData.review_count.toString()) : 0,
         verified: formData.verified,
         featured: formData.featured,
+        subscription_type: formData.subscription_type,
         meta_title: formData.meta_title || null,
         meta_description: formData.meta_description || null,
       }
@@ -264,12 +745,32 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
       }
 
       if (error) {
-        setError(error.message)
+        // Provide more descriptive error messages
+        let errorMessage = error.message || 'An error occurred while saving.'
+        
+        // Common error patterns and user-friendly messages
+        if (error.message?.includes('duplicate key') || error.message?.includes('unique constraint')) {
+          if (error.message?.includes('slug')) {
+            errorMessage = 'A lawyer with this slug already exists. Please change the slug to a unique value.'
+          } else if (error.message?.includes('email')) {
+            errorMessage = 'A lawyer with this email already exists. Please use a different email address.'
+          } else {
+            errorMessage = 'This record already exists. Please check for duplicate entries.'
+          }
+        } else if (error.message?.includes('foreign key') || error.message?.includes('violates foreign key')) {
+          errorMessage = 'Invalid reference selected. Please check the law firm, city, or state selections.'
+        } else if (error.message?.includes('null value') || error.message?.includes('not null')) {
+          errorMessage = 'Required fields are missing. Please fill in all required fields.'
+        } else if (error.message?.includes('invalid input')) {
+          errorMessage = 'Invalid data format. Please check your input and try again.'
+        }
+        
+        setError(errorMessage)
         setLoading(false)
         return
       }
 
-      // Save service areas
+      // Save service areas (using DMAs)
       if (lawyerId) {
         // Delete existing service areas
         await supabase
@@ -277,43 +778,85 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
           .delete()
           .eq('lawyer_id', lawyerId)
 
-        // Insert new service areas
-        if (serviceAreas.length > 0) {
+        // Delete existing DMA subscriptions
+        await supabase
+          .from('lawyer_dma_subscriptions')
+          .delete()
+          .eq('lawyer_id', lawyerId)
+
+        // Insert new service areas (filter out empty dma_id and deduplicate)
+        const validServiceAreas = serviceAreas.filter(sa => sa.dma_id)
+        
+        // Deduplicate by dma_id (in case user added same DMA twice)
+        const uniqueServiceAreas = Array.from(
+          new Map(validServiceAreas.map(sa => [sa.dma_id, sa])).values()
+        )
+        
+        if (uniqueServiceAreas.length > 0) {
+          // Save service areas
           const { error: serviceAreaError } = await supabase
             .from('lawyer_service_areas')
-            .insert(serviceAreas.map(sa => ({ lawyer_id: lawyerId, city_id: sa.city_id })))
+            .insert(uniqueServiceAreas.map(sa => ({ lawyer_id: lawyerId, dma_id: sa.dma_id })))
           
           if (serviceAreaError) {
             console.error('Error saving service areas:', serviceAreaError)
+            setError(`Error saving service areas: ${serviceAreaError.message}`)
+            setLoading(false)
+            return
+          }
+
+          // Save DMA subscriptions (use upsert to handle any edge cases)
+          const subscriptionsToSave = uniqueServiceAreas.map(sa => ({
+            lawyer_id: lawyerId,
+            dma_id: sa.dma_id,
+            subscription_type: sa.subscription_type || 'free'
+          }))
+
+          // Use upsert instead of insert to handle any race conditions or duplicates
+          const { error: subsError } = await supabase
+            .from('lawyer_dma_subscriptions')
+            .upsert(subscriptionsToSave, {
+              onConflict: 'lawyer_id,dma_id'
+            })
+          
+          if (subsError) {
+            console.error('Error saving DMA subscriptions:', subsError)
+            setError(`Error saving DMA subscriptions: ${subsError.message}`)
+            setLoading(false)
+            return
           }
         }
       }
 
-      setSuccess(isNew ? 'Lawyer profile created successfully!' : 'Lawyer profile updated successfully!')
-      if (isNew && lawyerId) {
-        router.push(`/admin/directory/lawyers/${lawyerId}`)
-      } else {
-        router.refresh()
-      }
-    } catch (err) {
-      setError('An error occurred. Please try again.')
-      console.error(err)
+      // Success - redirect to lawyers grid
+      router.push('/admin/directory/lawyers')
+    } catch (err: any) {
+      // Handle unexpected errors
+      const errorMessage = err?.message || 'An unexpected error occurred. Please try again.'
+      setError(errorMessage)
+      console.error('Unexpected error:', err)
     } finally {
       setLoading(false)
     }
   }
 
   const addServiceArea = () => {
-    setServiceAreas([...serviceAreas, { city_id: '' }])
+    setServiceAreas([...serviceAreas, { dma_id: '', subscription_type: 'free' }])
   }
 
   const removeServiceArea = (index: number) => {
     setServiceAreas(serviceAreas.filter((_, i) => i !== index))
   }
 
-  const updateServiceArea = (index: number, city_id: string) => {
+  const updateServiceArea = (index: number, dma_id: string) => {
     const updated = [...serviceAreas]
-    updated[index] = { ...updated[index], city_id }
+    updated[index] = { ...updated[index], dma_id, subscription_type: updated[index].subscription_type || 'free' }
+    setServiceAreas(updated)
+  }
+
+  const updateServiceAreaSubscription = (index: number, subscription_type: string) => {
+    const updated = [...serviceAreas]
+    updated[index] = { ...updated[index], subscription_type }
     setServiceAreas(updated)
   }
 
@@ -325,71 +868,69 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
     setFormData({ ...formData, [field]: updated })
   }
 
+  const scrollToSection = (sectionId: string) => {
+    setActiveSection(sectionId)
+    const element = document.getElementById(`section-${sectionId}`)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   const SectionHeader = ({ id, title, icon }: { id: string; title: string; icon: string }) => (
-    <button
-      type="button"
-      onClick={() => setActiveSection(activeSection === id ? '' : id)}
-      className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+    <div
+      id={`section-${id}`}
+      className="w-full flex items-center p-4 bg-gray-50 rounded-lg border-b-2 border-primary"
     >
       <div className="flex items-center gap-2">
         <span className="text-xl">{icon}</span>
         <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
       </div>
-      <span className="text-gray-500">{activeSection === id ? '−' : '+'}</span>
-    </button>
+    </div>
   )
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-6">
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
-          {success}
-        </div>
-      )}
-
-      {/* Debug Info - Remove this after debugging */}
-      {!isNew && (
-        <details className="bg-yellow-50 border border-yellow-200 rounded p-4 text-xs">
-          <summary className="cursor-pointer font-semibold text-yellow-800 mb-2">
-            🔍 Debug Info (Click to expand)
-          </summary>
-          <div className="space-y-2 text-yellow-700">
-            <div>
-              <strong>Raw specializations from DB:</strong> {JSON.stringify(lawyer?.specializations)}
-            </div>
-            <div>
-              <strong>Type:</strong> {typeof lawyer?.specializations} | 
-              <strong> Is Array:</strong> {Array.isArray(lawyer?.specializations) ? 'Yes' : 'No'}
-            </div>
-            <div>
-              <strong>Normalized specializations:</strong> {JSON.stringify(formData.specializations)}
-            </div>
-            <div>
-              <strong>Raw bar_admissions:</strong> {JSON.stringify(lawyer?.bar_admissions)}
-            </div>
-            <div>
-              <strong>Normalized bar_admissions:</strong> {JSON.stringify(formData.bar_admissions)}
-            </div>
-            <div>
-              <strong>Raw education:</strong> {JSON.stringify(lawyer?.education)}
-            </div>
-            <div>
-              <strong>Normalized education:</strong> {JSON.stringify(formData.education)}
-            </div>
+    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow">
+      {/* Tabs Navigation */}
+      <div className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
+        <div className="px-6 py-4">
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                type="button"
+                onClick={() => scrollToSection(section.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md font-medium whitespace-nowrap transition-colors ${
+                  activeSection === section.id
+                    ? 'bg-primary text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <span>{section.icon}</span>
+                <span>{section.title}</span>
+              </button>
+            ))}
           </div>
-        </details>
-      )}
+        </div>
+      </div>
 
-      {/* Basic Information */}
-      <div>
-        <SectionHeader id="basic" title="Basic Information" icon="👤" />
-        {activeSection === 'basic' && (
+      {/* Form Content */}
+      <div className="p-6 space-y-8">
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+            {error}
+          </div>
+        )}
+
+        {success && (
+          <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded">
+            {success}
+          </div>
+        )}
+
+
+        {/* Basic Information Section */}
+        <div>
+          <SectionHeader id="basic" title="Basic Information" icon="👤" />
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -459,20 +1000,15 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
               <label htmlFor="law_firm_id" className="block text-sm font-medium text-gray-700 mb-1">
                 Law Firm
               </label>
-              <select
-                id="law_firm_id"
+              <LawFirmSelector
                 value={formData.law_firm_id}
-                onChange={(e) => setFormData({ ...formData, law_firm_id: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-                disabled={loadingFirms}
-              >
-                <option value="">No firm</option>
-                {lawFirms.map((firm) => (
-                  <option key={firm.id} value={firm.id}>
-                    {firm.name}
-                  </option>
-                ))}
-              </select>
+                onChange={(firmId) => {
+                  setFormData({ ...formData, law_firm_id: firmId })
+                }}
+                onFirmChange={(firm) => {
+                  setSelectedFirm(firm)
+                }}
+              />
             </div>
 
             <div>
@@ -501,17 +1037,26 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
               />
             </div>
 
-            <div className="md:col-span-2">
-              <label htmlFor="photo_url" className="block text-sm font-medium text-gray-700 mb-1">
-                Photo URL
-              </label>
-              <input
-                type="url"
-                id="photo_url"
-                value={formData.photo_url}
-                onChange={(e) => setFormData({ ...formData, photo_url: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-                placeholder="https://..."
+            {/* Media Uploads */}
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <MediaUpload
+                accept="image/*"
+                bucket="lawyer-images"
+                label="Profile Photo"
+                currentUrl={formData.photo_url}
+                onUpload={(url, storageId) => {
+                  setFormData({ ...formData, photo_url: url, photo_storage_id: storageId })
+                }}
+              />
+
+              <MediaUpload
+                accept="video/*"
+                bucket="lawyer-videos"
+                label="Introduction Video"
+                currentUrl={formData.video_url}
+                onUpload={(url, storageId) => {
+                  setFormData({ ...formData, video_url: url, video_storage_id: storageId })
+                }}
               />
             </div>
 
@@ -525,17 +1070,18 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-                placeholder="Enter lawyer biography (plain text, not HTML)..."
+                placeholder="Enter lawyer biography (plain text only, no HTML)..."
               />
+              <p className="mt-1 text-xs text-gray-500">
+                HTML has been removed from this field. Original HTML is preserved separately for display purposes.
+              </p>
             </div>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Professional Information */}
-      <div>
-        <SectionHeader id="professional" title="Professional Information" icon="⚖️" />
-        {activeSection === 'professional' && (
+        {/* Professional Information Section */}
+        <div>
+          <SectionHeader id="professional" title="Professional Information" icon="⚖️" />
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label htmlFor="bar_number" className="block text-sm font-medium text-gray-700 mb-1">
@@ -768,13 +1314,11 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
               )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Practice & Approach */}
-      <div>
-        <SectionHeader id="practice" title="Practice & Approach" icon="🎯" />
-        {activeSection === 'practice' && (
+        {/* Practice & Approach Section */}
+        <div>
+          <SectionHeader id="practice" title="Practice & Approach" icon="🎯" />
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label htmlFor="practice_focus" className="block text-sm font-medium text-gray-700 mb-1">
@@ -831,75 +1375,11 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
               </div>
             </div>
 
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Service Areas (Cities where lawyer practices)
-              </label>
-              <div className="mb-2 text-xs text-gray-500">
-                Current service areas: {serviceAreas.length > 0 ? `${serviceAreas.length} cities` : 'None'}
-                {serviceAreas.length === 0 && (
-                  <span className="ml-2 text-orange-600">
-                    (No service areas found. Check console for errors.)
-                  </span>
-                )}
-              </div>
-              <div className="space-y-2">
-                {serviceAreas.length === 0 ? (
-                  <div>
-                    <p className="text-sm text-gray-500 italic mb-2">No service areas configured. Click "+ Add Service Area" to add cities.</p>
-                    <p className="text-xs text-gray-400">Debug: serviceAreas state = {JSON.stringify(serviceAreas)}</p>
-                  </div>
-                ) : (
-                  serviceAreas.map((sa, index) => {
-                    const selectedCity = cities.find(c => c.id === sa.city_id)
-                    return (
-                      <div key={`sa-${index}-${sa.city_id || 'new'}`} className="flex gap-2">
-                        <select
-                          value={sa.city_id || ''}
-                          onChange={(e) => updateServiceArea(index, e.target.value)}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-                          disabled={loadingCities}
-                        >
-                          <option value="">Select a city...</option>
-                          {cities.map((city) => (
-                            <option key={city.id} value={city.id}>
-                              {city.name}, {city.states?.abbreviation || ''}
-                            </option>
-                          ))}
-                        </select>
-                        {selectedCity && (
-                          <span className="px-3 py-2 text-sm text-gray-600 self-center">
-                            {selectedCity.name}, {selectedCity.states?.abbreviation || ''}
-                          </span>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => removeServiceArea(index)}
-                          className="px-3 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    )
-                  })
-                )}
-                <button
-                  type="button"
-                  onClick={addServiceArea}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
-                >
-                  + Add Service Area
-                </button>
-              </div>
-            </div>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Recognition & Media */}
-      <div>
-        <SectionHeader id="recognition" title="Recognition & Media" icon="🏆" />
-        {activeSection === 'recognition' && (
+        {/* Recognition & Media Section */}
+        <div>
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label htmlFor="awards" className="block text-sm font-medium text-gray-700 mb-1">
@@ -969,24 +1449,97 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
               />
             </div>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Contact & Office */}
-      <div>
-        <SectionHeader id="contact" title="Contact & Office Information" icon="📞" />
-        {activeSection === 'contact' && (
+        {/* Contact & Office Information Section */}
+        <div>
+          <SectionHeader id="contact" title="Contact & Office Information" icon="📞" />
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
-              <label htmlFor="office_address" className="block text-sm font-medium text-gray-700 mb-1">
-                Office Address
+              <label htmlFor="office_street_address" className="block text-sm font-medium text-gray-700 mb-1">
+                Street Address
               </label>
               <input
                 type="text"
-                id="office_address"
-                value={formData.office_address}
-                onChange={(e) => setFormData({ ...formData, office_address: e.target.value })}
+                id="office_street_address"
+                value={formData.office_street_address}
+                onChange={(e) => setFormData({ ...formData, office_street_address: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                placeholder="e.g., 123 Main Street"
+              />
+            </div>
+
+            <div className="md:col-span-2">
+              <label htmlFor="office_address_line_2" className="block text-sm font-medium text-gray-700 mb-1">
+                Address Line 2 (Optional)
+              </label>
+              <input
+                type="text"
+                id="office_address_line_2"
+                value={formData.office_address_line_2}
+                onChange={(e) => setFormData({ ...formData, office_address_line_2: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                placeholder="e.g., Suite 100"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="office_state_id" className="block text-sm font-medium text-gray-700 mb-1">
+                State
+              </label>
+              <select
+                id="office_state_id"
+                value={formData.office_state_id}
+                onChange={(e) => {
+                  setFormData({ ...formData, office_state_id: e.target.value, office_city_id: '' })
+                }}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+              >
+                <option value="">Select a state...</option>
+                {states.map((state) => (
+                  <option key={state.id} value={state.id}>
+                    {state.name} ({state.abbreviation})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="office_city_id" className="block text-sm font-medium text-gray-700 mb-1">
+                City
+              </label>
+              <select
+                id="office_city_id"
+                value={formData.office_city_id}
+                onChange={(e) => setFormData({ ...formData, office_city_id: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                disabled={loadingCities || !formData.office_state_id}
+              >
+                <option value="">Select a city...</option>
+                {cities
+                  .filter(city => {
+                    const cityStateId = (city as any).state_id
+                    return !formData.office_state_id || cityStateId === formData.office_state_id
+                  })
+                  .map((city) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}, {(city.states as any)?.abbreviation || ''}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            <div>
+              <label htmlFor="office_zip_code" className="block text-sm font-medium text-gray-700 mb-1">
+                Zip Code
+              </label>
+              <input
+                type="text"
+                id="office_zip_code"
+                value={formData.office_zip_code}
+                onChange={(e) => setFormData({ ...formData, office_zip_code: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                placeholder="e.g., 30309"
               />
             </div>
 
@@ -1068,13 +1621,11 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
               />
             </div>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* Ratings & Status */}
-      <div>
-        <SectionHeader id="ratings" title="Ratings & Status" icon="⭐" />
-        {activeSection === 'ratings' && (
+        {/* Ratings & Status Section */}
+        <div>
+          <SectionHeader id="ratings" title="Ratings & Status" icon="⭐" />
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label htmlFor="rating" className="block text-sm font-medium text-gray-700 mb-1">
@@ -1136,13 +1687,11 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
               </>
             )}
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* SEO */}
-      <div>
-        <SectionHeader id="seo" title="SEO & Meta Information" icon="🔍" />
-        {activeSection === 'seo' && (
+        {/* SEO Section */}
+        <div>
+          <SectionHeader id="seo" title="SEO & Meta Information" icon="🔍" />
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label htmlFor="meta_title" className="block text-sm font-medium text-gray-700 mb-1">
@@ -1172,10 +1721,114 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
               />
             </div>
           </div>
-        )}
+        </div>
+
+        {/* Subscription Section */}
+        <div>
+          <SectionHeader id="subscription" title="Subscription" icon="💳" />
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <p className="text-sm text-blue-800 font-medium mb-2">📌 Subscription Management</p>
+                <p className="text-sm text-blue-700">
+                  Subscriptions are managed per DMA (Designated Market Area). Each DMA can have its own subscription level. 
+                  New service areas default to "Free" subscription and can be upgraded per DMA.
+                </p>
+              </div>
+              
+              {/* Service Areas with DMA Subscriptions */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Service Areas (DMAs where lawyer practices)
+                </label>
+                <div className="mb-2 text-xs text-gray-500">
+                  Current service areas: {serviceAreas.filter(sa => sa.dma_id).length > 0 ? `${serviceAreas.filter(sa => sa.dma_id).length} DMAs` : 'None'}
+                  {serviceAreas.length === 0 && formData.office_zip_code && (
+                    <span className="ml-2 text-blue-600">
+                      (Will auto-populate from zip code: {formData.office_zip_code})
+                    </span>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  {serviceAreas.length === 0 ? (
+                    <div>
+                      <p className="text-sm text-gray-500 italic mb-2">No service areas configured. The first service area will be auto-populated from your zip code, or click "+ Add Service Area" to add DMAs manually.</p>
+                    </div>
+                  ) : (
+                    serviceAreas.map((sa, index) => {
+                      const selectedDma = dmas.find(d => d.id === sa.dma_id)
+                      return (
+                        <div key={`sa-${index}-${sa.dma_id || 'new'}`} className="border border-gray-200 rounded-lg p-4 space-y-3">
+                          <div className="flex gap-2 items-center">
+                            <div className="flex-1">
+                              <label className="block text-xs font-medium text-gray-600 mb-1">DMA</label>
+                              <select
+                                value={sa.dma_id || ''}
+                                onChange={(e) => updateServiceArea(index, e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                                disabled={loadingDmas}
+                              >
+                                <option value="">Select a DMA...</option>
+                                {dmas.map((dma) => (
+                                  <option key={dma.id} value={dma.id}>
+                                    {dma.name} (DMA {dma.code})
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            {selectedDma && (
+                              <div className="flex-1">
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Subscription</label>
+                                <select
+                                  value={sa.subscription_type || 'free'}
+                                  onChange={(e) => updateServiceAreaSubscription(index, e.target.value)}
+                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                                  disabled={!auth.isSuperAdmin}
+                                >
+                                  {subscriptionTypes.map((st) => (
+                                    <option key={st.name} value={st.name}>
+                                      {st.display_name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            )}
+                            <div className="pt-6">
+                              <button
+                                type="button"
+                                onClick={() => removeServiceArea(index)}
+                                className="px-3 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                          {selectedDma && (
+                            <div className="text-xs text-gray-500">
+                              {selectedDma.name} (DMA {selectedDma.code}) - Subscription: {subscriptionTypes.find(st => st.name === (sa.subscription_type || 'free'))?.display_name || 'Free'}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })
+                  )}
+                  <button
+                    type="button"
+                    onClick={addServiceArea}
+                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+                  >
+                    + Add Service Area
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="flex justify-end gap-4 pt-4 border-t">
+      {/* Form Actions */}
+      <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-end gap-4 shadow-lg">
         <button
           type="button"
           onClick={() => router.back()}

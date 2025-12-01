@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import FirmName from './FirmName'
+import { LawyerImageWithBlur } from './LawyerImageWithBlur'
 
 interface Lawyer {
   id: string
@@ -34,9 +35,9 @@ export default function LawyerSlide({ lawyer, firm }: LawyerSlideProps) {
         <Link href={`/law-firms/${firm.slug}`} className="text-primary underline">VIEW FIRM</Link>
       </p>
       <div className="relative flex flex-col items-center justify-center flex-1 min-h-0 pt-4 pb-8 overflow-visible">
-        <div className="relative object-cover object-center overflow-hidden rounded-lg image-cover w-full">
+        <div className="relative object-contain object-center overflow-hidden rounded-lg image-cover w-full">
           {lawyer.photo_url ? (
-            <Image
+            <LawyerImageWithBlur
               src={lawyer.photo_url}
               alt={`${lawyer.first_name} ${lawyer.last_name}`}
               width={326}

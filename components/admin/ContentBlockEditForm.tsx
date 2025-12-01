@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { stripHtml } from '@/lib/utils/strip-html'
 
 interface ContentBlock {
   id: string
@@ -45,7 +46,8 @@ export default function ContentBlockEditForm({ block, defaultType }: ContentBloc
     component_type: block?.component_type || defaultType || 'custom',
     title: block?.title || '',
     subtitle: block?.subtitle || '',
-    description: block?.description || '',
+    // Strip HTML from main field if it exists, or use _html field as fallback
+    description: block?.description ? stripHtml(block.description) : stripHtml(block?.description_html || ''),
     image_url: block?.image_url || '',
     link_url: block?.link_url || '',
     link_text: block?.link_text || '',
@@ -62,6 +64,8 @@ export default function ContentBlockEditForm({ block, defaultType }: ContentBloc
       const dataToSave = {
         ...formData,
         order_index: formData.order_index ? parseInt(formData.order_index.toString()) : 0,
+        // Preserve existing HTML if it exists, otherwise set to null
+        description_html: block?.description_html || null,
       }
 
       if (block) {

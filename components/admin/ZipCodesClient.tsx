@@ -1,26 +1,35 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
+interface ZipCode {
+  id: string
+  zip_code: string
+  cities?: {
+    name: string
+    states?: {
+      abbreviation: string
+    }
+  } | null
+  dmas?: {
+    code: number
+    name: string
+  } | null
+}
+
 interface ZipCodesClientProps {
-  zipCodes: Array<{
-    id: string
-    zip_code: string
-    cities?: {
-      name: string
-      states?: {
-        abbreviation: string
-      }
-    } | null
-  }>
+  zipCodes: ZipCode[]
   currentPage: number
   totalPages: number
   totalCount: number
   search: string
   pageSize: number
 }
+
+type SortField = 'zip_code' | 'city' | 'state' | 'dma'
+type SortDirection = 'asc' | 'desc'
 
 export default function ZipCodesClient({
   zipCodes,
@@ -33,6 +42,8 @@ export default function ZipCodesClient({
   const router = useRouter()
   const searchParams = useSearchParams()
   const [search, setSearch] = useState(initialSearch)
+  const [sortField, setSortField] = useState<SortField>('zip_code')
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -59,6 +70,55 @@ export default function ZipCodesClient({
     params.delete('search')
     params.set('page', '1')
     router.push(`/admin/directory/locations/zip-codes?${params.toString()}`)
+  }
+
+  // Sort zip codes
+  const sortedZipCodes = useMemo(() => {
+    const sorted = [...zipCodes]
+    sorted.sort((a, b) => {
+      let aValue: string = ''
+      let bValue: string = ''
+
+      switch (sortField) {
+        case 'zip_code':
+          aValue = a.zip_code
+          bValue = b.zip_code
+          break
+        case 'city':
+          aValue = (a.cities?.name || '').toLowerCase()
+          bValue = (b.cities?.name || '').toLowerCase()
+          break
+        case 'state':
+          aValue = (a.cities?.states?.abbreviation || '').toLowerCase()
+          bValue = (b.cities?.states?.abbreviation || '').toLowerCase()
+          break
+        case 'dma':
+          aValue = (a.dmas?.name || '').toLowerCase()
+          bValue = (b.dmas?.name || '').toLowerCase()
+          break
+      }
+
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1
+      return 0
+    })
+    return sorted
+  }, [zipCodes, sortField, sortDirection])
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortField(field)
+      setSortDirection('asc')
+    }
+  }
+
+  const SortIcon = ({ field }: { field: SortField }) => {
+    if (sortField !== field) {
+      return <span className="text-gray-400">↕</span>
+    }
+    return sortDirection === 'asc' ? <span>↑</span> : <span>↓</span>
   }
 
   return (
@@ -112,14 +172,41 @@ export default function ZipCodesClient({
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Zip Code
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('zip_code')}
+              >
+                <div className="flex items-center gap-1">
+                  Zip Code
+                  <SortIcon field="zip_code" />
+                </div>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                City
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('city')}
+              >
+                <div className="flex items-center gap-1">
+                  City
+                  <SortIcon field="city" />
+                </div>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                State
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('state')}
+              >
+                <div className="flex items-center gap-1">
+                  State
+                  <SortIcon field="state" />
+                </div>
+              </th>
+              <th 
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('dma')}
+              >
+                <div className="flex items-center gap-1">
+                  DMA
+                  <SortIcon field="dma" />
+                </div>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
@@ -127,8 +214,8 @@ export default function ZipCodesClient({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {zipCodes && zipCodes.length > 0 ? (
-              zipCodes.map((zip) => (
+            {sortedZipCodes && sortedZipCodes.length > 0 ? (
+              sortedZipCodes.map((zip) => (
                 <tr key={zip.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">{zip.zip_code}</div>
@@ -138,6 +225,14 @@ export default function ZipCodesClient({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {zip.cities?.states?.abbreviation || '—'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {zip.dmas ? (
+                      <div>
+                        <div className="font-medium">{zip.dmas.name}</div>
+                        <div className="text-xs text-gray-400">Code: {zip.dmas.code}</div>
+                      </div>
+                    ) : '—'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <Link
@@ -151,7 +246,7 @@ export default function ZipCodesClient({
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
                   {initialSearch ? `No zip codes found matching "${initialSearch}"` : 'No zip codes found'}
                 </td>
               </tr>

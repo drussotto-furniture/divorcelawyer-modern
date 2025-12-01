@@ -55,10 +55,10 @@ export default async function ContentPage() {
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="p-3 md:p-4 lg:p-5 space-y-4">
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Content</h1>
-        <p className="mt-2 text-gray-600">Manage all site content and articles</p>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Content</h1>
+        <p className="mt-1 text-sm md:text-base text-gray-600">Manage all site content and articles</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">

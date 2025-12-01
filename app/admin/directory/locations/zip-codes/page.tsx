@@ -37,7 +37,7 @@ export default async function ZipCodesPage({ searchParams }: PageProps) {
   // Build data query
   let dataQuery = supabase
     .from('zip_codes')
-    .select('id, zip_code, cities(name, states(abbreviation))')
+    .select('id, zip_code, cities(name, states(abbreviation)), zip_code_dmas(dmas(code, name))')
     .order('zip_code', { ascending: true })
 
   // Apply search filter to data
@@ -70,6 +70,9 @@ export default async function ZipCodesPage({ searchParams }: PageProps) {
           ...zipCode.cities,
           states: zipCode.cities.states || undefined,
         }
+      : undefined,
+    dmas: zipCode.zip_code_dmas && zipCode.zip_code_dmas.length > 0 && zipCode.zip_code_dmas[0].dmas
+      ? zipCode.zip_code_dmas[0].dmas
       : undefined,
   }))
 

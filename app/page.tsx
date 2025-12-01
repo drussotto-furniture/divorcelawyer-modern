@@ -3,6 +3,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import TagDisplayServer from '@/components/TagDisplayServer'
 import DiscoverSlider from '@/components/DiscoverSlider'
 import ThreePackComponent from '@/components/ThreePackComponent'
 import MostPopularReads from '@/components/MostPopularReads'
@@ -641,6 +642,7 @@ export default async function Home() {
         </section>
 
       </main>
+      <TagDisplayServer contentType="page" contentId="home" />
       <Footer />
     </>
   )

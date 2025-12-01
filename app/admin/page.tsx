@@ -65,8 +65,8 @@ export default async function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="bg-white rounded-lg shadow-sm p-6 lg:p-8">
+    <div className="p-3 md:p-4 lg:p-5 space-y-4">
+      <div className="bg-white rounded-lg shadow-sm p-4 md:p-6">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-bluish mb-4">Dashboard</h1>
         <p className="text-lg text-gray-700 font-proxima">
           Welcome back, <span className="font-semibold text-bluish">{auth.profile?.name || auth.profile?.email}</span>

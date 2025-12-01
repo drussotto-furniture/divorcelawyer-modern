@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { stripHtml } from '@/lib/utils/strip-html'
 
 interface MarketEditFormProps {
   market: any | null
@@ -19,7 +20,8 @@ export default function MarketEditForm({ market }: MarketEditFormProps) {
   const [formData, setFormData] = useState({
     name: market?.name || '',
     slug: market?.slug || '',
-    description: market?.description || '',
+    // Strip HTML from main field if it exists, or use _html field as fallback
+    description: market?.description ? stripHtml(market.description) : stripHtml(market?.description_html || ''),
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,6 +35,8 @@ export default function MarketEditForm({ market }: MarketEditFormProps) {
         name: formData.name,
         slug: formData.slug || formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
         description: formData.description || null,
+        // Preserve existing HTML if it exists, otherwise set to null
+        description_html: market?.description_html || null,
       }
 
       let result

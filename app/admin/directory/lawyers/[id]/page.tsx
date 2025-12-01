@@ -50,61 +50,15 @@ export default async function LawyerEditPage({ params }: PageProps) {
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">
+    <div className="p-3 md:p-4 lg:p-5">
+      <div className="mb-3">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
           {auth.isSuperAdmin ? 'Edit Lawyer' : 'My Profile'}
         </h1>
-        <p className="mt-2 text-gray-600">
+        <p className="mt-1 text-sm md:text-base text-gray-600">
           {typedLawyer.first_name} {typedLawyer.last_name}
         </p>
       </div>
-
-      {/* Debug Info - Remove after fixing data issues */}
-      {auth.isSuperAdmin && (
-        <details className="bg-yellow-50 border border-yellow-200 rounded p-4">
-          <summary className="cursor-pointer font-semibold text-yellow-800 mb-2">
-            🔍 Debug: Raw Database Data (Click to expand)
-          </summary>
-          <div className="space-y-2 text-yellow-700 text-xs">
-            <div>
-              <strong>Specializations:</strong> {JSON.stringify(typedLawyer.specializations)} 
-              (Type: {typeof typedLawyer.specializations}, Is Array: {Array.isArray(typedLawyer.specializations) ? 'Yes' : 'No'})
-            </div>
-            <div>
-              <strong>Education:</strong> {typedLawyer.education !== undefined ? JSON.stringify(typedLawyer.education) : 'COLUMN MISSING'}
-            </div>
-            <div>
-              <strong>Awards:</strong> {typedLawyer.awards !== undefined ? JSON.stringify(typedLawyer.awards) : 'COLUMN MISSING'}
-            </div>
-            <div>
-              <strong>Bar Admissions:</strong> {typedLawyer.bar_admissions !== undefined ? JSON.stringify(typedLawyer.bar_admissions) : 'COLUMN MISSING'}
-            </div>
-            <div className="mt-2 pt-2 border-t border-yellow-300">
-              <strong>All Array Fields:</strong>
-              <pre className="mt-1 p-2 bg-white rounded text-xs overflow-auto max-h-48">
-                {JSON.stringify({
-                  specializations: typedLawyer.specializations !== undefined ? typedLawyer.specializations : 'COLUMN MISSING',
-                  education: typedLawyer.education !== undefined ? typedLawyer.education : 'COLUMN MISSING',
-                  awards: typedLawyer.awards !== undefined ? typedLawyer.awards : 'COLUMN MISSING',
-                  bar_admissions: typedLawyer.bar_admissions !== undefined ? typedLawyer.bar_admissions : 'COLUMN MISSING',
-                  publications: typedLawyer.publications !== undefined ? typedLawyer.publications : 'COLUMN MISSING',
-                  professional_memberships: typedLawyer.professional_memberships !== undefined ? typedLawyer.professional_memberships : 'COLUMN MISSING',
-                  certifications: typedLawyer.certifications !== undefined ? typedLawyer.certifications : 'COLUMN MISSING',
-                  languages: typedLawyer.languages !== undefined ? typedLawyer.languages : 'COLUMN MISSING',
-                }, null, 2)}
-              </pre>
-            </div>
-            <div className="mt-2 text-xs">
-              <strong>SQL to check schema:</strong>
-              <code className="block mt-1 p-2 bg-white rounded">
-                SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'lawyers' ORDER BY ordinal_position;
-              </code>
-            </div>
-          </div>
-        </details>
-      )}
-
       <LawyerEditForm lawyer={typedLawyer} auth={auth} />
     </div>
   )

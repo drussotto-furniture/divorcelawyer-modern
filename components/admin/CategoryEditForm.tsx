@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import { stripHtml } from '@/lib/utils/strip-html'
 
 interface Category {
   id: string
@@ -28,7 +29,8 @@ export default function CategoryEditForm({ category, allCategories }: CategoryEd
   const [formData, setFormData] = useState({
     name: category?.name || '',
     slug: category?.slug || '',
-    description: category?.description || '',
+    // Strip HTML from main field if it exists, or use _html field as fallback
+    description: category?.description ? stripHtml(category.description) : stripHtml(category?.description_html || ''),
     parent_id: category?.parent_id || '',
     order_index: category?.order_index || 0,
   })
@@ -43,6 +45,8 @@ export default function CategoryEditForm({ category, allCategories }: CategoryEd
         ...formData,
         parent_id: formData.parent_id || null,
         order_index: formData.order_index ? parseInt(formData.order_index.toString()) : null,
+        // Preserve existing HTML if it exists, otherwise set to null
+        description_html: category?.description_html || null,
       }
 
       if (category) {

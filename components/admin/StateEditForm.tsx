@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { stripHtml } from '@/lib/utils/strip-html'
 
 interface StateEditFormProps {
   state: any | null
@@ -20,7 +21,8 @@ export default function StateEditForm({ state }: StateEditFormProps) {
     name: state?.name || '',
     slug: state?.slug || '',
     abbreviation: state?.abbreviation || '',
-    content: state?.content || '',
+    // Strip HTML from main field if it exists, or use _html field as fallback
+    content: state?.content ? stripHtml(state.content) : stripHtml(state?.content_html || ''),
     meta_title: state?.meta_title || '',
     meta_description: state?.meta_description || '',
   })
@@ -37,6 +39,8 @@ export default function StateEditForm({ state }: StateEditFormProps) {
         slug: formData.slug || formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
         abbreviation: formData.abbreviation.toUpperCase(),
         content: formData.content || null,
+        // Preserve existing HTML if it exists, otherwise set to null
+        content_html: state?.content_html || null,
         meta_title: formData.meta_title || null,
         meta_description: formData.meta_description || null,
       }

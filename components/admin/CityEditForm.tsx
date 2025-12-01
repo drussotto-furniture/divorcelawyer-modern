@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { stripHtml } from '@/lib/utils/strip-html'
 
 interface CityEditFormProps {
   city: any | null
@@ -26,7 +27,8 @@ export default function CityEditForm({ city }: CityEditFormProps) {
     slug: city?.slug || '',
     state_id: city?.state_id || '',
     county_id: city?.county_id || '',
-    content: city?.content || '',
+    // Strip HTML from main field if it exists, or use _html field as fallback
+    content: city?.content ? stripHtml(city.content) : stripHtml(city?.content_html || ''),
     meta_title: city?.meta_title || '',
     meta_description: city?.meta_description || '',
     population: city?.population?.toString() || '',
@@ -82,6 +84,8 @@ export default function CityEditForm({ city }: CityEditFormProps) {
         state_id: formData.state_id || null,
         county_id: formData.county_id || null,
         content: formData.content || null,
+        // Preserve existing HTML if it exists, otherwise set to null
+        content_html: city?.content_html || null,
         meta_title: formData.meta_title || null,
         meta_description: formData.meta_description || null,
         population: formData.population ? parseInt(formData.population) : null,

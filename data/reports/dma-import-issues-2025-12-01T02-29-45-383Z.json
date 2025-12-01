@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-12-01T02:29:45.385Z",
+  "summary": {
+    "duplicateZipCodes": 0,
+    "inconsistentDMANames": 0,
+    "newZipCodesCreated": 0,
+    "errors": 0
+  },
+  "duplicateZipCodes": [],
+  "inconsistentDMANames": [],
+  "newZipCodesCreated": [],
+  "errors": []
+}
