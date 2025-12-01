@@ -12,8 +12,8 @@ export default async function MarketsPage() {
   }
 
   const supabase = await createClient()
-  const { data: markets, error } = await supabase
-    .from('markets' as any)
+  const { data: markets, error } = await (supabase as any)
+    .from('markets')
     .select('id, name, slug, description')
     .order('name', { ascending: true })
 
@@ -40,7 +40,7 @@ export default async function MarketsPage() {
         </Link>
       </div>
 
-      <MarketsGridClient initialMarkets={markets || []} />
+      <MarketsGridClient initialMarkets={(markets as any) || []} />
     </div>
   )
 }
