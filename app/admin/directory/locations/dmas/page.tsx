@@ -30,13 +30,13 @@ export default async function DMAsPage() {
   let countsByDma: Record<string, number> = {}
   let totalMappedZipCodes = 0
   
-  const { data: zipCodeCounts, error: countError } = await supabase
+  const { data: zipCodeCounts, error: countError } = await (supabase as any)
     .rpc('get_dma_zip_code_counts')
   
   if (countError) {
     // Fallback to fetching all records if function doesn't exist yet
     console.warn('RPC function not available, using fallback method:', countError.message)
-    const { data: allZipCodeMappings, error: fallbackError } = await supabase
+    const { data: allZipCodeMappings, error: fallbackError } = await (supabase as any)
       .from('zip_code_dmas')
       .select('dma_id')
       .limit(100000) // High limit as fallback
