@@ -16,8 +16,8 @@ export default async function FallbackLawyersPage() {
   
   // Get current fallback lawyers
   const supabase = await createClient()
-  const { data: fallbackLawyers } = await supabase
-    .from('fallback_lawyers' as any)
+  const { data: fallbackLawyers } = await (supabase as any)
+    .from('fallback_lawyers')
     .select(`
       *,
       lawyers (
@@ -40,7 +40,7 @@ export default async function FallbackLawyersPage() {
 
       <FallbackLawyersClient 
         allLawyers={allLawyers} 
-        currentFallbackLawyers={fallbackLawyers || []} 
+        currentFallbackLawyers={(fallbackLawyers as any) || []} 
       />
     </div>
   )

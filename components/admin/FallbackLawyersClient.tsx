@@ -60,16 +60,16 @@ export default function FallbackLawyersClient({
 
     try {
       // First, get all current fallback lawyers
-      const { data: current } = await supabase
+      const { data: current } = await (supabase as any)
         .from('fallback_lawyers')
         .select('*')
 
       // Delete all current entries
       if (current && current.length > 0) {
-        const { error: deleteError } = await supabase
+        const { error: deleteError } = await (supabase as any)
           .from('fallback_lawyers')
           .delete()
-          .in('id', current.map(c => c.id))
+          .in('id', current.map((c: any) => c.id))
 
         if (deleteError) throw deleteError
       }
@@ -82,7 +82,7 @@ export default function FallbackLawyersClient({
       }))
 
       if (entries.length > 0) {
-        const { error: insertError } = await supabase
+        const { error: insertError } = await (supabase as any)
           .from('fallback_lawyers')
           .insert(entries)
 
