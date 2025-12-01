@@ -36,7 +36,7 @@ export default function TeamMemberEditForm({ member }: TeamMemberEditFormProps) 
     slug: member?.slug || '',
     title: member?.title || '',
     // Strip HTML from main field if it exists, or use _html field as fallback
-    bio: member?.bio ? stripHtml(member.bio) : stripHtml(member?.bio_html || ''),
+    bio: member?.bio ? stripHtml(member.bio) : stripHtml((member as any)?.bio_html || ''),
     photo_url: member?.photo_url || '',
     email: member?.email || '',
     phone: member?.phone || '',
@@ -56,7 +56,7 @@ export default function TeamMemberEditForm({ member }: TeamMemberEditFormProps) 
         ...formData,
         order_index: formData.order_index ? parseInt(formData.order_index.toString()) : null,
         // Preserve existing HTML if it exists, otherwise set to null
-        bio_html: member?.bio_html || null,
+        bio_html: (member as any)?.bio_html || null,
       }
 
       if (member) {

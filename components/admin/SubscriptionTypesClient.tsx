@@ -27,13 +27,13 @@ export default function SubscriptionTypesClient() {
   const loadTypes = async () => {
     setLoading(true)
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('subscription_types')
         .select('*')
         .order('sort_order', { ascending: true })
 
       if (error) throw error
-      setTypes(data || [])
+      setTypes((data as any) || [])
     } catch (error: any) {
       console.error('Error loading subscription types:', error)
       setMessage({ type: 'error', text: `Failed to load subscription types: ${error.message}` })
@@ -54,7 +54,7 @@ export default function SubscriptionTypesClient() {
 
   const handleSave = async (id: string) => {
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('subscription_types')
         .update(edits)
         .eq('id', id)

@@ -35,14 +35,14 @@ export default function VideoEditForm({ video }: VideoEditFormProps) {
     title: video?.title || '',
     slug: video?.slug || '',
     // Use main field if it exists (should have plain text after migration), otherwise strip from _html
-    description: video?.description || stripHtml(video?.description_html || ''),
+    description: video?.description || stripHtml((video as any)?.description_html || ''),
     video_url: video?.video_url || '',
     video_provider: video?.video_provider || 'youtube',
     video_id: video?.video_id || '',
     thumbnail_url: video?.thumbnail_url || '',
     duration_seconds: video?.duration_seconds || null,
     // Use main field if it exists (should have plain text after migration), otherwise strip from _html
-    transcript: video?.transcript || stripHtml(video?.transcript_html || ''),
+    transcript: video?.transcript || stripHtml((video as any)?.transcript_html || ''),
     status: video?.status || 'draft',
     published_at: video?.published_at ? new Date(video.published_at).toISOString().split('T')[0] : '',
   })
@@ -58,8 +58,8 @@ export default function VideoEditForm({ video }: VideoEditFormProps) {
         published_at: formData.published_at ? new Date(formData.published_at).toISOString() : null,
         duration_seconds: formData.duration_seconds ? parseInt(formData.duration_seconds.toString()) : null,
         // Preserve existing HTML if it exists, otherwise set to null
-        description_html: video?.description_html || null,
-        transcript_html: video?.transcript_html || null,
+        description_html: (video as any)?.description_html || null,
+        transcript_html: (video as any)?.transcript_html || null,
       }
 
       if (video) {

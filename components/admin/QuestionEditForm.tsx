@@ -30,8 +30,8 @@ export default function QuestionEditForm({ question }: QuestionEditFormProps) {
 
   const [formData, setFormData] = useState({
     // Strip HTML from main field if it exists, or use _html field as fallback
-    question: question?.question ? stripHtml(question.question) : stripHtml(question?.question_html || ''),
-    answer: question?.answer ? stripHtml(question.answer) : stripHtml(question?.answer_html || ''),
+    question: question?.question ? stripHtml(question.question) : stripHtml((question as any)?.question_html || ''),
+    answer: question?.answer ? stripHtml(question.answer) : stripHtml((question as any)?.answer_html || ''),
     slug: question?.slug || '',
     category: question?.category || '',
     tags: question?.tags?.join(', ') || '',
@@ -51,8 +51,8 @@ export default function QuestionEditForm({ question }: QuestionEditFormProps) {
           ? formData.tags.split(',').map((tag) => tag.trim()).filter(Boolean)
           : null,
         // Preserve existing HTML if it exists, otherwise set to null
-        question_html: question?.question_html || null,
-        answer_html: question?.answer_html || null,
+        question_html: (question as any)?.question_html || null,
+        answer_html: (question as any)?.answer_html || null,
       }
 
       if (question) {

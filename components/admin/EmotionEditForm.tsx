@@ -34,8 +34,8 @@ export default function EmotionEditForm({ emotion }: EmotionEditFormProps) {
     name: emotion?.name || '',
     slug: emotion?.slug || '',
     // Strip HTML from main field if it exists, or use _html field as fallback
-    description: emotion?.description ? stripHtml(emotion.description) : stripHtml(emotion?.description_html || ''),
-    content: emotion?.content ? stripHtml(emotion.content) : stripHtml(emotion?.content_html || ''),
+    description: emotion?.description ? stripHtml(emotion.description) : stripHtml((emotion as any)?.description_html || ''),
+    content: emotion?.content ? stripHtml(emotion.content) : stripHtml((emotion as any)?.content_html || ''),
     coping_strategies: emotion?.coping_strategies?.join(', ') || '',
     related_resources: emotion?.related_resources?.join(', ') || '',
     icon_name: emotion?.icon_name || '',
@@ -59,8 +59,8 @@ export default function EmotionEditForm({ emotion }: EmotionEditFormProps) {
           ? formData.related_resources.split(',').map((s) => s.trim()).filter(Boolean)
           : null,
         // Preserve existing HTML if it exists, otherwise set to null
-        description_html: emotion?.description_html || null,
-        content_html: emotion?.content_html || null,
+        description_html: (emotion as any)?.description_html || null,
+        content_html: (emotion as any)?.content_html || null,
       }
 
       if (emotion) {

@@ -92,8 +92,8 @@ export default function LawFirmSelector({ value, onChange, onFirmChange }: LawFi
         .limit(1000)
 
       if (error) throw error
-      setFirms(data || [])
-      setFilteredFirms((data || []).slice(0, 10))
+      setFirms((data as any) || [])
+      setFilteredFirms(((data as any) || []).slice(0, 10))
     } catch (error) {
       console.error('Error loading law firms:', error)
     } finally {
@@ -120,9 +120,9 @@ export default function LawFirmSelector({ value, onChange, onFirmChange }: LawFi
         .single()
 
       if (error) throw error
-      setSelectedFirm(data)
+      setSelectedFirm(data as any)
       if (onFirmChange) {
-        onFirmChange(data)
+        onFirmChange(data as any)
       }
     } catch (error) {
       console.error('Error loading selected firm:', error)

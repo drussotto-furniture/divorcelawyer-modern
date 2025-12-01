@@ -44,7 +44,7 @@ export default function TagAssignment({ contentType, contentId, initialTags = []
 
   const loadAssignedTags = async () => {
     try {
-      const { data, error: fetchError } = await supabase
+      const { data, error: fetchError } = await (supabase as any)
         .from('page_tags')
         .select('tag_id, tags(id, name, slug)')
         .eq('content_type', contentType)
@@ -77,7 +77,7 @@ export default function TagAssignment({ contentType, contentId, initialTags = []
     try {
       if (isAssigned) {
         // Remove tag
-        const { error: deleteError } = await supabase
+        const { error: deleteError } = await (supabase as any)
           .from('page_tags')
           .delete()
           .eq('content_type', contentType)
@@ -95,13 +95,13 @@ export default function TagAssignment({ contentType, contentId, initialTags = []
         setAssignedTags(prev => prev.filter(t => t.id !== tag.id))
       } else {
         // Add tag - ensure contentId is a string
-        const { error: insertError } = await supabase
+        const { error: insertError } = await (supabase as any)
           .from('page_tags')
           .insert({
             content_type: contentType,
             content_id: String(contentId), // Ensure it's a string, not UUID
             tag_id: tag.id,
-          })
+          } as any)
 
         if (insertError) {
           // If error mentions UUID, suggest running migration

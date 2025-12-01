@@ -19,13 +19,13 @@ export default async function SubscriptionLimitsCheckerPage() {
     .order('name')
 
   // Get all subscription types
-  const { data: subscriptionTypes, error: subscriptionTypesError } = await supabase
+  const { data: subscriptionTypes, error: subscriptionTypesError } = await (supabase as any)
     .from('subscription_types')
     .select('name, display_name, sort_order')
     .order('sort_order')
 
   // Get all subscription limits
-  const { data: subscriptionLimits, error: limitsError } = await supabase
+  const { data: subscriptionLimits, error: limitsError } = await (supabase as any)
     .from('subscription_limits')
     .select('*')
     .order('location_type, location_value')
@@ -48,9 +48,9 @@ export default async function SubscriptionLimitsCheckerPage() {
       </div>
 
       <SubscriptionLimitsCheckerClient 
-        dmas={dmas || []}
-        subscriptionTypes={subscriptionTypes || []}
-        subscriptionLimits={subscriptionLimits || []}
+        dmas={(dmas as any) || []}
+        subscriptionTypes={(subscriptionTypes as any) || []}
+        subscriptionLimits={(subscriptionLimits as any) || []}
       />
     </div>
   )

@@ -47,8 +47,8 @@ export default function ArticleEditForm({ article, categories }: ArticleEditForm
     title: article?.title || '',
     slug: article?.slug || '',
     // Strip HTML from main field if it exists, or use _html field as fallback
-    content: article?.content ? stripHtml(article.content) : stripHtml(article?.content_html || ''),
-    excerpt: article?.excerpt ? stripHtml(article.excerpt) : stripHtml(article?.excerpt_html || ''),
+    content: article?.content ? stripHtml(article.content) : stripHtml((article as any)?.content_html || ''),
+    excerpt: article?.excerpt ? stripHtml(article.excerpt) : stripHtml((article as any)?.excerpt_html || ''),
     category_id: article?.category_id || '',
     featured_image_url: article?.featured_image_url || '',
     status: article?.status || 'draft',
@@ -68,8 +68,8 @@ export default function ArticleEditForm({ article, categories }: ArticleEditForm
         published_at: formData.published_at ? new Date(formData.published_at).toISOString() : null,
         category_id: formData.category_id || null,
         // Preserve existing HTML if it exists, otherwise set to null
-        content_html: article?.content_html || null,
-        excerpt_html: article?.excerpt_html || null,
+        content_html: (article as any)?.content_html || null,
+        excerpt_html: (article as any)?.excerpt_html || null,
       }
 
       if (article) {

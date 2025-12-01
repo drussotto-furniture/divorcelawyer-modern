@@ -14,3 +14,4 @@ SET subscription_type = 'free'
 WHERE subscription_type IS NULL;
 
 
+

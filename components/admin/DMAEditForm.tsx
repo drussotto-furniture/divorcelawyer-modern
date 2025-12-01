@@ -52,7 +52,7 @@ export default function DMAEditForm({ dma }: DMAEditFormProps) {
     
     setLoadingZipCodes(true)
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('zip_code_dmas')
         .select(`
           zip_code_id,
@@ -154,9 +154,9 @@ export default function DMAEditForm({ dma }: DMAEditFormProps) {
 
       // Filter out already assigned zip codes
       const assignedIds = new Set(assignedZipCodes.map(z => z.id))
-      const filtered = (data || []).filter((zip: ZipCode) => !assignedIds.has(zip.id))
+      const filtered = (data || []).filter((zip: any) => !assignedIds.has(zip.id))
       
-      setSearchResults(filtered)
+      setSearchResults(filtered as any)
     } catch (err: any) {
       console.error('Error searching zip codes:', err)
       setError(`Failed to search zip codes: ${err.message}`)
@@ -173,18 +173,18 @@ export default function DMAEditForm({ dma }: DMAEditFormProps) {
 
     try {
       // Remove any existing mapping for this zip code
-      await supabase
+      await (supabase as any)
         .from('zip_code_dmas')
         .delete()
         .eq('zip_code_id', zipCode.id)
 
       // Add new mapping
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('zip_code_dmas')
         .insert({
           zip_code_id: zipCode.id,
           dma_id: dma.id,
-        })
+        } as any)
 
       if (error) throw error
 
@@ -204,7 +204,7 @@ export default function DMAEditForm({ dma }: DMAEditFormProps) {
     if (!dma?.id) return
 
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('zip_code_dmas')
         .delete()
         .eq('zip_code_id', zipCodeId)

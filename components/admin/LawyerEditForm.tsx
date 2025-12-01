@@ -278,14 +278,14 @@ const normalizedLawyer = {
           maxAllowed = dmaLimit.max_lawyers
         } else {
           // Fall back to global limit
-          const { data: globalLimit } = await supabase
+          const { data: globalLimit } = await (supabase as any)
             .from('subscription_limits')
             .select('max_lawyers')
             .eq('location_type', 'global')
             .eq('location_value', 'default')
             .eq('subscription_type', targetSubscription)
             .maybeSingle()
-          maxAllowed = globalLimit?.max_lawyers ?? null
+          maxAllowed = (globalLimit as any)?.max_lawyers ?? null
         }
 
         if (maxAllowed !== null) {
@@ -519,13 +519,14 @@ const normalizedLawyer = {
           .single()
 
         if (data) {
+          const firmData = data as any
           setFormData(prev => ({
             ...prev,
-            office_street_address: data.street_address || prev.office_street_address || '',
-            office_address_line_2: data.address_line_2 || prev.office_address_line_2 || '',
-            office_city_id: data.city_id || prev.office_city_id || '',
-            office_state_id: data.state_id || prev.office_state_id || '',
-            office_zip_code: data.zip_code || prev.office_zip_code || '',
+            office_street_address: firmData.street_address || prev.office_street_address || '',
+            office_address_line_2: firmData.address_line_2 || prev.office_address_line_2 || '',
+            office_city_id: firmData.city_id || prev.office_city_id || '',
+            office_state_id: firmData.state_id || prev.office_state_id || '',
+            office_zip_code: firmData.zip_code || prev.office_zip_code || '',
           }))
         }
       }
@@ -614,7 +615,7 @@ const normalizedLawyer = {
             console.log('[LawyerEditForm] Loaded service areas:', serviceAreasData)
             
             // Load subscriptions for each DMA
-            const dmaIds = serviceAreasData.map(sa => sa.dma_id).filter((id): id is string => !!id)
+            const dmaIds = serviceAreasData.map((sa: any) => sa.dma_id).filter((id): id is string => !!id)
             const { data: subscriptionsData } = await (supabase as any)
               .from('lawyer_dma_subscriptions')
               .select('dma_id, subscription_type')
@@ -624,13 +625,13 @@ const normalizedLawyer = {
             // Create map of dma_id -> subscription_type
             const subscriptionMap = new Map<string, string>()
             if (subscriptionsData) {
-              subscriptionsData.forEach(sub => {
+              (subscriptionsData as any[]).forEach((sub: any) => {
                 subscriptionMap.set(sub.dma_id, sub.subscription_type)
               })
             }
             
             // Combine service areas with their subscriptions
-            const serviceAreasWithSubs = serviceAreasData.map(sa => ({
+            const serviceAreasWithSubs = serviceAreasData.map((sa: any) => ({
               dma_id: sa.dma_id || '',
               subscription_type: subscriptionMap.get(sa.dma_id || '') || 'free'
             }))
@@ -794,9 +795,9 @@ const normalizedLawyer = {
         
         if (uniqueServiceAreas.length > 0) {
           // Save service areas
-          const { error: serviceAreaError } = await supabase
+          const { error: serviceAreaError } = await (supabase as any)
             .from('lawyer_service_areas')
-            .insert(uniqueServiceAreas.map(sa => ({ lawyer_id: lawyerId, dma_id: sa.dma_id })))
+            .insert(uniqueServiceAreas.map((sa: any) => ({ lawyer_id: lawyerId, dma_id: sa.dma_id })) as any)
           
           if (serviceAreaError) {
             console.error('Error saving service areas:', serviceAreaError)

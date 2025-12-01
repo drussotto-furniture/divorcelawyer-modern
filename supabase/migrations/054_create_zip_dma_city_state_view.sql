@@ -42,3 +42,4 @@ CREATE INDEX IF NOT EXISTS idx_zip_code_dmas_zip_code_id ON zip_code_dmas(zip_co
 CREATE INDEX IF NOT EXISTS idx_zip_code_dmas_dma_id ON zip_code_dmas(dma_id);
 CREATE INDEX IF NOT EXISTS idx_cities_state_id ON cities(state_id);
 
+

@@ -85,7 +85,7 @@ export default function SubscriptionLimitsCheckerClient({
       for (let dmaIndex = 0; dmaIndex < dmas.length; dmaIndex++) {
         const dma = dmas[dmaIndex]
         // Get all zip codes in this DMA
-        const { data: zipCodeDmas } = await supabase
+        const { data: zipCodeDmas } = await (supabase as any)
           .from('zip_code_dmas')
           .select('zip_code_id, zip_codes(zip_code)')
           .eq('dma_id', dma.id)

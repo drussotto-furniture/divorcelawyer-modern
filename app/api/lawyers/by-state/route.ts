@@ -13,13 +13,26 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    console.log(`\n🔍 API Route: Searching for state "${state}"`)
     const result = await getLawyersByStateWithSubscriptionLimits(state)
     
     console.log(`\n📊 API Response for state "${state}":`, {
       lawyersCount: result.lawyers?.length || 0,
       groupedCount: Object.keys(result.groupedBySubscription || {}).length,
-      subscriptionTypes: result.subscriptionTypes?.map(st => st.name) || []
+      subscriptionTypesCount: result.subscriptionTypes?.length || 0,
+      subscriptionTypes: result.subscriptionTypes?.map(st => st.name) || [],
+      hasDMA: !!result.dma,
+      dmaName: result.dma?.name
     })
+    
+    if (result.lawyers?.length === 0) {
+      console.warn(`⚠️ WARNING: No lawyers found for state "${state}"`)
+      console.warn(`   This could mean:`)
+      console.warn(`   1. State not found in database`)
+      console.warn(`   2. No cities/zip codes for this state`)
+      console.warn(`   3. No DMAs mapped to those zip codes`)
+      console.warn(`   4. No lawyers in those DMAs`)
+    }
     
     return NextResponse.json(result)
   } catch (error: any) {

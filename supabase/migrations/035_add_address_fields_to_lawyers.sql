@@ -18,3 +18,4 @@ SET office_street_address = office_address
 WHERE office_address IS NOT NULL AND office_street_address IS NULL;
 
 
+

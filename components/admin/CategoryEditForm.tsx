@@ -30,7 +30,7 @@ export default function CategoryEditForm({ category, allCategories }: CategoryEd
     name: category?.name || '',
     slug: category?.slug || '',
     // Strip HTML from main field if it exists, or use _html field as fallback
-    description: category?.description ? stripHtml(category.description) : stripHtml(category?.description_html || ''),
+    description: category?.description ? stripHtml(category.description) : stripHtml((category as any)?.description_html || ''),
     parent_id: category?.parent_id || '',
     order_index: category?.order_index || 0,
   })
@@ -46,7 +46,7 @@ export default function CategoryEditForm({ category, allCategories }: CategoryEd
         parent_id: formData.parent_id || null,
         order_index: formData.order_index ? parseInt(formData.order_index.toString()) : null,
         // Preserve existing HTML if it exists, otherwise set to null
-        description_html: category?.description_html || null,
+        description_html: (category as any)?.description_html || null,
       }
 
       if (category) {

@@ -15,3 +15,4 @@ COMMENT ON COLUMN lawyers.video_url IS 'URL to lawyer introduction video (can be
 COMMENT ON COLUMN lawyers.video_storage_id IS 'Storage path in Supabase Storage bucket for uploaded video';
 COMMENT ON COLUMN lawyers.photo_storage_id IS 'Storage path in Supabase Storage bucket for uploaded photo';
 
+

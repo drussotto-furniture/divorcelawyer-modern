@@ -225,3 +225,4 @@ If something doesn't work:
 4. **Check RLS:** Ensure RLS policies allow reading subscriptions
 5. **Verify types:** Ensure all UUIDs are properly converted to strings for `location_value` comparisons
 
+

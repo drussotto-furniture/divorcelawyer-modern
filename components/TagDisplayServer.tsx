@@ -16,7 +16,7 @@ export default async function TagDisplayServer({ contentType, contentId }: TagDi
   const supabase = await createClient()
 
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('page_tags')
       .select('tag_id, tags(id, name, slug)')
       .eq('content_type', contentType)

@@ -68,3 +68,4 @@ JOIN lawyers l ON l.id = lds.lawyer_id
 JOIN dmas d ON d.id = lds.dma_id
 ORDER BY l.last_name, d.name;
 
+

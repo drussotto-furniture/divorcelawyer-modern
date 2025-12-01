@@ -21,3 +21,4 @@ COMMENT ON TABLE tags IS 'General purpose tags that can be assigned to any conte
 COMMENT ON COLUMN tags.wordpress_id IS 'WordPress tag ID if migrated from WordPress';
 
 
+

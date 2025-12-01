@@ -180,7 +180,7 @@ async function fetchFromKnownSource(): Promise<DMARow[]> {
   
   // Common Dataverse dataset DOIs for zip code to DMA mappings
   // You may need to find the actual DOI from the zip2dma package or Dataverse
-  const knownDOIs = [
+  const knownDOIs: string[] = [
     // Add known DOIs here if you find them
   ]
   
@@ -291,5 +291,6 @@ async function main() {
 }
 
 main()
+
 
 

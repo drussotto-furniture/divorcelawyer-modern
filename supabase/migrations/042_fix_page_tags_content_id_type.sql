@@ -12,3 +12,4 @@ ALTER TABLE page_tags
 COMMENT ON COLUMN page_tags.content_id IS 'ID or slug of the content item (UUID for articles/posts, slug for static pages like "home" or "connect-with-lawyer")';
 
 
+

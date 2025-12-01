@@ -332,16 +332,16 @@ async function populateZipCityState() {
 
   for (const [key, data] of cityStateMap.entries()) {
     // Get or create state
-    let stateId = stateMap.get(data.state.toUpperCase())
+    let stateId: string | null | undefined = stateMap.get(data.state.toUpperCase())
     if (!stateId && data.stateAbbr) {
       stateId = stateMap.get(data.stateAbbr.toUpperCase())
     }
     if (!stateId) {
       stateId = await getOrCreateState(data.state, data.stateAbbr)
       if (stateId) {
-        stateMap.set(data.state.toUpperCase(), stateId)
+        stateMap.set(data.state.toUpperCase(), stateId as string)
         if (data.stateAbbr) {
-          stateMap.set(data.stateAbbr.toUpperCase(), stateId)
+          stateMap.set(data.stateAbbr.toUpperCase(), stateId as string)
         }
       }
     }

@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const supabase = await createClient()
     
-    const { data: subscriptionTypes, error } = await supabase
+    const { data: subscriptionTypes, error } = await (supabase as any)
       .from('subscription_types')
       .select('name, display_name, sort_order')
       .eq('is_active', true)

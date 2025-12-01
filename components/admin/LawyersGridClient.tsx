@@ -107,7 +107,7 @@ export default function LawyersGridClient({ initialLawyers, isSuperAdmin }: Lawy
       const zipCodeIds = zipCodeRecords.map(z => z.id)
       
       // Now get DMA mappings
-      const { data: zipCodeDmas, error: zipError } = await supabase
+      const { data: zipCodeDmas, error: zipError } = await (supabase as any)
         .from('zip_code_dmas')
         .select(`
           zip_code_id,
@@ -607,9 +607,9 @@ export default function LawyersGridClient({ initialLawyers, isSuperAdmin }: Lawy
                         }
                         
                         // Extract DMAs from service areas
-                        const dmas: Array<{ id: string; name: string; code: number }> = []
+                        const dmas: Array<{ id: string; name: string; code: number }> = [] as Array<{ id: string; name: string; code: number }>
                         
-                        lawyer.lawyer_service_areas.forEach((sa: any) => {
+                        ((lawyer as any).lawyer_service_areas || []).forEach((sa: any) => {
                           // Method 1: Nested dmas object (expected from Supabase query)
                           if (sa.dmas && typeof sa.dmas === 'object' && sa.dmas.id && sa.dmas.name) {
                             dmas.push({

@@ -33,8 +33,8 @@ export default function StageEditForm({ stage }: StageEditFormProps) {
     name: stage?.name || '',
     slug: stage?.slug || '',
     // Strip HTML from main field if it exists, or use _html field as fallback
-    description: stage?.description ? stripHtml(stage.description) : stripHtml(stage?.description_html || ''),
-    content: stage?.content ? stripHtml(stage.content) : stripHtml(stage?.content_html || ''),
+    description: stage?.description ? stripHtml(stage.description) : stripHtml((stage as any)?.description_html || ''),
+    content: stage?.content ? stripHtml(stage.content) : stripHtml((stage as any)?.content_html || ''),
     icon_name: stage?.icon_name || '',
     order_index: stage?.order_index || 0,
     estimated_duration: stage?.estimated_duration || '',
@@ -52,8 +52,8 @@ export default function StageEditForm({ stage }: StageEditFormProps) {
         ...formData,
         order_index: formData.order_index ? parseInt(formData.order_index.toString()) : null,
         // Preserve existing HTML if it exists, otherwise set to null
-        description_html: stage?.description_html || null,
-        content_html: stage?.content_html || null,
+        description_html: (stage as any)?.description_html || null,
+        content_html: (stage as any)?.content_html || null,
       }
 
       if (stage) {

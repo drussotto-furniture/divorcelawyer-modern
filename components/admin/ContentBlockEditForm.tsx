@@ -47,7 +47,7 @@ export default function ContentBlockEditForm({ block, defaultType }: ContentBloc
     title: block?.title || '',
     subtitle: block?.subtitle || '',
     // Strip HTML from main field if it exists, or use _html field as fallback
-    description: block?.description ? stripHtml(block.description) : stripHtml(block?.description_html || ''),
+    description: block?.description ? stripHtml(block.description) : stripHtml((block as any)?.description_html || ''),
     image_url: block?.image_url || '',
     link_url: block?.link_url || '',
     link_text: block?.link_text || '',
@@ -65,7 +65,7 @@ export default function ContentBlockEditForm({ block, defaultType }: ContentBloc
         ...formData,
         order_index: formData.order_index ? parseInt(formData.order_index.toString()) : 0,
         // Preserve existing HTML if it exists, otherwise set to null
-        description_html: block?.description_html || null,
+        description_html: (block as any)?.description_html || null,
       }
 
       if (block) {

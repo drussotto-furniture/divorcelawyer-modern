@@ -43,3 +43,4 @@ COMMENT ON COLUMN dmas.name IS 'DMA name (e.g., BURLINGTON-PLATTSBURGH, BOSTON)'
 COMMENT ON TABLE zip_code_dmas IS 'Junction table mapping zip codes to DMAs. Each zip code belongs to exactly one DMA.';
 
 
+

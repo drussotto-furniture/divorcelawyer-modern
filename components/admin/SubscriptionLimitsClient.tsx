@@ -35,7 +35,7 @@ export default function SubscriptionLimitsClient() {
   const loadLimits = async () => {
     setLoading(true)
     try {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('subscription_limits')
         .select('*')
         .order('location_type', { ascending: true })
@@ -43,7 +43,7 @@ export default function SubscriptionLimitsClient() {
         .order('subscription_type', { ascending: true })
 
       if (error) throw error
-      setLimits(data || [])
+      setLimits((data as any) || [])
     } catch (error: any) {
       console.error('Error loading subscription limits:', error)
       alert(`Error loading limits: ${error.message}`)
@@ -84,7 +84,7 @@ export default function SubscriptionLimitsClient() {
     if (!confirm(`Delete subscription limit for ${locationName} (${limit.subscription_type})?`)) return
 
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('subscription_limits')
         .delete()
         .eq('id', limit.id)
@@ -295,14 +295,14 @@ function SubscriptionLimitModal({ limit, dmas, onClose, onSuccess }: Subscriptio
   useEffect(() => {
     if (limit) {
       const loadAllLimits = async () => {
-        const { data } = await supabase
+        const { data } = await (supabase as any)
           .from('subscription_limits')
           .select('*')
           .eq('location_type', limit.location_type)
           .eq('location_value', limit.location_value)
 
         if (data) {
-          const limitsByType = data.reduce((acc, l) => {
+          const limitsByType = (data as any[]).reduce((acc, l: any) => {
             acc[l.subscription_type] = l.max_lawyers
             return acc
           }, {} as Record<string, number | null>)
@@ -339,7 +339,7 @@ function SubscriptionLimitModal({ limit, dmas, onClose, onSuccess }: Subscriptio
 
       if (limit) {
         // Delete existing limits for this location
-        await supabase
+        await (supabase as any)
           .from('subscription_limits')
           .delete()
           .eq('location_type', limit.location_type)
@@ -347,7 +347,7 @@ function SubscriptionLimitModal({ limit, dmas, onClose, onSuccess }: Subscriptio
       }
 
       // Insert new limits
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('subscription_limits')
         .insert(limitsToSave)
 

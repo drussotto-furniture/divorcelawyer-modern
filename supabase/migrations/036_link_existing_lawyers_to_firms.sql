@@ -52,3 +52,4 @@ WHERE l.law_firm_id = lf.id
   AND (l.office_street_address IS NULL OR l.office_street_address = '');
 
 
+

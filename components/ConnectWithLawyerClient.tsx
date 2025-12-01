@@ -4,8 +4,20 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { detectUserLocation } from '@/lib/location-detection'
 import { calculateDistance } from '@/lib/geocoding'
 // Note: Using API routes for client-side data fetching
-import type { Lawyer } from '@/types/database.types'
-import type { State } from '@/types/database.types'
+interface Lawyer {
+  id: string
+  first_name: string
+  last_name: string
+  slug: string
+  [key: string]: any
+}
+interface State {
+  id: string
+  name: string
+  abbreviation: string
+  slug: string
+  [key: string]: any
+}
 import Image from 'next/image'
 import Link from 'next/link'
 import { LawyerImageWithBlur } from './LawyerImageWithBlur'
@@ -388,9 +400,18 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
         stateSearch = match[1].trim()
       }
       
+      console.log(`🌐 Fetching: /api/lawyers/by-state?state=${encodeURIComponent(stateSearch)}`)
       const response = await fetch(`/api/lawyers/by-state?state=${encodeURIComponent(stateSearch)}`)
       if (response.ok) {
         const data = await response.json()
+        console.log(`📊 State search API response:`, {
+          lawyersCount: data.lawyers?.length || 0,
+          groupedCount: Object.keys(data.groupedBySubscription || {}).length,
+          subscriptionTypesCount: data.subscriptionTypes?.length || 0,
+          hasDMA: !!data.dma,
+          dmaName: data.dma?.name
+        })
+        console.log(`📋 Full API response:`, JSON.stringify(data, null, 2).substring(0, 500))
         setLawyers(data.lawyers || [])
         setFilteredLawyers(data.lawyers || [])
         setGroupedBySubscription(data.groupedBySubscription || {})
@@ -399,6 +420,7 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
         setSearchTerm('')
       } else {
         const errorData = await response.json()
+        console.error(`❌ API error for state "${stateSearch}":`, errorData)
         alert(errorData.error || 'Failed to find lawyers for that state')
       }
     } catch (error) {
@@ -1208,6 +1230,7 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
             {(filters.yearsExperienceMin || filters.specializations.length > 0 || filters.state || filters.distanceFromMe) && (
               <button
                 onClick={() => setFilters({
+                  ...filters,
                   yearsExperienceMin: undefined,
                   specializations: [],
                   barAdmissions: [],
@@ -1267,6 +1290,7 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
                   setDma(null)
                   setGroupedBySubscription({})
                   setFilters({
+                    ...filters,
                     verified: undefined,
                     featured: undefined,
                     yearsExperienceMin: undefined,
@@ -1436,7 +1460,7 @@ function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
           <div className="mb-4">
             <p className="text-xs text-gray-500 mb-1">Specializations:</p>
             <div className="flex flex-wrap gap-1">
-              {lawyer.specializations.slice(0, 3).map((spec, idx) => (
+              {lawyer.specializations.slice(0, 3).map((spec: any, idx: number) => (
                 <span key={idx} className="px-2 py-1 bg-subtlesand rounded text-xs">
                   {spec}
                 </span>

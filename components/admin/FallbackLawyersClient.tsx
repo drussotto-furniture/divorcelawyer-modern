@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import type { Lawyer } from '@/types/database.types'
 
 interface FallbackLawyer {
   id: string
@@ -15,6 +14,13 @@ interface FallbackLawyer {
     last_name: string
     slug: string
   }
+}
+
+interface Lawyer {
+  id: string
+  first_name: string
+  last_name: string
+  slug: string
 }
 
 interface FallbackLawyersClientProps {
@@ -147,8 +153,8 @@ export default function FallbackLawyersClient({
                 />
                 <div className="flex-1">
                   <p className="font-semibold text-gray-900">{fullName}</p>
-                  {(lawyer.law_firms as any)?.name && (
-                    <p className="text-sm text-gray-600">{(lawyer.law_firms as any).name}</p>
+                  {((lawyer as any).law_firms as any)?.name && (
+                    <p className="text-sm text-gray-600">{((lawyer as any).law_firms as any).name}</p>
                   )}
                 </div>
                 {isSelected && (

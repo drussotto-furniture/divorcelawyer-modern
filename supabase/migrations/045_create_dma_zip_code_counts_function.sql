@@ -25,3 +25,4 @@ GRANT EXECUTE ON FUNCTION get_dma_zip_code_counts() TO authenticated;
 COMMENT ON FUNCTION get_dma_zip_code_counts() IS 'Returns the count of zip codes for each DMA. More efficient than fetching all records and counting client-side.';
 
 
+

@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       dmaName: result.dma?.name,
       dmaCode: result.dma?.code,
       groupedCount: Object.keys(result.groupedBySubscription || {}).length,
-      subscriptionTypes: result.subscriptionTypes?.map(st => st.name) || [],
+      subscriptionTypes: result.subscriptionTypes?.map((st: any) => st.name) || [],
       groupedDetails: Object.keys(result.groupedBySubscription || {}).map(key => ({
         subscriptionType: key,
         count: result.groupedBySubscription[key]?.length || 0
