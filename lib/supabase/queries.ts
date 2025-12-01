@@ -2476,12 +2476,27 @@ export async function getLawyersByStateWithSubscriptionLimits(
 
     if (stateError) {
       console.error(`❌ Error finding state "${trimmedState}":`, stateError)
-      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+      // Still return subscription types even on error
+      const { data: subscriptionTypes } = await (supabase as any)
+        .from('subscription_types')
+        .select('name, display_name, sort_order')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
     }
 
     if (!stateData) {
       console.error(`❌ State not found: "${trimmedState}"`)
-      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+      console.error(`   Attempted searches:`)
+      console.error(`   - Abbreviation: "${trimmedState.length === 2 ? trimmedState.toUpperCase() : 'N/A (not 2 chars)'}"`)
+      console.error(`   - Name ilike: "%${trimmedState}%"`)
+      // Still return subscription types even if state not found
+      const { data: subscriptionTypes } = await (supabase as any)
+        .from('subscription_types')
+        .select('name, display_name, sort_order')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
     }
 
     console.log(`✅ Found state: ${stateData.name} (${stateData.abbreviation})`)
@@ -2494,7 +2509,13 @@ export async function getLawyersByStateWithSubscriptionLimits(
 
     if (citiesError) {
       console.error('Error fetching cities:', citiesError)
-      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+      // Still return subscription types even on error
+      const { data: subscriptionTypes } = await (supabase as any)
+        .from('subscription_types')
+        .select('name, display_name, sort_order')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
     }
 
     const cityIds = (citiesData || []).map(c => c.id)
@@ -2502,7 +2523,13 @@ export async function getLawyersByStateWithSubscriptionLimits(
 
     if (cityIds.length === 0) {
       console.warn(`⚠️ No cities found for state ${stateData.name}`)
-      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+      // Still return subscription types even if no cities
+      const { data: subscriptionTypes } = await (supabase as any)
+        .from('subscription_types')
+        .select('name, display_name, sort_order')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
     }
 
     // Step 3: Get all zip codes for these cities
@@ -2513,7 +2540,13 @@ export async function getLawyersByStateWithSubscriptionLimits(
 
     if (zipCodesError) {
       console.error('Error fetching zip codes:', zipCodesError)
-      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+      // Still return subscription types even on error
+      const { data: subscriptionTypes } = await (supabase as any)
+        .from('subscription_types')
+        .select('name, display_name, sort_order')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
     }
 
     const zipCodeList = (zipCodesData || []).map(z => z.zip_code).filter((z): z is string => !!z)
@@ -2541,12 +2574,24 @@ export async function getLawyersByStateWithSubscriptionLimits(
       
       if (firmsError) {
         console.error('Error in fallback firm search:', firmsError)
-        return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+        // Still return subscription types even on error
+        const { data: subscriptionTypes } = await (supabase as any)
+          .from('subscription_types')
+          .select('name, display_name, sort_order')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true })
+        return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
       }
       
       if (!firmsInState || firmsInState.length === 0) {
         console.warn(`⚠️ No firms found in state ${stateData.name}`)
-        return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+        // Still return subscription types even if no firms
+        const { data: subscriptionTypes } = await (supabase as any)
+          .from('subscription_types')
+          .select('name, display_name, sort_order')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true })
+        return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
       }
       
       const firmIds = firmsInState.map(f => f.id)
@@ -2591,17 +2636,29 @@ export async function getLawyersByStateWithSubscriptionLimits(
       `)
       .in('law_firm_id', firmIds)
     
-    if (lawyersError) {
-      console.error('Error fetching lawyers by firm:', lawyersError)
-      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
-    }
-    
-    const fallbackLawyers = (lawyersByFirm || []) as Lawyer[]
-    console.log(`✅ Fallback: Found ${fallbackLawyers.length} lawyers via firm state search`)
-    
-    if (fallbackLawyers.length === 0) {
-      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
-    }
+      if (lawyersError) {
+        console.error('Error fetching lawyers by firm:', lawyersError)
+        // Still return subscription types even on error
+        const { data: subscriptionTypes } = await (supabase as any)
+          .from('subscription_types')
+          .select('name, display_name, sort_order')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true })
+        return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+      }
+      
+      const fallbackLawyers = (lawyersByFirm || []) as Lawyer[]
+      console.log(`✅ Fallback: Found ${fallbackLawyers.length} lawyers via firm state search`)
+      
+      if (fallbackLawyers.length === 0) {
+        // Still return subscription types even if no lawyers
+        const { data: subscriptionTypes } = await (supabase as any)
+          .from('subscription_types')
+          .select('name, display_name, sort_order')
+          .eq('is_active', true)
+          .order('sort_order', { ascending: true })
+        return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+      }
     
     // Get subscription types and group
     const supabaseClient10 = await supabase
@@ -2655,7 +2712,13 @@ export async function getLawyersByStateWithSubscriptionLimits(
 
     if (dmaError) {
       console.error('Error fetching DMAs:', dmaError)
-      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+      // Still return subscription types even on error
+      const { data: subscriptionTypes } = await (supabase as any)
+        .from('subscription_types')
+        .select('name, display_name, sort_order')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
     }
 
     const uniqueDmaIds = new Set<string>()
@@ -2682,7 +2745,13 @@ export async function getLawyersByStateWithSubscriptionLimits(
     if (uniqueDmaIds.size === 0) {
       console.warn(`⚠️ No DMAs found for zip codes in state ${stateData.name}`)
       console.warn(`   This means zip codes in ${stateData.name} are not mapped to DMAs`)
-      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+      // Still return subscription types even if no DMAs
+      const { data: subscriptionTypes } = await (supabase as any)
+        .from('subscription_types')
+        .select('name, display_name, sort_order')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
     }
 
     // Step 5: For each DMA, fetch lawyers (similar to zip code search logic)
@@ -2930,7 +2999,13 @@ export async function getLawyersByStateWithSubscriptionLimits(
 
     if (uniqueLawyers.length === 0) {
       console.warn(`⚠️ No lawyers found in any DMA for state ${stateData.name}`)
-      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+      // Still return subscription types even if no lawyers
+      const { data: subscriptionTypes } = await (supabase as any)
+        .from('subscription_types')
+        .select('name, display_name, sort_order')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
     }
 
     // Step 6: Get subscription types
@@ -3113,7 +3188,20 @@ export async function getLawyersByStateWithSubscriptionLimits(
     console.error(`❌ Error:`, error)
     console.error(`❌ Stack:`, error?.stack)
     console.error(`❌ ========================================\n`)
-    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+    
+    // Try to return subscription types even on error
+    try {
+      const supabase = await createClient()
+      const { data: subscriptionTypes } = await (supabase as any)
+        .from('subscription_types')
+        .select('name, display_name, sort_order')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+    } catch (subError) {
+      console.error('❌ Could not fetch subscription types in error handler:', subError)
+      return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+    }
   }
 }
 
