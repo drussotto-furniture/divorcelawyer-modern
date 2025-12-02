@@ -96,7 +96,7 @@ async function getLawyersByDMAsWithSubscriptionLimits(
       .filter((zip: string | undefined): zip is string => !!zip)
 
     dmaZipCodeMap.set(dmaId, zipCodeList)
-    zipCodeList.forEach((zip: string) => allZipCodes.add(zip))
+    zipCodeList.forEach(zip => allZipCodes.add(zip))
   }
 
   const zipCodeArray = Array.from(allZipCodes)
@@ -172,7 +172,7 @@ async function getLawyersByDMAsWithSubscriptionLimits(
   if (firmsError) {
     console.error(`❌ Error fetching firms by zip_code:`, firmsError)
   } else if (firmsInDmas && firmsInDmas.length > 0) {
-    const firmIds = firmsInDmas.map((f: any) => f.id)
+    const firmIds = firmsInDmas.map(f => f.id)
     const { data: lawyersByFirmData, error: lawyersByFirmError } = await supabase
       .from('lawyers')
       .select(`
@@ -298,7 +298,7 @@ async function getLawyersByDMAsWithSubscriptionLimits(
   ]
 
   const uniqueLawyersMap = new Map<string, Lawyer>()
-  allLawyersArray.forEach((lawyer: Lawyer) => {
+  allLawyersArray.forEach(lawyer => {
     if (!uniqueLawyersMap.has(lawyer.id)) {
       uniqueLawyersMap.set(lawyer.id, lawyer)
     }
@@ -308,7 +308,7 @@ async function getLawyersByDMAsWithSubscriptionLimits(
   console.log(`✅ Total unique lawyers: ${uniqueLawyers.length}`)
 
   // Step 7: Get DMA-level subscriptions for all lawyers
-  const lawyerIds = uniqueLawyers.map((l: Lawyer) => l.id)
+  const lawyerIds = uniqueLawyers.map(l => l.id)
   const { data: dmaSubscriptions, error: subsError } = await (supabase as any)
     .from('lawyer_dma_subscriptions')
     .select('lawyer_id, dma_id, subscription_type')
@@ -332,7 +332,7 @@ async function getLawyersByDMAsWithSubscriptionLimits(
 
   // Map each lawyer to their DMAs (for determining subscription)
   const lawyerDmaMap = new Map<string, string[]>() // lawyer_id -> [dma_ids]
-  uniqueLawyers.forEach((lawyer: Lawyer) => {
+  uniqueLawyers.forEach(lawyer => {
     const lawyerZips = new Set<string>()
     if ((lawyer as any).office_zip_code) {
       lawyerZips.add((lawyer as any).office_zip_code)
@@ -365,7 +365,7 @@ async function getLawyersByDMAsWithSubscriptionLimits(
   const subscriptionTypeMap = new Map((subscriptionTypes as any)?.map((st: any) => [st.name, st.sort_order]) || [])
   const lawyerSubscriptionMap = new Map<string, string>() // lawyer_id -> subscription_type
 
-  uniqueLawyers.forEach((lawyer: Lawyer) => {
+  uniqueLawyers.forEach(lawyer => {
     const lawyerDmas = lawyerDmaMap.get(lawyer.id) || []
     const subscriptions = lawyerDmaSubscriptionsMap.get(lawyer.id)
 
@@ -398,7 +398,7 @@ async function getLawyersByDMAsWithSubscriptionLimits(
     groupedBySubscription[subType.name] = []
   })
 
-  uniqueLawyers.forEach((lawyer: Lawyer) => {
+  uniqueLawyers.forEach(lawyer => {
     const subscriptionType = lawyerSubscriptionMap.get(lawyer.id) || 'free'
     if (groupedBySubscription[subscriptionType]) {
       groupedBySubscription[subscriptionType].push(lawyer)
@@ -1501,7 +1501,7 @@ export async function getLawyersByZipCodeWithSubscriptionLimits(zipCode: string)
     console.log(`🔍 ========================================`)
 
     // Step 1: Query zip_dma_city_state view to find DMA for this zip code
-    const { data: zipLocationData, error: locationError } = await (supabase as any)
+    const { data: zipLocationData, error: locationError } = await supabase
       .from('zip_dma_city_state')
       .select('dma_id, dma_name, dma_code')
       .eq('zip_code', zipCode)
@@ -1851,7 +1851,7 @@ export async function getLawyersByNameWithDistance(
   const zipCodeList = (zipCodesData || []).map((z: any) => z.zip_code).filter((z: string | null): z is string => !!z)
   
   // Find DMAs for these zip codes using the view
-  const { data: dmaData, error: dmaError } = await (supabase as any)
+  const { data: dmaData, error: dmaError } = await supabase
     .from('zip_dma_city_state')
     .select('dma_id')
     .in('zip_code', zipCodeList)
@@ -1867,7 +1867,7 @@ export async function getLawyersByNameWithDistance(
     return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
   }
   
-  const uniqueDmaIds = [...new Set((dmaData || []).map((d: any) => d.dma_id).filter((id: any): id is string => !!id))] as string[]
+  const uniqueDmaIds = [...new Set((dmaData || []).map((d: any) => d.dma_id).filter((id: string | null): id is string => !!id))]
   
   if (uniqueDmaIds.length === 0) {
     console.warn(`No DMAs found for zip codes within ${maxMiles} miles of ${zipCode}`)
@@ -1893,7 +1893,7 @@ export async function getLawyersByNameWithDistance(
   
   // Re-group filtered lawyers by subscription
   const filteredGrouped: Record<string, Lawyer[]> = {}
-  Object.keys(result.groupedBySubscription).forEach((subType: string) => {
+  Object.keys(result.groupedBySubscription).forEach(subType => {
     filteredGrouped[subType] = result.groupedBySubscription[subType].filter((lawyer: any) => {
       const firstName = (lawyer.first_name || '').toLowerCase()
       const lastName = (lawyer.last_name || '').toLowerCase()
@@ -1913,6 +1913,1320 @@ export async function getLawyersByNameWithDistance(
   }
 }
 
+/**
+ * Fallback function: Get lawyers by zip code only (when DMA is not found)
+ * This is used when a zip code doesn't map to a DMA
+ */
+async function getLawyersByZipCodeOnly(zipCode: string) {
+  const supabase = await createClient()
+  
+  console.log(`Fallback: Searching for lawyers with zip code: ${zipCode} (no DMA mapping found)`)
+  
+  // Query 1: Lawyers with office_zip_code matching
+  const { data: lawyersByOfficeZip, error: officeZipError } = await supabase
+    .from('lawyers')
+    .select(`
+      *,
+      law_firms (
+        id,
+        name,
+        slug,
+        zip_code,
+        city_id,
+        cities (
+          id,
+          name,
+          slug,
+          latitude,
+          longitude,
+          states (
+            id,
+            name,
+            abbreviation
+          )
+        )
+      ),
+      lawyer_service_areas (
+        city_id,
+        cities (
+          id,
+          name,
+          slug,
+          latitude,
+          longitude,
+          states (
+            id,
+            name,
+            abbreviation
+          )
+        )
+      )
+    `)
+    .eq('office_zip_code', zipCode)
+
+  if (officeZipError) {
+    console.error('Error finding lawyers by office_zip_code:', officeZipError)
+  }
+
+  // Query 2: Lawyers whose firm has zip_code matching
+  const { data: firmsWithZip, error: firmsError } = await supabase
+    .from('law_firms')
+    .select('id')
+    .eq('zip_code', zipCode)
+
+  let lawyersByFirmZip: any[] = []
+  if (!firmsError && firmsWithZip && firmsWithZip.length > 0) {
+    const firmIds = firmsWithZip.map(f => f.id)
+    const { data: lawyersByFirm, error: lawyersByFirmError } = await supabase
+      .from('lawyers')
+      .select(`
+        *,
+        law_firms (
+          id,
+          name,
+          slug,
+          zip_code,
+          city_id,
+          cities (
+            id,
+            name,
+            slug,
+            latitude,
+            longitude,
+            states (
+              id,
+              name,
+              abbreviation
+            )
+          )
+        ),
+        lawyer_service_areas (
+          city_id,
+          cities (
+            id,
+            name,
+            slug,
+            latitude,
+            longitude,
+            states (
+              id,
+              name,
+              abbreviation
+            )
+          )
+        )
+      `)
+      .in('law_firm_id', firmIds)
+
+    if (!lawyersByFirmError) {
+      lawyersByFirmZip = lawyersByFirm || []
+    }
+  }
+
+  // Combine and deduplicate
+  const allLawyers = [
+    ...(lawyersByOfficeZip || []),
+    ...lawyersByFirmZip
+  ]
+
+  const uniqueLawyers = Array.from(
+    new Map(allLawyers.map(l => [l.id, l])).values()
+  ) as Lawyer[]
+
+  if (uniqueLawyers.length === 0) {
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  // Get subscription types
+  const { data: subscriptionTypes, error: subTypesError } = await (supabase as any)
+    .from('subscription_types')
+    .select('name, display_name, sort_order')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
+
+  if (subTypesError) {
+    console.error('Error fetching subscription types:', subTypesError)
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+  }
+
+  // Get global limits
+  const { data: globalLimits } = await (supabase as any)
+    .from('subscription_limits')
+    .select('subscription_type, max_lawyers')
+    .eq('location_type', 'global')
+    .eq('location_value', 'default')
+
+  const limitsMap = new Map<string, number | null>()
+  if (globalLimits) {
+    (globalLimits as any[]).forEach((limit: any) => {
+      limitsMap.set(limit.subscription_type, limit.max_lawyers)
+    })
+  }
+
+  // Group by subscription type
+  const groupedBySubscription: Record<string, Lawyer[]> = {}
+  subscriptionTypes?.forEach((subType: any) => {
+    groupedBySubscription[subType.name] = []
+  })
+
+  uniqueLawyers.forEach((lawyer: any) => {
+    const subType = lawyer.subscription_type || 'free'
+    if (subType && groupedBySubscription[subType]) {
+      groupedBySubscription[subType].push(lawyer as Lawyer)
+    }
+  })
+
+  // Apply limits
+  const limitedGroups: Record<string, Lawyer[]> = {}
+  const allLawyersLimited: Lawyer[] = []
+
+  subscriptionTypes?.forEach((subType: any) => {
+    const lawyers = groupedBySubscription[subType.name] || []
+    const maxLawyers = limitsMap.get(subType.name) ?? null
+
+    const limitedLawyers = maxLawyers === null
+      ? lawyers
+      : lawyers.slice(0, maxLawyers)
+
+    limitedGroups[subType.name] = limitedLawyers
+    allLawyersLimited.push(...limitedLawyers)
+  })
+
+  return {
+    lawyers: allLawyersLimited,
+    groupedBySubscription: limitedGroups,
+    dma: null,
+    subscriptionTypes: subscriptionTypes || []
+  }
+}
+
+/**
+ * Get lawyers by name within a specified distance from a zip code
+ * Searches for lawyers matching the name within maxMiles of the zip code
+ */
+export async function getLawyersByNameWithDistance(
+  zipCode: string,
+  name: string,
+  maxMiles: number = 200
+): Promise<{
+  lawyers: Lawyer[]
+  groupedBySubscription: Record<string, Lawyer[]>
+  dma: { id: string; name: string; code: number } | null
+  subscriptionTypes: Array<{ name: string; display_name: string; sort_order: number }>
+}> {
+  const supabase = await createClient()
+
+  // Step 1: Geocode the zip code to get coordinates
+  console.log(`\n🔍 Searching for lawyers named "${name}" within ${maxMiles} miles of zip code ${zipCode}`)
+  const zipCoordinates = await geocodeAddress(zipCode)
+  
+  if (!zipCoordinates) {
+    console.error(`❌ Could not geocode zip code ${zipCode}`)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  // Find all cities within maxMiles
+  const { data: allCities, error: citiesError } = await supabase
+    .from('cities')
+    .select('id, name, latitude, longitude')
+  
+  if (citiesError) {
+    console.error('Error fetching cities:', citiesError)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  // Filter cities within maxMiles
+  const citiesWithinRange = (allCities || []).filter((city: any) => {
+    if (!city.latitude || !city.longitude) return false
+    const distance = calculateDistance(
+      zipCoordinates,
+      { latitude: city.latitude, longitude: city.longitude }
+    )
+    return distance <= maxMiles
+  })
+
+  console.log(`✅ Found ${citiesWithinRange.length} cities within ${maxMiles} miles`)
+
+  // Get all zip codes for these cities
+  const cityIds = citiesWithinRange.map((c: any) => c.id)
+  const { data: zipCodesData, error: zipCodesError } = await supabase
+    .from('zip_codes')
+    .select('zip_code')
+    .in('city_id', cityIds)
+
+  if (zipCodesError) {
+    console.error('Error fetching zip codes:', zipCodesError)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  const zipCodeList = (zipCodesData || []).map((z: any) => z.zip_code).filter((z: string | null): z is string => !!z)
+
+  // Find DMAs for these zip codes using the view
+  const { data: dmaData, error: dmaError } = await supabase
+    .from('zip_dma_city_state')
+    .select('dma_id')
+    .in('zip_code', zipCodeList)
+    .not('dma_id', 'is', null)
+
+  if (dmaError) {
+    console.error('Error fetching DMAs:', dmaError)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  const uniqueDmaIds = [...new Set((dmaData || []).map((d: any) => d.dma_id).filter((id: string | null): id is string => !!id))]
+
+  if (uniqueDmaIds.length === 0) {
+    console.warn(`No DMAs found for zip codes within ${maxMiles} miles of ${zipCode}`)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  // Get lawyers from these DMAs
+  const result = await getLawyersByDMAsWithSubscriptionLimits(uniqueDmaIds)
+
+  // Filter lawyers by name
+  const nameLower = name.toLowerCase().trim()
+  const filteredLawyers = result.lawyers.filter((lawyer: any) => {
+    const firstName = (lawyer.first_name || '').toLowerCase()
+    const lastName = (lawyer.last_name || '').toLowerCase()
+    const fullName = `${firstName} ${lastName}`.trim()
+    return firstName.includes(nameLower) || lastName.includes(nameLower) || fullName.includes(nameLower)
+  })
+
+  // Re-group filtered lawyers by subscription
+  const filteredGrouped: Record<string, Lawyer[]> = {}
+  Object.keys(result.groupedBySubscription).forEach(subType => {
+    filteredGrouped[subType] = result.groupedBySubscription[subType].filter((lawyer: any) => {
+      const firstName = (lawyer.first_name || '').toLowerCase()
+      const lastName = (lawyer.last_name || '').toLowerCase()
+      const fullName = `${firstName} ${lastName}`.trim()
+      const nameLower = name.toLowerCase().trim()
+      return firstName.includes(nameLower) || lastName.includes(nameLower) || fullName.includes(nameLower)
+    })
+  })
+
+  console.log(`✅ Found ${filteredLawyers.length} lawyers matching "${name}" within ${maxMiles} miles of ${zipCode}`)
+
+  return {
+    lawyers: filteredLawyers,
+    groupedBySubscription: filteredGrouped,
+    dma: null, // Multiple DMAs possible
+    subscriptionTypes: result.subscriptionTypes
+  }
+}
+
+/**
+ * Fallback function: Get lawyers by zip code only (when DMA is not found)
+ * This is used when a zip code doesn't map to a DMA
+ */
+async function getLawyersByZipCodeOnly(zipCode: string) {
+  const supabase = await createClient()
+  
+  console.log(`Fallback: Searching for lawyers with zip code: ${zipCode} (no DMA mapping found)`)
+  
+  // Query 1: Lawyers with office_zip_code matching
+  const { data: lawyersByOfficeZip, error: officeZipError } = await supabase
+    .from('lawyers')
+    .select(`
+      *,
+      law_firms (
+        id,
+        name,
+        slug,
+        zip_code,
+        city_id,
+        cities (
+          id,
+          name,
+          slug,
+          latitude,
+          longitude,
+          states (
+            id,
+            name,
+            abbreviation
+          )
+        )
+      ),
+      lawyer_service_areas (
+        city_id,
+        cities (
+          id,
+          name,
+          slug,
+          latitude,
+          longitude,
+          states (
+            id,
+            name,
+            abbreviation
+          )
+        )
+      )
+    `)
+    .eq('office_zip_code', zipCode)
+
+  if (officeZipError) {
+    console.error('Error finding lawyers by office_zip_code:', officeZipError)
+  }
+
+  // Query 2: Lawyers whose law firm has matching zip_code
+  const { data: firmsWithZip, error: firmsError } = await supabase
+    .from('law_firms')
+    .select('id')
+    .eq('zip_code', zipCode)
+
+  let lawyersByFirmZip: any[] = []
+  if (!firmsError && firmsWithZip && firmsWithZip.length > 0) {
+    const firmIds = firmsWithZip.map(f => f.id)
+    const { data: lawyersByFirm, error: lawyersByFirmError } = await supabase
+      .from('lawyers')
+      .select(`
+        *,
+        law_firms (
+          id,
+          name,
+          slug,
+          zip_code,
+          city_id,
+          cities (
+            id,
+            name,
+            slug,
+            latitude,
+            longitude,
+            states (
+              id,
+              name,
+              abbreviation
+            )
+          )
+        ),
+        lawyer_service_areas (
+          city_id,
+          cities (
+            id,
+            name,
+            slug,
+            latitude,
+            longitude,
+            states (
+              id,
+              name,
+              abbreviation
+            )
+          )
+        )
+      `)
+      .in('law_firm_id', firmIds)
+
+    if (lawyersByFirmError) {
+      console.error('Error finding lawyers by law_firm zip_code:', lawyersByFirmError)
+    } else {
+      lawyersByFirmZip = lawyersByFirm || []
+    }
+  }
+
+  // Combine results and remove duplicates
+  const allLawyersByZip = [
+    ...(lawyersByOfficeZip || []),
+    ...lawyersByFirmZip
+  ]
+  
+  // Remove duplicates by lawyer ID
+  const uniqueLawyers = Array.from(
+    new Map(allLawyersByZip.map(l => [l.id, l])).values()
+  )
+
+  console.log(`Found ${uniqueLawyers.length} lawyers with zip code ${zipCode} (${lawyersByOfficeZip?.length || 0} by office_zip_code, ${lawyersByFirmZip.length} by law_firm zip_code)`)
+
+  // Get subscription types and apply global limits
+  const supabaseClient5 = await supabase
+  const { data: subscriptionTypes, error: subTypesError } = await (supabaseClient5 as any)
+    .from('subscription_types')
+    .select('name, display_name, sort_order')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
+
+  if (subTypesError) {
+    console.error('Error fetching subscription types:', subTypesError)
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+  }
+
+  // Get global limits
+  const { data: globalLimits } = await (supabaseClient5 as any)
+    .from('subscription_limits')
+    .select('subscription_type, max_lawyers')
+    .eq('location_type', 'global')
+    .eq('location_value', 'default')
+
+  const limitsMap = new Map<string, number | null>()
+  if (globalLimits) {
+    (globalLimits as any[]).forEach((limit: any) => {
+      limitsMap.set(limit.subscription_type, limit.max_lawyers)
+    })
+  }
+
+  // Group lawyers by subscription type
+  const groupedBySubscription: Record<string, Lawyer[]> = {}
+  
+  subscriptionTypes?.forEach((subType: any) => {
+    groupedBySubscription[subType.name] = []
+  })
+
+  uniqueLawyers.forEach((lawyer: any) => {
+    const subType = lawyer.subscription_type
+    if (subType && groupedBySubscription[subType]) {
+      groupedBySubscription[subType].push(lawyer as Lawyer)
+    }
+  })
+
+  // Apply limits
+  const limitedGroups: Record<string, Lawyer[]> = {}
+  const allLawyers: Lawyer[] = []
+
+  subscriptionTypes?.forEach((subType: any) => {
+    const lawyers = groupedBySubscription[subType.name] || []
+    const maxLawyers = limitsMap.get(subType.name) ?? null
+    
+    const limitedLawyers = maxLawyers === null 
+      ? lawyers 
+      : lawyers.slice(0, maxLawyers)
+    
+    limitedGroups[subType.name] = limitedLawyers
+    allLawyers.push(...limitedLawyers)
+  })
+
+  return {
+    lawyers: allLawyers,
+    groupedBySubscription: limitedGroups,
+    dma: null,
+    subscriptionTypes: subscriptionTypes || []
+  }
+}
+
+/**
+ * Get lawyers by name within a specified distance from a zip code
+ * Searches for lawyers matching the name within maxMiles of the zip code
+ */
+export async function getLawyersByNameWithDistance(
+  zipCode: string,
+  name: string,
+  maxMiles: number = 200
+): Promise<{
+  lawyers: Lawyer[]
+  groupedBySubscription: Record<string, Lawyer[]>
+  dma: { id: string; name: string; code: number } | null
+  subscriptionTypes: Array<{ name: string; display_name: string; sort_order: number }>
+}> {
+  const supabase = await createClient()
+
+  // Step 1: Geocode the zip code to get coordinates
+  console.log(`\n🔍 Searching for lawyers named "${name}" within ${maxMiles} miles of zip code ${zipCode}`)
+  const zipCoordinates = await geocodeAddress(zipCode)
+  
+  if (!zipCoordinates) {
+    console.error(`❌ Could not geocode zip code ${zipCode}`)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  // Find all cities within maxMiles
+  const { data: allCities, error: citiesError } = await supabase
+    .from('cities')
+    .select('id, name, latitude, longitude')
+  
+  if (citiesError) {
+    console.error('Error fetching cities:', citiesError)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  // Filter cities within maxMiles
+  const citiesWithinRange = (allCities || []).filter((city: any) => {
+    if (!city.latitude || !city.longitude) return false
+    const distance = calculateDistance(
+      zipCoordinates,
+      { latitude: city.latitude, longitude: city.longitude }
+    )
+    return distance <= maxMiles
+  })
+
+  console.log(`✅ Found ${citiesWithinRange.length} cities within ${maxMiles} miles`)
+
+  // Get all zip codes for these cities
+  const cityIds = citiesWithinRange.map((c: any) => c.id)
+  const { data: zipCodesData, error: zipCodesError } = await supabase
+    .from('zip_codes')
+    .select('zip_code')
+    .in('city_id', cityIds)
+
+  if (zipCodesError) {
+    console.error('Error fetching zip codes:', zipCodesError)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  const zipCodeList = (zipCodesData || []).map((z: any) => z.zip_code).filter((z: string | null): z is string => !!z)
+
+  // Find DMAs for these zip codes using the view
+  const { data: dmaData, error: dmaError } = await supabase
+    .from('zip_dma_city_state')
+    .select('dma_id')
+    .in('zip_code', zipCodeList)
+    .not('dma_id', 'is', null)
+
+  if (dmaError) {
+    console.error('Error fetching DMAs:', dmaError)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  const uniqueDmaIds = [...new Set((dmaData || []).map((d: any) => d.dma_id).filter((id: string | null): id is string => !!id))]
+
+  if (uniqueDmaIds.length === 0) {
+    console.warn(`No DMAs found for zip codes within ${maxMiles} miles of ${zipCode}`)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  // Get lawyers from these DMAs
+  const result = await getLawyersByDMAsWithSubscriptionLimits(uniqueDmaIds)
+
+  // Filter lawyers by name
+  const nameLower = name.toLowerCase().trim()
+  const filteredLawyers = result.lawyers.filter((lawyer: any) => {
+    const firstName = (lawyer.first_name || '').toLowerCase()
+    const lastName = (lawyer.last_name || '').toLowerCase()
+    const fullName = `${firstName} ${lastName}`.trim()
+    return firstName.includes(nameLower) || lastName.includes(nameLower) || fullName.includes(nameLower)
+  })
+
+  // Re-group filtered lawyers by subscription
+  const filteredGrouped: Record<string, Lawyer[]> = {}
+  Object.keys(result.groupedBySubscription).forEach(subType => {
+    filteredGrouped[subType] = result.groupedBySubscription[subType].filter((lawyer: any) => {
+      const firstName = (lawyer.first_name || '').toLowerCase()
+      const lastName = (lawyer.last_name || '').toLowerCase()
+      const fullName = `${firstName} ${lastName}`.trim()
+      const nameLower = name.toLowerCase().trim()
+      return firstName.includes(nameLower) || lastName.includes(nameLower) || fullName.includes(nameLower)
+    })
+  })
+
+  console.log(`✅ Found ${filteredLawyers.length} lawyers matching "${name}" within ${maxMiles} miles of ${zipCode}`)
+
+  return {
+    lawyers: filteredLawyers,
+    groupedBySubscription: filteredGrouped,
+    dma: null, // Multiple DMAs possible
+    subscriptionTypes: result.subscriptionTypes
+  }
+}
+
+/**
+ * Fallback function: Get lawyers by zip code only (when DMA is not found)
+ * This is used when a zip code doesn't map to a DMA
+ */
+async function getLawyersByZipCodeOnly(zipCode: string) {
+  const supabase = await createClient()
+  
+  console.log(`Fallback: Searching for lawyers with zip code: ${zipCode} (no DMA mapping found)`)
+  
+  // Query 1: Lawyers with office_zip_code matching
+  const { data: lawyersByOfficeZip, error: officeZipError } = await supabase
+    .from('lawyers')
+    .select(`
+      *,
+      law_firms (
+        id,
+        name,
+        slug,
+        zip_code,
+        city_id,
+        cities (
+          id,
+          name,
+          slug,
+          latitude,
+          longitude,
+          states (
+            id,
+            name,
+            abbreviation
+          )
+        )
+      ),
+      lawyer_service_areas (
+        city_id,
+        cities (
+          id,
+          name,
+          slug,
+          latitude,
+          longitude,
+          states (
+            id,
+            name,
+            abbreviation
+          )
+        )
+      )
+    `)
+    .eq('office_zip_code', zipCode)
+
+  if (officeZipError) {
+    console.error('Error finding lawyers by office_zip_code:', officeZipError)
+  }
+
+  // Query 2: Lawyers whose law firm has matching zip_code
+  const { data: firmsWithZip, error: firmsError } = await supabase
+    .from('law_firms')
+    .select('id')
+    .eq('zip_code', zipCode)
+
+  let lawyersByFirmZip: any[] = []
+  if (!firmsError && firmsWithZip && firmsWithZip.length > 0) {
+    const firmIds = firmsWithZip.map(f => f.id)
+    const { data: lawyersByFirm, error: lawyersByFirmError } = await supabase
+      .from('lawyers')
+      .select(`
+        *,
+        law_firms (
+          id,
+          name,
+          slug,
+          zip_code,
+          city_id,
+          cities (
+            id,
+            name,
+            slug,
+            latitude,
+            longitude,
+            states (
+              id,
+              name,
+              abbreviation
+            )
+          )
+        ),
+        lawyer_service_areas (
+          city_id,
+          cities (
+            id,
+            name,
+            slug,
+            latitude,
+            longitude,
+            states (
+              id,
+              name,
+              abbreviation
+            )
+          )
+        )
+      `)
+      .in('law_firm_id', firmIds)
+
+    if (lawyersByFirmError) {
+      console.error('Error finding lawyers by law_firm zip_code:', lawyersByFirmError)
+    } else {
+      lawyersByFirmZip = lawyersByFirm || []
+    }
+  }
+
+  // Combine results and remove duplicates
+  const allLawyersByZip = [
+    ...(lawyersByOfficeZip || []),
+    ...lawyersByFirmZip
+  ]
+  
+  // Remove duplicates by lawyer ID
+  const uniqueLawyers = Array.from(
+    new Map(allLawyersByZip.map(l => [l.id, l])).values()
+  )
+
+  console.log(`Found ${uniqueLawyers.length} lawyers with zip code ${zipCode} (${lawyersByOfficeZip?.length || 0} by office_zip_code, ${lawyersByFirmZip.length} by law_firm zip_code)`)
+
+  // Get subscription types and apply global limits
+  const supabaseClient5 = await supabase
+  const { data: subscriptionTypes, error: subTypesError } = await (supabaseClient5 as any)
+    .from('subscription_types')
+    .select('name, display_name, sort_order')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
+
+  if (subTypesError) {
+    console.error('Error fetching subscription types:', subTypesError)
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+  }
+
+  // Get global limits
+  const { data: globalLimits } = await (supabaseClient5 as any)
+    .from('subscription_limits')
+    .select('subscription_type, max_lawyers')
+    .eq('location_type', 'global')
+    .eq('location_value', 'default')
+
+  const limitsMap = new Map<string, number | null>()
+  if (globalLimits) {
+    (globalLimits as any[]).forEach((limit: any) => {
+      limitsMap.set(limit.subscription_type, limit.max_lawyers)
+    })
+  }
+
+  // Group lawyers by subscription type
+  const groupedBySubscription: Record<string, Lawyer[]> = {}
+  
+  subscriptionTypes?.forEach((subType: any) => {
+    groupedBySubscription[subType.name] = []
+  })
+
+  uniqueLawyers.forEach((lawyer: any) => {
+    const subType = lawyer.subscription_type
+    if (subType && groupedBySubscription[subType]) {
+      groupedBySubscription[subType].push(lawyer as Lawyer)
+    }
+  })
+
+  // Apply limits
+  const limitedGroups: Record<string, Lawyer[]> = {}
+  const allLawyers: Lawyer[] = []
+
+  subscriptionTypes?.forEach((subType: any) => {
+    const lawyers = groupedBySubscription[subType.name] || []
+    const maxLawyers = limitsMap.get(subType.name) ?? null
+    
+    const limitedLawyers = maxLawyers === null 
+      ? lawyers 
+      : lawyers.slice(0, maxLawyers)
+    
+    limitedGroups[subType.name] = limitedLawyers
+    allLawyers.push(...limitedLawyers)
+  })
+
+  return {
+    lawyers: allLawyers,
+    groupedBySubscription: limitedGroups,
+    dma: null,
+    subscriptionTypes: subscriptionTypes || []
+  }
+}
+
+/**
+ * Get lawyers by name within a specified distance from a zip code
+ * Searches for lawyers matching the name within maxMiles of the zip code
+ */
+export async function getLawyersByNameWithDistance(
+  zipCode: string,
+  name: string,
+  maxMiles: number = 200
+): Promise<{
+  lawyers: Lawyer[]
+  groupedBySubscription: Record<string, Lawyer[]>
+  dma: { id: string; name: string; code: number } | null
+  subscriptionTypes: Array<{ name: string; display_name: string; sort_order: number }>
+}> {
+  const supabase = await createClient()
+
+  // Step 1: Geocode the zip code to get coordinates
+  console.log(`\n🔍 Searching for lawyers named "${name}" within ${maxMiles} miles of zip code ${zipCode}`)
+  const zipCoordinates = await geocodeAddress(zipCode)
+  
+  if (!zipCoordinates) {
+    console.error(`❌ Could not geocode zip code ${zipCode}`)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  // Find all cities within maxMiles
+  const { data: allCities, error: citiesError } = await supabase
+    .from('cities')
+    .select('id, name, latitude, longitude')
+  
+  if (citiesError) {
+    console.error('Error fetching cities:', citiesError)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  // Filter cities within maxMiles
+  const citiesWithinRange = (allCities || []).filter((city: any) => {
+    if (!city.latitude || !city.longitude) return false
+    const distance = calculateDistance(
+      zipCoordinates,
+      { latitude: city.latitude, longitude: city.longitude }
+    )
+    return distance <= maxMiles
+  })
+
+  console.log(`✅ Found ${citiesWithinRange.length} cities within ${maxMiles} miles`)
+
+  // Get all zip codes for these cities
+  const cityIds = citiesWithinRange.map((c: any) => c.id)
+  const { data: zipCodesData, error: zipCodesError } = await supabase
+    .from('zip_codes')
+    .select('zip_code')
+    .in('city_id', cityIds)
+
+  if (zipCodesError) {
+    console.error('Error fetching zip codes:', zipCodesError)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  const zipCodeList = (zipCodesData || []).map((z: any) => z.zip_code).filter((z: string | null): z is string => !!z)
+
+  // Find DMAs for these zip codes using the view
+  const { data: dmaData, error: dmaError } = await supabase
+    .from('zip_dma_city_state')
+    .select('dma_id')
+    .in('zip_code', zipCodeList)
+    .not('dma_id', 'is', null)
+
+  if (dmaError) {
+    console.error('Error fetching DMAs:', dmaError)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  const uniqueDmaIds = [...new Set((dmaData || []).map((d: any) => d.dma_id).filter((id: string | null): id is string => !!id))]
+
+  if (uniqueDmaIds.length === 0) {
+    console.warn(`No DMAs found for zip codes within ${maxMiles} miles of ${zipCode}`)
+    const { data: subscriptionTypes } = await (supabase as any)
+      .from('subscription_types')
+      .select('name, display_name, sort_order')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: subscriptionTypes || [] }
+  }
+
+  // Get lawyers from these DMAs
+  const result = await getLawyersByDMAsWithSubscriptionLimits(uniqueDmaIds)
+
+  // Filter lawyers by name
+  const nameLower = name.toLowerCase().trim()
+  const filteredLawyers = result.lawyers.filter((lawyer: any) => {
+    const firstName = (lawyer.first_name || '').toLowerCase()
+    const lastName = (lawyer.last_name || '').toLowerCase()
+    const fullName = `${firstName} ${lastName}`.trim()
+    return firstName.includes(nameLower) || lastName.includes(nameLower) || fullName.includes(nameLower)
+  })
+
+  // Re-group filtered lawyers by subscription
+  const filteredGrouped: Record<string, Lawyer[]> = {}
+  Object.keys(result.groupedBySubscription).forEach(subType => {
+    filteredGrouped[subType] = result.groupedBySubscription[subType].filter((lawyer: any) => {
+      const firstName = (lawyer.first_name || '').toLowerCase()
+      const lastName = (lawyer.last_name || '').toLowerCase()
+      const fullName = `${firstName} ${lastName}`.trim()
+      const nameLower = name.toLowerCase().trim()
+      return firstName.includes(nameLower) || lastName.includes(nameLower) || fullName.includes(nameLower)
+    })
+  })
+
+  console.log(`✅ Found ${filteredLawyers.length} lawyers matching "${name}" within ${maxMiles} miles of ${zipCode}`)
+
+  return {
+    lawyers: filteredLawyers,
+    groupedBySubscription: filteredGrouped,
+    dma: null, // Multiple DMAs possible
+    subscriptionTypes: result.subscriptionTypes
+  }
+}
+
+/**
+ * Get lawyers by name within a specified distance from a zip code
+ * Searches for lawyers matching the name within maxMiles of the zip code
+ */
+export async function getLawyersByNameWithDistance(
+  zipCode: string,
+  name: string,
+  maxMiles: number = 200
+): Promise<{
+  lawyers: Lawyer[]
+  groupedBySubscription: Record<string, Lawyer[]>
+  dma: { id: string; name: string; code: number } | null
+  subscriptionTypes: Array<{ name: string; display_name: string; sort_order: number }>
+}> {
+  const supabase = await createClient()
+
+  // Step 1: Geocode the zip code to get coordinates
+  console.log(`\n🔍 Searching for lawyers named "${name}" within ${maxMiles} miles of zip code ${zipCode}`)
+  const zipCoordinates = await geocodeAddress(zipCode)
+  
+  if (!zipCoordinates) {
+    console.error(`❌ Could not geocode zip code ${zipCode}`)
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+  }
+
+  console.log(`📍 Zip code ${zipCode} coordinates: ${zipCoordinates.latitude}, ${zipCoordinates.longitude}`)
+
+  // Step 2: Get all cities with coordinates
+  const { data: allCities, error: citiesError } = await supabase
+    .from('cities')
+    .select('id, name, latitude, longitude')
+    .not('latitude', 'is', null)
+    .not('longitude', 'is', null)
+
+  if (citiesError) {
+    console.error('Error fetching cities:', citiesError)
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+  }
+
+  // Step 3: Filter cities within maxMiles
+  const citiesWithinRadius = (allCities || []).filter(city => {
+    if (!city.latitude || !city.longitude) return false
+    const distance = calculateDistance(
+      zipCoordinates,
+      { latitude: city.latitude, longitude: city.longitude }
+    )
+    return distance <= maxMiles
+  })
+
+  console.log(`✅ Found ${citiesWithinRadius.length} cities within ${maxMiles} miles`)
+
+  if (citiesWithinRadius.length === 0) {
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+  }
+
+  const cityIds = citiesWithinRadius.map(c => c.id)
+
+  // Step 4: Get all zip codes for these cities
+  const { data: zipCodesData, error: zipCodesError } = await supabase
+    .from('zip_codes')
+    .select('id, zip_code, city_id')
+    .in('city_id', cityIds)
+
+  if (zipCodesError) {
+    console.error('Error fetching zip codes:', zipCodesError)
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+  }
+
+  const zipCodeList = (zipCodesData || []).map(z => z.zip_code).filter((z): z is string => !!z)
+  console.log(`✅ Found ${zipCodeList.length} zip codes in cities within ${maxMiles} miles`)
+
+  if (zipCodeList.length === 0) {
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+  }
+
+  // Step 5: Get unique DMAs for these zip codes
+  const zipCodeIds = (zipCodesData || []).map(z => z.id)
+  const supabaseClient6 = await supabase
+  const { data: zipCodeDmas, error: dmaError } = await (supabaseClient6 as any)
+    .from('zip_code_dmas')
+    .select(`
+      dma_id,
+      dmas (
+        id,
+        name,
+        code
+      )
+    `)
+    .in('zip_code_id', zipCodeIds)
+
+  if (dmaError) {
+    console.error('Error fetching DMAs:', dmaError)
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+  }
+
+  const uniqueDmaIds = new Set<string>()
+  const dmaMap = new Map<string, { id: string; name: string; code: number }>()
+  
+  ;(zipCodeDmas || []).forEach((zcd: any) => {
+    const dma = zcd.dmas as any
+    if (dma && dma.id) {
+      uniqueDmaIds.add(dma.id)
+      if (!dmaMap.has(dma.id)) {
+        dmaMap.set(dma.id, { id: dma.id, name: dma.name, code: dma.code })
+      }
+    }
+  })
+
+  console.log(`✅ Found ${uniqueDmaIds.size} unique DMAs`)
+
+  // Step 6: Search for lawyers by name first (without zip code filter)
+  // This ensures we find lawyers even if their zip code isn't in the cities table
+  const nameParts = name.trim().split(/\s+/)
+  let lawyersQuery = supabase
+    .from('lawyers')
+    .select(`
+      *,
+      law_firms (
+        id,
+        name,
+        slug,
+        zip_code,
+        city_id,
+        cities (
+          id,
+          name,
+          slug,
+          latitude,
+          longitude,
+          states (
+            id,
+            name,
+            abbreviation
+          )
+        )
+      ),
+      lawyer_service_areas (
+        city_id,
+        cities (
+          id,
+          name,
+          slug,
+          latitude,
+          longitude,
+          states (
+            id,
+            name,
+            abbreviation
+          )
+        )
+      )
+    `)
+
+  // Apply name filter - search in first_name and last_name
+  if (nameParts.length === 1) {
+    // Single word - search in both first and last name
+    lawyersQuery = lawyersQuery.or(`first_name.ilike.%${nameParts[0]}%,last_name.ilike.%${nameParts[0]}%`)
+  } else {
+    // Multiple words - first word in first_name, rest in last_name
+    lawyersQuery = lawyersQuery.ilike('first_name', `%${nameParts[0]}%`)
+    if (nameParts.length > 1) {
+      const lastName = nameParts.slice(1).join(' ')
+      lawyersQuery = lawyersQuery.ilike('last_name', `%${lastName}%`)
+    }
+  }
+
+  const { data: lawyersData, error: lawyersError } = await lawyersQuery
+
+  if (lawyersError) {
+    console.error('Error searching lawyers by name:', lawyersError)
+    return { lawyers: [], groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+  }
+
+  console.log(`✅ Found ${(lawyersData || []).length} lawyers matching name "${name}" (before distance filter)`)
+
+  // Step 7: Filter lawyers to only those within maxMiles (using city coordinates or zip code geocoding)
+  const filteredLawyers = (lawyersData || []).filter((lawyer: any) => {
+    // Check firm city coordinates first
+    const firmCity = lawyer.law_firms?.cities
+    if (firmCity?.latitude && firmCity?.longitude) {
+      const distance = calculateDistance(
+        zipCoordinates,
+        { latitude: firmCity.latitude, longitude: firmCity.longitude }
+      )
+      if (distance <= maxMiles) return true
+    }
+
+    // Check service area cities
+    const serviceAreas = lawyer.lawyer_service_areas || []
+    for (const area of serviceAreas) {
+      const city = area.cities
+      if (city?.latitude && city?.longitude) {
+        const distance = calculateDistance(
+          zipCoordinates,
+          { latitude: city.latitude, longitude: city.longitude }
+        )
+        if (distance <= maxMiles) return true
+      }
+    }
+
+    // Fallback: If no city coordinates, try geocoding the office zip code
+    if ((lawyer as any).office_zip_code) {
+      // Check if this zip code is in our list of zip codes within radius
+      // (we already have this list from Step 4)
+      if (zipCodeList.includes((lawyer as any).office_zip_code)) {
+        return true
+      }
+    }
+
+    // Also check firm zip code
+    if (lawyer.law_firms?.zip_code) {
+      if (zipCodeList.includes(lawyer.law_firms.zip_code)) {
+        return true
+      }
+    }
+
+    return false
+  }) as Lawyer[]
+
+  console.log(`✅ Found ${filteredLawyers.length} lawyers matching name "${name}" within ${maxMiles} miles`)
+
+  // Step 8: Get subscription types
+  const supabaseClient7 = await supabase
+  const { data: subscriptionTypes, error: subTypesError } = await (supabaseClient7 as any)
+    .from('subscription_types')
+    .select('name, display_name, sort_order')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
+
+  if (subTypesError) {
+    console.error('Error fetching subscription types:', subTypesError)
+    return { lawyers: filteredLawyers, groupedBySubscription: {}, dma: null, subscriptionTypes: [] }
+  }
+
+  // Step 9: Group by subscription type and apply limits per DMA
+  const groupedBySubscription: Record<string, Lawyer[]> = {}
+  subscriptionTypes?.forEach((subType: any) => {
+    groupedBySubscription[subType.name] = []
+  })
+
+  // Group lawyers by DMA and subscription type, then apply limits
+  const dmaGroups = new Map<string, Map<string, Lawyer[]>>()
+  
+  filteredLawyers.forEach((lawyer: any) => {
+    // Determine which DMA this lawyer belongs to
+    const lawyerZip = (lawyer as any).office_zip_code
+    if (!lawyerZip) return
+
+    const zipCodeRow = zipCodesData?.find(z => z.zip_code === lawyerZip)
+    if (!zipCodeRow) return
+
+    // Find DMA for this zip code
+    const zipCodeDma = zipCodeDmas?.find((zcd: any) => zcd.zip_code_id === zipCodeRow.id)
+    if (!zipCodeDma) return
+
+    const dmaId = (zipCodeDma.dmas as any)?.id
+    if (!dmaId) return
+
+    if (!dmaGroups.has(dmaId)) {
+      dmaGroups.set(dmaId, new Map())
+      subscriptionTypes?.forEach((subType: any) => {
+        dmaGroups.get(dmaId)!.set(subType.name, [])
+      })
+    }
+
+    const subType = (lawyer as any).subscription_type
+    if (subType && dmaGroups.get(dmaId)!.has(subType)) {
+      dmaGroups.get(dmaId)!.get(subType)!.push(lawyer)
+    }
+  })
+
+  // Apply subscription limits per DMA
+  const limitedGroups: Record<string, Lawyer[]> = {}
+  subscriptionTypes?.forEach((subType: any) => {
+    limitedGroups[subType.name] = []
+  })
+
+  for (const [dmaId, subTypeGroups] of dmaGroups.entries()) {
+    // Get limits for this DMA
+    const supabaseClient8 = await supabase
+    const { data: dmaLimits } = await (supabaseClient8 as any)
+      .from('subscription_limits')
+      .select('subscription_type, max_lawyers')
+      .eq('location_type', 'dma')
+      .eq('location_value', String(dmaId))
+
+    const { data: globalLimits } = await (supabaseClient8 as any)
+      .from('subscription_limits')
+      .select('subscription_type, max_lawyers')
+      .eq('location_type', 'global')
+      .eq('location_value', 'default')
+
+    const limitsMap = new Map<string, number | null>()
+    if (dmaLimits) {
+      (dmaLimits as any[]).forEach((limit: any) => {
+        limitsMap.set(limit.subscription_type, limit.max_lawyers)
+      })
+    }
+    if (globalLimits) {
+      (globalLimits as any[]).forEach((limit: any) => {
+        if (!limitsMap.has(limit.subscription_type)) {
+          limitsMap.set(limit.subscription_type, limit.max_lawyers)
+        }
+      })
+    }
+
+    // Apply limits
+    subscriptionTypes?.forEach((subType: any) => {
+      const lawyers = subTypeGroups.get(subType.name) || []
+      const maxLawyers = limitsMap.get(subType.name) ?? null
+      const limited = maxLawyers === null ? lawyers : lawyers.slice(0, maxLawyers)
+      limitedGroups[subType.name].push(...limited)
+    })
+  }
+
+  // Use first DMA found (or null if multiple)
+  const firstDma = dmaMap.size === 1 ? Array.from(dmaMap.values())[0] : null
+
+  return {
+    lawyers: Object.values(limitedGroups).flat(),
+    groupedBySubscription: limitedGroups,
+    dma: firstDma,
+    subscriptionTypes: subscriptionTypes || []
+  }
+}
 
 /**
  * Get lawyers by state - uses zip_dma_city_state view to find DMAs, then fetches lawyers
@@ -2029,7 +3343,7 @@ export async function getLawyersByStateWithSubscriptionLimits(
     console.log(`✅ Found state: ${stateData.name} (${stateData.abbreviation})`)
 
     // Step 2: Query zip_dma_city_state view to get all unique DMAs for this state
-    const { data: stateLocationData, error: locationError } = await (supabase as any)
+    const { data: stateLocationData, error: locationError } = await supabase
       .from('zip_dma_city_state')
       .select('dma_id, dma_name, dma_code')
       .or(`state_abbreviation.eq.${stateData.abbreviation},state_name.ilike.%${stateData.name}%`)
@@ -2049,7 +3363,7 @@ export async function getLawyersByStateWithSubscriptionLimits(
     // Extract unique DMA IDs
     const uniqueDmaIds = [...new Set((stateLocationData || [])
       .map((row: any) => row.dma_id)
-      .filter((id: any): id is string => !!id))] as string[]
+      .filter((id: string | null): id is string => !!id))]
 
     console.log(`✅ Found ${uniqueDmaIds.length} unique DMA(s) in ${stateData.name}`)
     if (uniqueDmaIds.length > 0 && stateLocationData) {
@@ -2280,7 +3594,7 @@ export async function getLawyersByCityWithSubscriptionLimits(
     console.log(`🔍 ========================================`)
 
     // Step 1: Query zip_dma_city_state view to find DMAs for this city
-    let cityQuery = (supabase as any)
+    let cityQuery = supabase
       .from('zip_dma_city_state')
       .select('dma_id, dma_name, dma_code')
       .ilike('city_name', `${cityName.trim()}%`)
@@ -2306,7 +3620,7 @@ export async function getLawyersByCityWithSubscriptionLimits(
     // Extract unique DMA IDs
     const uniqueDmaIds = [...new Set((cityLocationData || [])
       .map((row: any) => row.dma_id)
-      .filter((id: any): id is string => !!id))] as string[]
+      .filter((id: string | null): id is string => !!id))]
 
     console.log(`✅ Found ${uniqueDmaIds.length} unique DMA(s) for city "${cityName}"`)
     if (uniqueDmaIds.length > 0 && cityLocationData) {

@@ -47,8 +47,19 @@ export const metadata: Metadata = {
 }
 
 export default async function ConnectWithLawyerPage() {
-  // Fetch states for location dropdown
-  const states = await getStates()
+  // Fetch states for location dropdown - use empty array if it fails or hangs
+  let states: any[] = []
+  try {
+    // Try to get states, but don't let it block page rendering
+    const statesPromise = getStates()
+    const timeoutPromise = new Promise<any[]>((resolve) => 
+      setTimeout(() => resolve([]), 3000) // Return empty array after 3 seconds
+    )
+    states = await Promise.race([statesPromise, timeoutPromise])
+  } catch (error) {
+    console.error('Error fetching states:', error)
+    states = []
+  }
 
   return (
     <>

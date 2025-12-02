@@ -892,7 +892,7 @@ const normalizedLawyer = {
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow">
       {/* Tabs Navigation */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-200 shadow-sm">
+      <div className="sticky top-[101px] z-40 bg-white border-b border-gray-200 shadow-sm">
         <div className="px-6 py-4">
           <div className="flex gap-2 overflow-x-auto pb-2">
             {sections.map((section) => (
@@ -1381,6 +1381,7 @@ const normalizedLawyer = {
 
         {/* Recognition & Media Section */}
         <div>
+          <SectionHeader id="recognition" title="Recognition & Media" icon="🏆" />
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
               <label htmlFor="awards" className="block text-sm font-medium text-gray-700 mb-1">
@@ -1829,7 +1830,7 @@ const normalizedLawyer = {
       </div>
 
       {/* Form Actions */}
-      <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-end gap-4 shadow-lg">
+      <div className="sticky bottom-0 z-40 bg-white border-t border-gray-200 px-6 py-4 flex justify-end gap-4 shadow-lg">
         <button
           type="button"
           onClick={() => router.back()}

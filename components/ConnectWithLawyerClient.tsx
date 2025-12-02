@@ -103,24 +103,38 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
       // Priority 1: If we have a zip code, use zip code search (which gets all lawyers in DMA)
       if (location?.zipCode) {
         console.log(`🔍 Searching for lawyers by zip code: ${location.zipCode} (will show all lawyers in DMA)`)
-        const response = await fetch(`/api/lawyers/by-zip?zipCode=${encodeURIComponent(location.zipCode)}`)
-        if (response.ok) {
-          const data = await response.json()
-          lawyersData = data.lawyers || []
-          groupedData = data.groupedBySubscription || {}
-          dmaData = data.dma || null
-          subscriptionTypesData = data.subscriptionTypes || []
-          console.log(`📊 Found ${lawyersData.length} lawyers in DMA for zip code ${location.zipCode}`)
-          console.log(`📊 Grouped data keys:`, Object.keys(groupedData))
-          console.log(`📊 Grouped data details:`, Object.keys(groupedData).map(key => ({
-            key,
-            count: groupedData[key]?.length || 0,
-            lawyers: groupedData[key]?.map((l: any) => ({ id: l.id, name: `${l.first_name} ${l.last_name}`, subscription_type: l.subscription_type })) || []
-          })))
-          console.log(`📊 Subscription types:`, subscriptionTypesData)
-          console.log(`📊 Subscription type names:`, subscriptionTypesData.map((st: any) => st.name))
-          if (dmaData) {
-            console.log(`📍 DMA: ${dmaData.name} (${dmaData.code})`)
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
+        try {
+          const response = await fetch(`/api/lawyers/by-zip?zipCode=${encodeURIComponent(location.zipCode)}`, {
+            signal: controller.signal
+          })
+          clearTimeout(timeoutId)
+          if (response.ok) {
+            const data = await response.json()
+            lawyersData = data.lawyers || []
+            groupedData = data.groupedBySubscription || {}
+            dmaData = data.dma || null
+            subscriptionTypesData = data.subscriptionTypes || []
+            console.log(`📊 Found ${lawyersData.length} lawyers in DMA for zip code ${location.zipCode}`)
+            console.log(`📊 Grouped data keys:`, Object.keys(groupedData))
+            console.log(`📊 Grouped data details:`, Object.keys(groupedData).map(key => ({
+              key,
+              count: groupedData[key]?.length || 0,
+              lawyers: groupedData[key]?.map((l: any) => ({ id: l.id, name: `${l.first_name} ${l.last_name}`, subscription_type: l.subscription_type })) || []
+            })))
+            console.log(`📊 Subscription types:`, subscriptionTypesData)
+            console.log(`📊 Subscription type names:`, subscriptionTypesData.map((st: any) => st.name))
+            if (dmaData) {
+              console.log(`📍 DMA: ${dmaData.name} (${dmaData.code})`)
+            }
+          }
+        } catch (fetchError: any) {
+          clearTimeout(timeoutId)
+          if (fetchError.name === 'AbortError') {
+            console.error('⏱️ Request timed out after 30 seconds')
+          } else {
+            console.error('Error fetching lawyers by zip code:', fetchError)
           }
         }
       }

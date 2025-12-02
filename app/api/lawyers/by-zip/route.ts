@@ -21,7 +21,11 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    console.log(`⏱️ Starting zip code search for: ${zipCode}`)
+    const startTime = Date.now()
     const result = await getLawyersByZipCodeWithSubscriptionLimits(zipCode)
+    const duration = Date.now() - startTime
+    console.log(`⏱️ Zip code search completed in ${duration}ms`)
     
     // Log for debugging
     console.log(`\n📊 API Response for zip code ${zipCode}:`, {

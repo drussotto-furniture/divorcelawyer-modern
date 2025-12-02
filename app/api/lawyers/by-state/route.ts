@@ -37,9 +37,21 @@ export async function GET(request: NextRequest) {
         console.warn(`   3. No DMAs mapped to those zip codes`)
         console.warn(`   4. No lawyers in those DMAs`)
         console.warn(`   5. Function returned early due to an error`)
+        console.warn(`\n   Check the server logs above for detailed step-by-step information.`)
+        console.warn(`   Look for messages starting with: 🔍, ✅, ⚠️, or ❌`)
       }
       
-      return NextResponse.json(result)
+      // In development, add debug info to response
+      const response: any = { ...result }
+      if (process.env.NODE_ENV === 'development' && result.lawyers?.length === 0) {
+        response._debug = {
+          message: 'Check server console logs for detailed debugging information',
+          subscriptionTypesReturned: result.subscriptionTypes?.length || 0,
+          hint: 'If subscriptionTypes > 0, the function ran but found no lawyers. Check logs for cities/zip codes/DMAs counts.'
+        }
+      }
+      
+      return NextResponse.json(response)
     } catch (apiError: any) {
       console.error(`\n❌ API ROUTE ERROR for state "${state}":`, apiError)
       console.error(`   Error message:`, apiError?.message)

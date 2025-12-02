@@ -58,7 +58,43 @@ function generateSlug(name: string): string {
 }
 
 /**
+ * Parse CSV line with proper quote handling
+ */
+function parseCSVLine(line: string): string[] {
+  const result: string[] = []
+  let current = ''
+  let inQuotes = false
+  
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i]
+    const nextChar = line[i + 1]
+    
+    if (char === '"') {
+      if (inQuotes && nextChar === '"') {
+        // Escaped quote
+        current += '"'
+        i++ // Skip next quote
+      } else {
+        // Toggle quote state
+        inQuotes = !inQuotes
+      }
+    } else if (char === ',' && !inQuotes) {
+      // End of field
+      result.push(current.trim())
+      current = ''
+    } else {
+      current += char
+    }
+  }
+  
+  // Add last field
+  result.push(current.trim())
+  return result
+}
+
+/**
  * Read CSV file with zip code, city, state data
+ * Handles CSV files where the "zips" column contains space-separated zip codes
  */
 function readZipCityStateCSV(filePath: string): ZipCityStateRow[] {
   console.log(`📄 Reading CSV file: ${filePath}`)
@@ -70,59 +106,77 @@ function readZipCityStateCSV(filePath: string): ZipCityStateRow[] {
   const content = fs.readFileSync(filePath, 'utf-8')
   const lines = content.split('\n').filter(line => line.trim())
   
-  // Skip header
-  const dataLines = lines.slice(1)
+  if (lines.length === 0) {
+    throw new Error('CSV file is empty')
+  }
   
   const rows: ZipCityStateRow[] = []
   
-  // Try to detect header
-  const header = lines[0]?.toLowerCase() || ''
-  const hasHeader = header.includes('zip') && (header.includes('city') || header.includes('place'))
+  // Parse header
+  const headerLine = lines[0]
+  const headerParts = parseCSVLine(headerLine)
+  const headerLower = headerParts.map(h => h.toLowerCase().replace(/^"|"$/g, ''))
   
-  let startIndex = hasHeader ? 1 : 0
-  const dataLinesToProcess = lines.slice(startIndex)
+  // Find column indices
+  const cityIdx = headerLower.findIndex(h => h === 'city' || h === 'city_ascii')
+  const stateIdIdx = headerLower.findIndex(h => h === 'state_id')
+  const stateNameIdx = headerLower.findIndex(h => h === 'state_name')
+  const zipsIdx = headerLower.findIndex(h => h === 'zips' || h === 'zip')
   
-  // Detect delimiter (comma or tab)
-  const delimiter = header.includes('\t') ? '\t' : ','
+  if (cityIdx === -1 || (stateIdIdx === -1 && stateNameIdx === -1)) {
+    throw new Error('CSV missing required columns: city and state_id or state_name')
+  }
   
-  for (const line of dataLinesToProcess) {
-    const parts = line.split(delimiter).map(p => p.trim().replace(/^"|"$/g, ''))
+  console.log(`   Found columns: city=${cityIdx}, state_id=${stateIdIdx}, state_name=${stateNameIdx}, zips=${zipsIdx}`)
+  
+  // Process data rows
+  let totalZipCodes = 0
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i]
+    if (!line.trim()) continue
     
-    if (parts.length < 3) continue
+    const parts = parseCSVLine(line)
     
-    // Try to find zip, city, state columns by header or position
-    let zipCode = ''
-    let city = ''
-    let state = ''
-    
-    if (hasHeader) {
-      // Try to match by header names
-      const headerParts = header.split(delimiter)
-      const zipIdx = headerParts.findIndex(h => h.includes('zip'))
-      const cityIdx = headerParts.findIndex(h => h.includes('city') || h.includes('place'))
-      const stateIdx = headerParts.findIndex(h => h.includes('state') || h.includes('state_id') || h.includes('state_name'))
-      
-      if (zipIdx >= 0) zipCode = normalizeZipCode(parts[zipIdx] || '')
-      if (cityIdx >= 0) city = parts[cityIdx] || ''
-      if (stateIdx >= 0) state = parts[stateIdx] || ''
-    } else {
-      // Assume first 3 columns are zip, city, state
-      zipCode = normalizeZipCode(parts[0] || '')
-      city = parts[1] || parts[2] || ''
-      state = parts[2] || parts[3] || ''
+    if (parts.length < Math.max(cityIdx, stateIdIdx, stateNameIdx, zipsIdx) + 1) {
+      continue
     }
     
-    if (!zipCode || !city || !state) continue
+    const city = parts[cityIdx]?.replace(/^"|"$/g, '') || ''
+    const stateId = stateIdIdx >= 0 ? parts[stateIdIdx]?.replace(/^"|"$/g, '') : ''
+    const stateName = stateNameIdx >= 0 ? parts[stateNameIdx]?.replace(/^"|"$/g, '') : ''
+    const zipsField = zipsIdx >= 0 ? parts[zipsIdx]?.replace(/^"|"$/g, '') : ''
     
-    rows.push({
-      zip_code: zipCode,
-      city: city,
-      state: state,
-      state_abbr: state.length === 2 ? state.toUpperCase() : undefined,
-    })
+    if (!city || (!stateId && !stateName)) continue
+    
+    // Use state_id if available, otherwise state_name
+    const state = stateId || stateName
+    
+    // Handle zips column - can contain space-separated zip codes
+    if (zipsField) {
+      // Split by spaces and filter out empty strings
+      const zipCodes = zipsField.split(/\s+/).filter(z => z.trim())
+      
+      // Create a row for each zip code
+      for (const zipCode of zipCodes) {
+        const normalizedZip = normalizeZipCode(zipCode)
+        if (normalizedZip && normalizedZip.length === 5) {
+          rows.push({
+            zip_code: normalizedZip,
+            city: city,
+            state: state,
+            state_abbr: state.length === 2 ? state.toUpperCase() : undefined,
+          })
+          totalZipCodes++
+        }
+      }
+    } else {
+      // No zips column or empty - skip this row
+      continue
+    }
   }
 
-  console.log(`✅ Parsed ${rows.length} rows from CSV`)
+  console.log(`✅ Parsed ${rows.length} zip code rows from ${lines.length - 1} city rows`)
+  console.log(`   Average ${(totalZipCodes / (lines.length - 1)).toFixed(1)} zip codes per city`)
   return rows
 }
 
