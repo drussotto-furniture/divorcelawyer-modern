@@ -14,6 +14,15 @@ export default function AdminSidebar({ auth }: AdminSidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const isActive = (path: string) => pathname === path || pathname?.startsWith(path + '/')
+  
+  // Check if any child of a nav item is active
+  const isParentActive = (item: NavItem) => {
+    if (isActive(item.href)) return true
+    if (item.children) {
+      return item.children.some(child => isActive(child.href))
+    }
+    return false
+  }
 
   useEffect(() => {
     const toggleButton = document.getElementById('sidebar-toggle')
@@ -97,7 +106,8 @@ export default function AdminSidebar({ auth }: AdminSidebarProps) {
       { name: 'Locations', href: '/admin/directory/locations' },
       { name: 'Fallback Lawyers', href: '/admin/fallback-lawyers' },
     ]},
-    { name: 'Subscriptions', href: '/admin/subscriptions', icon: '💳', children: [
+    { name: 'Subscriptions', href: '/admin/subscription-plans', icon: '💳', children: [
+      { name: 'Plan Editor', href: '/admin/subscription-plans' },
       { name: 'Subscription Types', href: '/admin/subscriptions/types' },
       { name: 'Subscription Limits', href: '/admin/subscriptions/limits' },
     ]},
@@ -158,7 +168,7 @@ export default function AdminSidebar({ auth }: AdminSidebarProps) {
                   href={item.href}
                   className={`
                     flex items-center gap-3 px-4 py-3 rounded-lg transition-colors font-proxima
-                    ${isActive(item.href)
+                    ${isParentActive(item)
                       ? 'bg-primary text-black font-bold'
                       : 'text-white/90 hover:bg-white/10 hover:text-white'
                     }
@@ -167,7 +177,7 @@ export default function AdminSidebar({ auth }: AdminSidebarProps) {
                   <span className="text-xl">{item.icon}</span>
                   <span className="font-medium">{item.name}</span>
                 </Link>
-                {item.children && isActive(item.href) && (
+                {item.children && isParentActive(item) && (
                   <ul className="ml-8 mt-2 space-y-1 border-l-2 border-white/20 pl-4">
                     {item.children.map((child) => (
                       <li key={child.href}>
@@ -176,7 +186,7 @@ export default function AdminSidebar({ auth }: AdminSidebarProps) {
                           className={`
                             block px-4 py-2 rounded-lg text-sm transition-colors
                             ${isActive(child.href)
-                              ? 'bg-primary/20 text-primary font-bold'
+                              ? 'bg-primary text-black font-bold'
                               : 'text-white/80 hover:bg-white/5 hover:text-white'
                             }
                           `}

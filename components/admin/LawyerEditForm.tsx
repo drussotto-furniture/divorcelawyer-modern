@@ -39,9 +39,10 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const [activeSection, setActiveSection] = useState<string>('basic')
+  const [activeSection, setActiveSection] = useState<string>('subscription')
 
   const sections = [
+    { id: 'subscription', title: 'Subscription', icon: '💳' },
     { id: 'basic', title: 'Basic Information', icon: '👤' },
     { id: 'professional', title: 'Professional Information', icon: '⚖️' },
     { id: 'practice', title: 'Practice & Approach', icon: '🎯' },
@@ -49,7 +50,6 @@ export default function LawyerEditForm({ lawyer, auth, isNew = false }: LawyerEd
     { id: 'contact', title: 'Contact & Office Information', icon: '📞' },
     { id: 'ratings', title: 'Ratings & Status', icon: '⭐' },
     { id: 'seo', title: 'SEO & Meta Information', icon: '🔍' },
-    { id: 'subscription', title: 'Subscription', icon: '💳' },
   ]
 
   // Update active section based on scroll position
@@ -938,6 +938,150 @@ const normalizedLawyer = {
         )}
 
 
+        {/* Subscription Section */}
+        <div>
+          <SectionHeader id="subscription" title="Subscription" icon="💳" />
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="md:col-span-2">
+              {/* Upgrade CTA for non-admin users */}
+              {!auth.isSuperAdmin && (
+                <div className="bg-gradient-to-r from-primary/10 to-orange-100 border border-primary/30 rounded-lg p-6 mb-6">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-1">🚀 Boost Your Visibility</h3>
+                      <p className="text-sm text-gray-700">
+                        Upgrade your subscription to appear higher in search results and reach more potential clients. 
+                        Premium members get <strong>priority placement</strong>, <strong>featured badges</strong>, and <strong>enhanced profiles</strong>.
+                      </p>
+                    </div>
+                    {serviceAreas.length > 0 && serviceAreas.some(sa => sa.dma_id) ? (
+                      <a
+                        href={`/admin/upgrade?lawyerId=${lawyer.id}`}
+                        className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 whitespace-nowrap font-bold text-sm shadow-md hover:shadow-lg transition-all"
+                      >
+                        View Upgrade Options →
+                      </a>
+                    ) : (
+                      <p className="text-sm text-gray-500 italic">Add a service area below to upgrade</p>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <p className="text-sm text-blue-800 font-medium mb-2">📌 Subscription Management</p>
+                <p className="text-sm text-blue-700">
+                  Subscriptions are managed per DMA (Designated Market Area). Each DMA can have its own subscription level. 
+                  New service areas default to "Free" subscription and can be upgraded per DMA.
+                </p>
+              </div>
+              
+              {/* Service Areas with DMA Subscriptions */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Service Areas (DMAs where lawyer practices)
+                </label>
+                <div className="mb-2 text-xs text-gray-500">
+                  Current service areas: {serviceAreas.filter(sa => sa.dma_id).length > 0 ? `${serviceAreas.filter(sa => sa.dma_id).length} DMAs` : 'None'}
+                  {serviceAreas.length === 0 && formData.office_zip_code && (
+                    <span className="ml-2 text-blue-600">
+                      (Will auto-populate from zip code: {formData.office_zip_code})
+                    </span>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  {serviceAreas.length === 0 ? (
+                    <div>
+                      <p className="text-sm text-gray-500 italic mb-2">No service areas configured. The first service area will be auto-populated from your zip code, or click "+ Add Service Area" to add DMAs manually.</p>
+                    </div>
+                  ) : (
+                    serviceAreas.map((sa, index) => {
+                      const selectedDma = dmas.find(d => d.id === sa.dma_id)
+                      return (
+                        <div key={`sa-${index}-${sa.dma_id || 'new'}`} className="border border-gray-200 rounded-lg p-4 space-y-3">
+                          <div className="flex gap-2 items-center">
+                            <div className="flex-1">
+                              <label className="block text-xs font-medium text-gray-600 mb-1">DMA</label>
+                              <select
+                                value={sa.dma_id || ''}
+                                onChange={(e) => updateServiceArea(index, e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                                disabled={loadingDmas}
+                              >
+                                <option value="">Select a DMA...</option>
+                                {dmas.map((dma) => (
+                                  <option key={dma.id} value={dma.id}>
+                                    {dma.name} (DMA {dma.code})
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                            {selectedDma && (
+                              <div className="flex-1">
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Subscription</label>
+                                <select
+                                  value={sa.subscription_type || 'free'}
+                                  onChange={(e) => updateServiceAreaSubscription(index, e.target.value)}
+                                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary ${!auth.isSuperAdmin ? 'bg-gray-100 text-gray-600' : ''}`}
+                                  disabled={!auth.isSuperAdmin}
+                                >
+                                  {subscriptionTypes.map((st) => (
+                                    <option key={st.name} value={st.name}>
+                                      {st.display_name}
+                                    </option>
+                                  ))}
+                                </select>
+                              </div>
+                            )}
+                            {selectedDma && !auth.isSuperAdmin && (
+                              <div className="pt-6">
+                                <a
+                                  href={`/admin/upgrade?lawyerId=${lawyer.id}&dmaId=${sa.dma_id}`}
+                                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 whitespace-nowrap font-medium text-sm"
+                                >
+                                  Upgrade
+                                </a>
+                              </div>
+                            )}
+                            <div className="pt-6">
+                              <button
+                                type="button"
+                                onClick={() => removeServiceArea(index)}
+                                className="px-3 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                          {/* Description text below the row */}
+                          {selectedDma && !auth.isSuperAdmin && (
+                            <p className="mt-2 text-xs text-gray-500">
+                              Want to increase your visibility? Upgrade your subscription to get priority placement in search results and access to premium features. Click "Upgrade" to contact our team.
+                            </p>
+                          )}
+                          {selectedDma && (
+                            <div className="text-xs text-gray-500">
+                              {selectedDma.name} (DMA {selectedDma.code}) - Subscription: {subscriptionTypes.find(st => st.name === (sa.subscription_type || 'free'))?.display_name || 'Free'}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })
+                  )}
+                  <button
+                    type="button"
+                    onClick={addServiceArea}
+                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+                  >
+                    + Add Service Area
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
         {/* Basic Information Section */}
         <div>
           <SectionHeader id="basic" title="Basic Information" icon="👤" />
@@ -1730,150 +1874,6 @@ const normalizedLawyer = {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
                 placeholder="SEO description for search engines"
               />
-            </div>
-          </div>
-        </div>
-
-        {/* Subscription Section */}
-        <div>
-          <SectionHeader id="subscription" title="Subscription" icon="💳" />
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              {/* Upgrade CTA for non-admin users */}
-              {!auth.isSuperAdmin && (
-                <div className="bg-gradient-to-r from-primary/10 to-orange-100 border border-primary/30 rounded-lg p-6 mb-6">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">🚀 Boost Your Visibility</h3>
-                      <p className="text-sm text-gray-700">
-                        Upgrade your subscription to appear higher in search results and reach more potential clients. 
-                        Premium members get <strong>priority placement</strong>, <strong>featured badges</strong>, and <strong>enhanced profiles</strong>.
-                      </p>
-                    </div>
-                    {serviceAreas.length > 0 && serviceAreas[0]?.dma_id ? (
-                      <a
-                        href={`/admin/upgrade?lawyerId=${lawyer.id}&dmaId=${serviceAreas[0].dma_id}&current=${serviceAreas[0].subscription_type || 'free'}`}
-                        className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 whitespace-nowrap font-bold text-sm shadow-md hover:shadow-lg transition-all"
-                      >
-                        View Upgrade Options →
-                      </a>
-                    ) : (
-                      <p className="text-sm text-gray-500 italic">Add a service area below to upgrade</p>
-                    )}
-                  </div>
-                </div>
-              )}
-              
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                <p className="text-sm text-blue-800 font-medium mb-2">📌 Subscription Management</p>
-                <p className="text-sm text-blue-700">
-                  Subscriptions are managed per DMA (Designated Market Area). Each DMA can have its own subscription level. 
-                  New service areas default to "Free" subscription and can be upgraded per DMA.
-                </p>
-              </div>
-              
-              {/* Service Areas with DMA Subscriptions */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Service Areas (DMAs where lawyer practices)
-                </label>
-                <div className="mb-2 text-xs text-gray-500">
-                  Current service areas: {serviceAreas.filter(sa => sa.dma_id).length > 0 ? `${serviceAreas.filter(sa => sa.dma_id).length} DMAs` : 'None'}
-                  {serviceAreas.length === 0 && formData.office_zip_code && (
-                    <span className="ml-2 text-blue-600">
-                      (Will auto-populate from zip code: {formData.office_zip_code})
-                    </span>
-                  )}
-                </div>
-                <div className="space-y-2">
-                  {serviceAreas.length === 0 ? (
-                    <div>
-                      <p className="text-sm text-gray-500 italic mb-2">No service areas configured. The first service area will be auto-populated from your zip code, or click "+ Add Service Area" to add DMAs manually.</p>
-                    </div>
-                  ) : (
-                    serviceAreas.map((sa, index) => {
-                      const selectedDma = dmas.find(d => d.id === sa.dma_id)
-                      return (
-                        <div key={`sa-${index}-${sa.dma_id || 'new'}`} className="border border-gray-200 rounded-lg p-4 space-y-3">
-                          <div className="flex gap-2 items-center">
-                            <div className="flex-1">
-                              <label className="block text-xs font-medium text-gray-600 mb-1">DMA</label>
-                              <select
-                                value={sa.dma_id || ''}
-                                onChange={(e) => updateServiceArea(index, e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-                                disabled={loadingDmas}
-                              >
-                                <option value="">Select a DMA...</option>
-                                {dmas.map((dma) => (
-                                  <option key={dma.id} value={dma.id}>
-                                    {dma.name} (DMA {dma.code})
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                            {selectedDma && (
-                              <div className="flex-1">
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Subscription</label>
-                                <select
-                                  value={sa.subscription_type || 'free'}
-                                  onChange={(e) => updateServiceAreaSubscription(index, e.target.value)}
-                                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary ${!auth.isSuperAdmin ? 'bg-gray-100 text-gray-600' : ''}`}
-                                  disabled={!auth.isSuperAdmin}
-                                >
-                                  {subscriptionTypes.map((st) => (
-                                    <option key={st.name} value={st.name}>
-                                      {st.display_name}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-                            )}
-                            {selectedDma && !auth.isSuperAdmin && (
-                              <div className="pt-6">
-                                <a
-                                  href="mailto:support@divorcelawyer.com?subject=Subscription%20Upgrade%20Request&body=I%20would%20like%20to%20upgrade%20my%20subscription.%0A%0ALawyer%20Name%3A%20%0ACurrent%20Subscription%3A%20%0ADesired%20Subscription%3A%20"
-                                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 whitespace-nowrap font-medium text-sm"
-                                >
-                                  Upgrade
-                                </a>
-                              </div>
-                            )}
-                            <div className="pt-6">
-                              <button
-                                type="button"
-                                onClick={() => removeServiceArea(index)}
-                                className="px-3 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200"
-                              >
-                                Remove
-                              </button>
-                            </div>
-                          </div>
-                          {/* Description text below the row */}
-                          {selectedDma && !auth.isSuperAdmin && (
-                            <p className="mt-2 text-xs text-gray-500">
-                              Want to increase your visibility? Upgrade your subscription to get priority placement in search results and access to premium features. Click "Upgrade" to contact our team.
-                            </p>
-                          )}
-                          {selectedDma && (
-                            <div className="text-xs text-gray-500">
-                              {selectedDma.name} (DMA {selectedDma.code}) - Subscription: {subscriptionTypes.find(st => st.name === (sa.subscription_type || 'free'))?.display_name || 'Free'}
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })
-                  )}
-                  <button
-                    type="button"
-                    onClick={addServiceArea}
-                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
-                  >
-                    + Add Service Area
-                  </button>
-                </div>
-              </div>
-
             </div>
           </div>
         </div>
