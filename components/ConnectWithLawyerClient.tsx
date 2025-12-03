@@ -53,7 +53,6 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
     specializations: [] as string[],
     barAdmissions: [] as string[],
     languages: [] as string[],
-    state: '' as string,
     distanceFromMe: undefined as { address?: string; miles: number; coordinates: { latitude: number; longitude: number } } | undefined,
   })
 
@@ -772,16 +771,6 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
         })
       }
 
-      // Filter by state
-      if (filters.state) {
-        filtered = filtered.filter(l => {
-          const firm = l.law_firms as any
-          const firmState = firm?.cities?.states?.abbreviation
-          const serviceAreaStates = ((l as any).lawyer_service_areas || []).map((sa: any) => sa.cities?.states?.abbreviation).filter(Boolean)
-          return firmState === filters.state || serviceAreaStates.includes(filters.state)
-        })
-      }
-
       // Filter by distance from me
       if (filters.distanceFromMe && filters.distanceFromMe.coordinates) {
         filtered = filtered.filter(l => {
@@ -1073,18 +1062,6 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
               <option value="20">20+ Years</option>
             </select>
 
-            {/* State Filter */}
-            <select
-              value={filters.state}
-              onChange={(e) => setFilters({ ...filters, state: e.target.value })}
-              className="px-4 py-2 rounded-lg border border-gray-300 bg-white"
-            >
-              <option value="">All States</option>
-              {states.map(state => (
-                <option key={state.id} value={state.abbreviation}>{state.name}</option>
-              ))}
-            </select>
-
             {/* Specializations */}
             {allSpecializations.length > 0 && (
               <select
@@ -1244,7 +1221,7 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
             </div>
 
             {/* Clear Filters */}
-            {(filters.yearsExperienceMin || filters.specializations.length > 0 || filters.state || filters.distanceFromMe) && (
+            {(filters.yearsExperienceMin || filters.specializations.length > 0 || filters.distanceFromMe) && (
               <button
                 onClick={() => setFilters({
                   ...filters,
@@ -1252,7 +1229,6 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
                   specializations: [],
                   barAdmissions: [],
                   languages: [],
-                  state: '',
                   distanceFromMe: undefined,
                 })}
                 className="px-4 py-2 text-bluish underline hover:no-underline"
@@ -1263,7 +1239,7 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
           </div>
 
           {/* Active Filters Display */}
-          {(filters.specializations.length > 0 || filters.barAdmissions.length > 0 || filters.languages.length > 0 || filters.state || filters.distanceFromMe) && (
+          {(filters.specializations.length > 0 || filters.barAdmissions.length > 0 || filters.languages.length > 0 || filters.distanceFromMe) && (
             <div className="mt-4 flex flex-wrap gap-2">
               {filters.specializations.map(spec => (
                 <span key={spec} className="px-3 py-1 bg-white rounded-full text-sm flex items-center gap-2">
@@ -1271,12 +1247,6 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
                   <button onClick={() => setFilters({ ...filters, specializations: filters.specializations.filter(s => s !== spec) })}>×</button>
                 </span>
               ))}
-              {filters.state && (
-                <span className="px-3 py-1 bg-white rounded-full text-sm flex items-center gap-2">
-                  State: {states.find(s => s.abbreviation === filters.state)?.name || filters.state}
-                  <button onClick={() => setFilters({ ...filters, state: '' })}>×</button>
-                </span>
-              )}
               {filters.distanceFromMe && (
                 <span className="px-3 py-1 bg-white rounded-full text-sm flex items-center gap-2">
                   Within {filters.distanceFromMe.miles} miles of {filters.distanceFromMe.address || (location?.city && location?.stateCode ? `${location.city}, ${location.stateCode}` : 'your location')}
