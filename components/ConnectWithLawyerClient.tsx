@@ -695,6 +695,35 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
         await handleCitySearch(query)
         break
       case 'lawyer_name':
+        // For multi-word queries detected as lawyer_name, try city search FIRST
+        // This handles cases like "Los Angeles" which is a city, not a lawyer name
+        console.log(`🔄 Trying city search first for multi-word query: "${query}"`)
+        
+        // Try city search first
+        setIsLoading(true)
+        try {
+          const cityResponse = await fetch(`/api/lawyers/by-city?city=${encodeURIComponent(query.trim())}`)
+          if (cityResponse.ok) {
+            const cityData = await cityResponse.json()
+            if (cityData.lawyers && cityData.lawyers.length > 0) {
+              console.log(`✅ City search found ${cityData.lawyers.length} lawyers for "${query}"`)
+              setLawyers(cityData.lawyers || [])
+              setFilteredLawyers(cityData.lawyers || [])
+              setGroupedBySubscription(cityData.groupedBySubscription || {})
+              setSubscriptionTypes(cityData.subscriptionTypes || [])
+              setDma(cityData.dma)
+              setSearchTerm('')
+              setIsLoading(false)
+              return // Found results as city, done!
+            }
+          }
+        } catch (error) {
+          console.error('City fallback search error:', error)
+        }
+        setIsLoading(false)
+        
+        // If city search didn't find results, try as lawyer name
+        console.log(`🔄 City search found nothing, trying lawyer name search for: "${query}"`)
         await handleLawyerNameSearch(query)
         break
     }

@@ -2280,18 +2280,64 @@ export async function getLawyersByCityWithSubscriptionLimits(
     console.log(`🔍 ========================================`)
 
     // Step 1: Query zip_dma_city_state view to find DMAs for this city
+    // Try multiple matching strategies for better results
+    const cleanCityName = cityName.trim()
+    let cityLocationData: any[] | null = null
+    let locationError: any = null
+
+    // Strategy 1: Exact match (case-insensitive)
     let cityQuery = (supabase as any)
       .from('zip_dma_city_state')
       .select('dma_id, dma_name, dma_code')
-      .ilike('city_name', `${cityName.trim()}%`)
+      .ilike('city_name', cleanCityName)
       .not('dma_id', 'is', null)
 
-    // If state abbreviation provided, filter by state
     if (stateAbbr) {
       cityQuery = cityQuery.eq('state_abbreviation', stateAbbr.toUpperCase())
     }
 
-    const { data: cityLocationData, error: locationError } = await cityQuery
+    const exactResult = await cityQuery
+    if (!exactResult.error && exactResult.data && exactResult.data.length > 0) {
+      console.log(`✅ Found exact match for city "${cleanCityName}"`)
+      cityLocationData = exactResult.data
+    } else {
+      // Strategy 2: Starts-with match
+      let startsWithQuery = (supabase as any)
+        .from('zip_dma_city_state')
+        .select('dma_id, dma_name, dma_code')
+        .ilike('city_name', `${cleanCityName}%`)
+        .not('dma_id', 'is', null)
+
+      if (stateAbbr) {
+        startsWithQuery = startsWithQuery.eq('state_abbreviation', stateAbbr.toUpperCase())
+      }
+
+      const startsWithResult = await startsWithQuery
+      if (!startsWithResult.error && startsWithResult.data && startsWithResult.data.length > 0) {
+        console.log(`✅ Found starts-with match for city "${cleanCityName}"`)
+        cityLocationData = startsWithResult.data
+      } else {
+        // Strategy 3: Contains match (for partial city names)
+        let containsQuery = (supabase as any)
+          .from('zip_dma_city_state')
+          .select('dma_id, dma_name, dma_code')
+          .ilike('city_name', `%${cleanCityName}%`)
+          .not('dma_id', 'is', null)
+          .limit(100) // Limit for performance
+
+        if (stateAbbr) {
+          containsQuery = containsQuery.eq('state_abbreviation', stateAbbr.toUpperCase())
+        }
+
+        const containsResult = await containsQuery
+        if (!containsResult.error && containsResult.data && containsResult.data.length > 0) {
+          console.log(`✅ Found contains match for city "${cleanCityName}"`)
+          cityLocationData = containsResult.data
+        } else {
+          locationError = exactResult.error || startsWithResult.error || containsResult.error
+        }
+      }
+    }
 
     if (locationError) {
       console.error('Error querying zip_dma_city_state view:', locationError)
