@@ -142,7 +142,7 @@ export default function AdminSidebar({ auth }: AdminSidebarProps) {
       {/* Sidebar */}
       <aside 
         id="admin-sidebar"
-        className="w-64 bg-bluish text-white max-h-[calc(100vh-101px)] fixed lg:sticky top-[101px] left-0 lg:left-auto z-30 overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300 flex-shrink-0"
+        className="w-64 bg-bluish text-white h-[calc(100vh-101px)] fixed lg:sticky top-[101px] left-0 lg:left-auto z-30 overflow-y-auto transform -translate-x-full lg:translate-x-0 transition-transform duration-300 flex-shrink-0 self-start"
       >
         <nav className="p-4">
           <div className="mb-6 px-4 py-3 border-b border-white/20">

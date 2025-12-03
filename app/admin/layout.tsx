@@ -22,13 +22,13 @@ export default async function AdminLayout({
   // If we have valid auth with admin role, show full layout
   if (auth && auth.user && auth.profile && (auth.isSuperAdmin || auth.isLawFirm || auth.isLawyer)) {
     return (
-      <div className="min-h-screen bg-subtle-sand overflow-x-hidden">
+      <div className="min-h-screen bg-subtle-sand">
         <div className="fixed top-0 left-0 right-0 z-50">
           <Header />
         </div>
-        <div className="flex items-start pt-[101px]">
+        <div className="flex pt-[101px]">
           <AdminSidebar auth={auth} />
-          <main className="flex-1 pl-2 lg:pl-3 transition-all duration-300 min-w-0">
+          <main className="flex-1 pl-2 lg:pl-3 transition-all duration-300 min-w-0 min-h-[calc(100vh-101px)]">
             {children}
           </main>
         </div>
