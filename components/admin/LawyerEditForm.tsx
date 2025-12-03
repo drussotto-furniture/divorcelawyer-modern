@@ -891,8 +891,8 @@ const normalizedLawyer = {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow">
-      {/* Tabs Navigation */}
-      <div className="sticky top-[101px] z-40 bg-white border-b border-gray-200 shadow-sm">
+      {/* Tabs Navigation - Sticky below navbar */}
+      <div className="sticky top-[101px] z-40 bg-white border-b border-gray-200 shadow-md rounded-t-lg -mx-[1px] px-[1px]">
         <div className="px-6 py-4">
           <div className="flex gap-2 overflow-x-auto pb-2">
             {sections.map((section) => (
@@ -911,6 +911,15 @@ const normalizedLawyer = {
               </button>
             ))}
           </div>
+        </div>
+        {/* Progress bar */}
+        <div className="h-1 bg-gray-100">
+          <div 
+            className="h-full bg-primary transition-all duration-300"
+            style={{ 
+              width: `${((sections.findIndex(s => s.id === activeSection) + 1) / sections.length) * 100}%` 
+            }}
+          />
         </div>
       </div>
 
