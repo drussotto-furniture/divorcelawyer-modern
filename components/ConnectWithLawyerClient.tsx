@@ -601,74 +601,43 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
     }
   }, [location])
 
-  // Fetch autocomplete suggestions
-  const fetchAutocompleteSuggestions = useCallback(async (query: string) => {
+  // Fetch autocomplete suggestions using unified endpoint
+  const fetchAutocompleteSuggestions = useCallback(async (query: string, signal?: AbortSignal) => {
     if (!query || query.length < 1) {
       setAutocompleteSuggestions([])
       setShowAutocomplete(false)
       return
     }
 
-    const searchType = detectSearchType(query)
-    
-    // Only show autocomplete for zip, state, and city (not lawyer names)
-    if (searchType === 'lawyer_name') {
+    // Skip autocomplete for likely lawyer names (multiple words without comma)
+    const words = query.trim().split(/\s+/)
+    if (words.length >= 2 && !query.includes(',') && !/^\d/.test(query)) {
       setAutocompleteSuggestions([])
       setShowAutocomplete(false)
       return
     }
 
     try {
-      let endpoint = ''
-      if (searchType === 'zip') {
-        // Zip code autocomplete
-        endpoint = `/api/autocomplete/zip?q=${encodeURIComponent(query)}`
-      } else if (searchType === 'state') {
-        // State autocomplete
-        endpoint = `/api/autocomplete/state?q=${encodeURIComponent(query)}`
-      } else if (searchType === 'city') {
-        // City autocomplete
-        endpoint = `/api/autocomplete/city?q=${encodeURIComponent(query)}`
+      const response = await fetch(`/api/autocomplete?q=${encodeURIComponent(query)}`, { signal })
+      if (response.ok) {
+        const data = await response.json()
+        setAutocompleteSuggestions(data.suggestions || [])
+        setShowAutocomplete(data.suggestions && data.suggestions.length > 0)
       } else {
-        // Ambiguous - try to determine based on input
-        // If starts with number, try zip
-        if (/^\d/.test(query)) {
-          endpoint = `/api/autocomplete/zip?q=${encodeURIComponent(query)}`
-        } else {
-          // Try state first (usually shorter queries), then city
-          const stateResponse = await fetch(`/api/autocomplete/state?q=${encodeURIComponent(query)}`)
-          if (stateResponse.ok) {
-            const stateData = await stateResponse.json()
-            if (stateData.suggestions && stateData.suggestions.length > 0) {
-              setAutocompleteSuggestions(stateData.suggestions)
-              setShowAutocomplete(true)
-              return
-            }
-          }
-          // If no state matches, try city
-          endpoint = `/api/autocomplete/city?q=${encodeURIComponent(query)}`
-        }
+        setAutocompleteSuggestions([])
+        setShowAutocomplete(false)
       }
-
-      if (endpoint) {
-        const response = await fetch(endpoint)
-        if (response.ok) {
-          const data = await response.json()
-          setAutocompleteSuggestions(data.suggestions || [])
-          setShowAutocomplete(data.suggestions && data.suggestions.length > 0)
-        } else {
-          setAutocompleteSuggestions([])
-          setShowAutocomplete(false)
-        }
+    } catch (error: any) {
+      // Ignore abort errors
+      if (error.name !== 'AbortError') {
+        console.error('Error fetching autocomplete suggestions:', error)
       }
-    } catch (error) {
-      console.error('Error fetching autocomplete suggestions:', error)
       setAutocompleteSuggestions([])
       setShowAutocomplete(false)
     }
-  }, [detectSearchType])
+  }, [])
 
-  // Debounced autocomplete
+  // Debounced autocomplete with request cancellation
   useEffect(() => {
     if (!zipCode || zipCode.length < 1) {
       setAutocompleteSuggestions([])
@@ -676,11 +645,16 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
       return
     }
 
+    const controller = new AbortController()
+    
     const timeoutId = setTimeout(() => {
-      fetchAutocompleteSuggestions(zipCode)
-    }, 300) // 300ms debounce
+      fetchAutocompleteSuggestions(zipCode, controller.signal)
+    }, 150) // Reduced to 150ms debounce (faster response)
 
-    return () => clearTimeout(timeoutId)
+    return () => {
+      clearTimeout(timeoutId)
+      controller.abort() // Cancel any in-flight request
+    }
   }, [zipCode, fetchAutocompleteSuggestions])
 
   // Handle click outside to close autocomplete
