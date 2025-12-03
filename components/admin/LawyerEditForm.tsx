@@ -1739,6 +1739,31 @@ const normalizedLawyer = {
           <SectionHeader id="subscription" title="Subscription" icon="💳" />
           <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="md:col-span-2">
+              {/* Upgrade CTA for non-admin users */}
+              {!auth.isSuperAdmin && (
+                <div className="bg-gradient-to-r from-primary/10 to-orange-100 border border-primary/30 rounded-lg p-6 mb-6">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-1">🚀 Boost Your Visibility</h3>
+                      <p className="text-sm text-gray-700">
+                        Upgrade your subscription to appear higher in search results and reach more potential clients. 
+                        Premium members get <strong>priority placement</strong>, <strong>featured badges</strong>, and <strong>enhanced profiles</strong>.
+                      </p>
+                    </div>
+                    {serviceAreas.length > 0 && serviceAreas[0]?.dma_id ? (
+                      <a
+                        href={`/admin/upgrade?lawyerId=${lawyer.id}&dmaId=${serviceAreas[0].dma_id}&current=${serviceAreas[0].subscription_type || 'free'}`}
+                        className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 whitespace-nowrap font-bold text-sm shadow-md hover:shadow-lg transition-all"
+                      >
+                        View Upgrade Options →
+                      </a>
+                    ) : (
+                      <p className="text-sm text-gray-500 italic">Add a service area below to upgrade</p>
+                    )}
+                  </div>
+                </div>
+              )}
+              
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                 <p className="text-sm text-blue-800 font-medium mb-2">📌 Subscription Management</p>
                 <p className="text-sm text-blue-700">
@@ -1793,7 +1818,7 @@ const normalizedLawyer = {
                                 <select
                                   value={sa.subscription_type || 'free'}
                                   onChange={(e) => updateServiceAreaSubscription(index, e.target.value)}
-                                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                                  className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary ${!auth.isSuperAdmin ? 'bg-gray-100 text-gray-600' : ''}`}
                                   disabled={!auth.isSuperAdmin}
                                 >
                                   {subscriptionTypes.map((st) => (
@@ -1802,6 +1827,16 @@ const normalizedLawyer = {
                                     </option>
                                   ))}
                                 </select>
+                              </div>
+                            )}
+                            {selectedDma && !auth.isSuperAdmin && (
+                              <div className="pt-6">
+                                <a
+                                  href="mailto:support@divorcelawyer.com?subject=Subscription%20Upgrade%20Request&body=I%20would%20like%20to%20upgrade%20my%20subscription.%0A%0ALawyer%20Name%3A%20%0ACurrent%20Subscription%3A%20%0ADesired%20Subscription%3A%20"
+                                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 whitespace-nowrap font-medium text-sm"
+                                >
+                                  Upgrade
+                                </a>
                               </div>
                             )}
                             <div className="pt-6">
@@ -1814,6 +1849,12 @@ const normalizedLawyer = {
                               </button>
                             </div>
                           </div>
+                          {/* Description text below the row */}
+                          {selectedDma && !auth.isSuperAdmin && (
+                            <p className="mt-2 text-xs text-gray-500">
+                              Want to increase your visibility? Upgrade your subscription to get priority placement in search results and access to premium features. Click "Upgrade" to contact our team.
+                            </p>
+                          )}
                           {selectedDma && (
                             <div className="text-xs text-gray-500">
                               {selectedDma.name} (DMA {selectedDma.code}) - Subscription: {subscriptionTypes.find(st => st.name === (sa.subscription_type || 'free'))?.display_name || 'Free'}
