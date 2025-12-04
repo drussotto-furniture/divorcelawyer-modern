@@ -14,11 +14,11 @@ const SUBSCRIPTION_TIERS: Record<string, number> = {
 }
 
 // Fallback subscription options (used if API doesn't return data)
-const DEFAULT_SUBSCRIPTION_OPTIONS = [
-  { value: 'premium', label: 'Premium', price: '$1,490/mo', price_cents: 149000 },
-  { value: 'enhanced', label: 'Enhanced', price: '$990/mo', price_cents: 99000 },
-  { value: 'basic', label: 'Basic', price: '$240/mo', price_cents: 24000 },
-  { value: 'free', label: 'Free', price: '$0', price_cents: 0 },
+const DEFAULT_SUBSCRIPTION_OPTIONS: SubscriptionOption[] = [
+  { value: 'premium', label: 'Premium', price: '$1,490/mo', price_cents: 149000, has_override: false, price_overridden: false },
+  { value: 'enhanced', label: 'Enhanced', price: '$990/mo', price_cents: 99000, has_override: false, price_overridden: false },
+  { value: 'basic', label: 'Basic', price: '$240/mo', price_cents: 24000, has_override: false, price_overridden: false },
+  { value: 'free', label: 'Free', price: '$0', price_cents: 0, has_override: false, price_overridden: false },
 ]
 
 // Helper to determine if change is upgrade, downgrade, or same
@@ -38,6 +38,15 @@ interface PlanFeature {
   is_highlighted: boolean
 }
 
+interface SubscriptionOption {
+  value: string
+  label: string
+  price: string
+  price_cents: number
+  has_override: boolean
+  price_overridden: boolean
+}
+
 interface SubscriptionPlan {
   id: string
   name: string
@@ -50,6 +59,10 @@ interface SubscriptionPlan {
   has_dma_override?: boolean
   price_overridden?: boolean
   features_overridden?: boolean
+  override_type?: 'group' | 'global'
+  group_id?: string
+  group_name?: string
+  override_id?: string
   subscription_plan_features: PlanFeature[]
 }
 
@@ -117,7 +130,7 @@ function UpgradePageContent() {
               const planResponse = await fetch(`/api/subscription-plans/for-dma?dmaId=${dma.dma_id}`)
               if (planResponse.ok) {
                 const planData = await planResponse.json()
-                plansCache[dma.dma_id] = planData.plans || []
+                plansCache[dma.dma_id] = (planData.plans || []) as SubscriptionPlan[]
               }
             } catch (err) {
               console.error(`Error fetching plans for DMA ${dma.dma_id}:`, err)
@@ -146,14 +159,14 @@ function UpgradePageContent() {
   }, [lawyerId])
   
   // Get subscription options for a specific DMA
-  const getSubscriptionOptionsForDma = (dmaId: string) => {
+  const getSubscriptionOptionsForDma = (dmaId: string): SubscriptionOption[] => {
     const dmaPlans = plansByDma[dmaId]
     if (!dmaPlans || dmaPlans.length === 0) {
       return DEFAULT_SUBSCRIPTION_OPTIONS
     }
     
     // Map plans to options, sorting by tier order
-    const options = dmaPlans.map(plan => ({
+    const options: SubscriptionOption[] = dmaPlans.map(plan => ({
       value: plan.name.toLowerCase(),
       label: plan.display_name,
       price: plan.price_display + '/' + (plan.billing_period || 'mo'),
@@ -173,7 +186,7 @@ function UpgradePageContent() {
   // Check if any DMA has custom pricing
   const hasDmaWithCustomPricing = () => {
     return Object.values(plansByDma).some(plans => 
-      plans.some(plan => plan.has_dma_override && plan.price_overridden)
+      plans.some(plan => plan.has_dma_override && plan.price_overridden === true)
     )
   }
 
@@ -552,7 +565,7 @@ function UpgradePageContent() {
                       className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 font-medium focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary min-w-[250px]"
                     >
                       {lawyerDmas.map(dma => {
-                        const dmaPlans = plansByDma[dma.dma_id] || []
+                        const dmaPlans: SubscriptionPlan[] = plansByDma[dma.dma_id] || []
                         const hasOverride = dmaPlans.some(p => p.has_dma_override)
                         const overrideType = dmaPlans.find(p => p.has_dma_override)?.override_type
                         const groupName = dmaPlans.find(p => p.group_name)?.group_name
@@ -561,7 +574,6 @@ function UpgradePageContent() {
                           <option key={dma.dma_id} value={dma.dma_id}>
                             {dma.dma_name} (DMA {dma.dma_code})
                             {hasOverride && overrideType === 'group' && groupName && ` - ${groupName} Group`}
-                            {hasOverride && overrideType === 'exception' && ' - Special Pricing'}
                           </option>
                         )
                       })}

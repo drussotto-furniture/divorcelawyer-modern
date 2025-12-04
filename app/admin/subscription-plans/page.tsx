@@ -472,7 +472,7 @@ export default function SubscriptionPlansAdminPage() {
   }
 
   const updatePlanField = (planId: string, field: string, value: any) => {
-    setPlans(prev => prev.map(p => {
+    setPlans((prev: Plan[]) => prev.map((p: Plan): Plan => {
       if (p.id === planId) {
         return { ...p, [field]: value }
       }
@@ -481,7 +481,7 @@ export default function SubscriptionPlansAdminPage() {
   }
 
   const updateFeature = (planId: string, featureIndex: number, field: string, value: any) => {
-    setPlans(prev => prev.map(p => {
+    setPlans((prev: Plan[]) => prev.map((p: Plan): Plan => {
       if (p.id === planId) {
         const features = [...p.subscription_plan_features]
         features[featureIndex] = { ...features[featureIndex], [field]: value }
@@ -492,7 +492,7 @@ export default function SubscriptionPlansAdminPage() {
   }
 
   const addFeature = (planId: string) => {
-    setPlans(prev => prev.map(p => {
+    setPlans((prev: Plan[]) => prev.map((p: Plan): Plan => {
       if (p.id === planId) {
         const maxOrder = Math.max(0, ...p.subscription_plan_features.map(f => f.sort_order))
         return {
@@ -514,7 +514,7 @@ export default function SubscriptionPlansAdminPage() {
   }
 
   const removeFeature = (planId: string, featureIndex: number) => {
-    setPlans(prev => prev.map(p => {
+    setPlans((prev: Plan[]) => prev.map((p: Plan): Plan => {
       if (p.id === planId) {
         return {
           ...p,
@@ -526,23 +526,27 @@ export default function SubscriptionPlansAdminPage() {
   }
 
   const moveFeature = (planId: string, featureIndex: number, direction: 'up' | 'down') => {
-    setPlans(prev => prev.map(p => {
-      if (p.id === planId) {
-        const features = [...p.subscription_plan_features]
-        const newIndex = direction === 'up' ? featureIndex - 1 : featureIndex + 1
-        
-        if (newIndex < 0 || newIndex >= features.length) return p
-        
-        // Swap
-        [features[featureIndex], features[newIndex]] = [features[newIndex], features[featureIndex]]
-        
-        // Update sort orders
-        features.forEach((f, i) => { f.sort_order = i + 1 })
-        
-        return { ...p, subscription_plan_features: features }
-      }
-      return p
-    }))
+    setPlans((prev: Plan[]): Plan[] => {
+      return prev.map((p: Plan): Plan => {
+        if (p.id === planId) {
+          const features = [...p.subscription_plan_features]
+          const newIndex = direction === 'up' ? featureIndex - 1 : featureIndex + 1
+          
+          if (newIndex < 0 || newIndex >= features.length) {
+            return p
+          }
+          
+          // Swap
+          [features[featureIndex], features[newIndex]] = [features[newIndex], features[featureIndex]]
+          
+          // Update sort orders
+          features.forEach((f, i) => { f.sort_order = i + 1 })
+          
+          return { ...p, subscription_plan_features: features }
+        }
+        return p
+      })
+    })
   }
 
   if (loading) {

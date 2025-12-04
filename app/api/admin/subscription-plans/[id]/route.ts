@@ -23,7 +23,7 @@ async function checkSuperAdmin() {
   
   if (!user) return false
 
-  const { data: profile } = await supabase
+  const { data: profile } = await (supabase as any)
     .from('profiles')
     .select('role')
     .eq('id', user.id)
