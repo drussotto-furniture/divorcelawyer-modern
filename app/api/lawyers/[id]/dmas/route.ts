@@ -36,7 +36,7 @@ export async function GET(
     }
 
     // Get DMA details
-    const { data: dmas, error: dmaError } = await supabase
+    const { data: dmas, error: dmaError } = await (supabase as any)
       .from('dmas')
       .select('id, name, code')
       .in('id', dmaIds)
