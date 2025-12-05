@@ -967,7 +967,6 @@ export default function ConnectWithLawyerClientV2({ states }: ConnectWithLawyerC
                     console.error('Error geocoding address:', error)
                   }
                 }}
-                className="w-80"
               />
 
               {/* Show current location info */}
