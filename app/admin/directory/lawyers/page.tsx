@@ -36,6 +36,25 @@ export default async function LawyersPage() {
     lawyers = result.data || []
     error = result.error
     
+    // Fetch profiles separately and attach to lawyers
+    if (lawyers.length > 0) {
+      const lawyerIds = lawyers.map(l => l.id)
+      const { data: profiles } = await supabase
+        .from('profiles' as any)
+        .select('lawyer_id, claimed_at')
+        .in('lawyer_id', lawyerIds)
+        .not('lawyer_id', 'is', null)
+      
+      // Attach profiles to lawyers
+      if (profiles) {
+        const profilesMap = new Map(profiles.map((p: any) => [p.lawyer_id, p]))
+        lawyers = lawyers.map(lawyer => ({
+          ...lawyer,
+          profiles: profilesMap.has(lawyer.id) ? [profilesMap.get(lawyer.id)] : []
+        }))
+      }
+    }
+    
     // Debug: Log first lawyer's structure
     if (lawyers.length > 0 && process.env.NODE_ENV === 'development') {
       console.log('Sample lawyer from query:', JSON.stringify(lawyers[0], null, 2))
@@ -65,6 +84,25 @@ export default async function LawyersPage() {
     
     lawyers = result.data || []
     error = result.error
+    
+    // Fetch profiles separately and attach to lawyers
+    if (lawyers.length > 0) {
+      const lawyerIds = lawyers.map(l => l.id)
+      const { data: profiles } = await supabase
+        .from('profiles' as any)
+        .select('lawyer_id, claimed_at')
+        .in('lawyer_id', lawyerIds)
+        .not('lawyer_id', 'is', null)
+      
+      // Attach profiles to lawyers
+      if (profiles) {
+        const profilesMap = new Map(profiles.map((p: any) => [p.lawyer_id, p]))
+        lawyers = lawyers.map(lawyer => ({
+          ...lawyer,
+          profiles: profilesMap.has(lawyer.id) ? [profilesMap.get(lawyer.id)] : []
+        }))
+      }
+    }
     
     // Debug: Log first lawyer's structure
     if (lawyers.length > 0 && process.env.NODE_ENV === 'development') {

@@ -134,6 +134,13 @@ export default function Header() {
                 </ul>
               </li>
 
+              {/* For Lawyers */}
+              <li>
+                <Link href="/claim-profile" className="pb-10 text-light font-proxima font-semibold capitalize whitespace-nowrap relative">
+                  For Lawyers
+                </Link>
+              </li>
+
               {/* About */}
               <li 
                 className={`menu-item-has-children ${activeMenu === 'about' ? 'active-menu' : ''}`}
@@ -149,7 +156,6 @@ export default function Header() {
                   <li><Link href="/about-us/company-faq">Company FAQ</Link></li>
                   <li><Link href="/about-us/news-and-press">News and Press</Link></li>
                   <li><Link href="/councils">Councils</Link></li>
-                  <li><Link href="/for-lawyers" className="font-bold">For Lawyers</Link></li>
                   <li><Link href="/contact">Contact Us</Link></li>
                 </ul>
               </li>
@@ -282,6 +288,16 @@ export default function Header() {
 
               <div>
                 <Link 
+                  href="/claim-profile" 
+                  className="block py-3 text-white font-proxima font-semibold text-lg border-b border-white/20"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  For Lawyers
+                </Link>
+              </div>
+
+              <div>
+                <Link 
                   href="/about-us" 
                   className="block py-3 text-white font-proxima font-semibold text-lg border-b border-white/20"
                   onClick={() => setMobileMenuOpen(false)}
@@ -294,7 +310,6 @@ export default function Header() {
                   <Link href="/about-us/company-faq" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Company FAQ</Link>
                   <Link href="/about-us/news-and-press" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>News and Press</Link>
                   <Link href="/councils" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Councils</Link>
-                  <Link href="/for-lawyers" className="block py-2 text-white/90 text-sm font-bold" onClick={() => setMobileMenuOpen(false)}>For Lawyers</Link>
                   <Link href="/contact" className="block py-2 text-white/90 text-sm" onClick={() => setMobileMenuOpen(false)}>Contact Us</Link>
                 </div>
               </div>

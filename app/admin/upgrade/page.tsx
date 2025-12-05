@@ -101,8 +101,19 @@ function UpgradePageContent() {
   const [globalPlans, setGlobalPlans] = useState<SubscriptionPlan[]>([])
   const [selectedComparisonDmaId, setSelectedComparisonDmaId] = useState<string | null>(null)
 
+  // Validate lawyerId
+  useEffect(() => {
+    if (!lawyerId) {
+      setError('Lawyer ID is required. Please go back and try again.')
+      setLoadingDmas(false)
+      return
+    }
+  }, [lawyerId])
+
   // Fetch all DMAs for this lawyer and their DMA-specific plans
   useEffect(() => {
+    if (!lawyerId) return
+    
     const fetchLawyerDmas = async () => {
       if (!lawyerId) {
         setLoadingDmas(false)
@@ -261,6 +272,11 @@ function UpgradePageContent() {
   }
 
   const handleReturnToProfile = () => {
+    if (!lawyerId) {
+      console.error('[handleReturnToProfile] No lawyerId available, redirecting to lawyers list')
+      window.location.href = '/admin/directory/lawyers'
+      return
+    }
     window.location.href = `/admin/directory/lawyers/${lawyerId}?t=${Date.now()}#section-subscription`
   }
 
@@ -362,6 +378,32 @@ function UpgradePageContent() {
                 className="w-full px-6 py-4 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors text-lg"
               >
                 Return to Profile →
+              </button>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    )
+  }
+
+  // Early return if lawyerId is missing
+  if (!lawyerId) {
+    return (
+      <div className="min-h-screen bg-subtle-sand">
+        <Header />
+        <main className="pt-[101px] pb-20">
+          <div className="container mx-auto px-4 py-12">
+            <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8 text-center">
+              <h1 className="text-2xl font-bold text-gray-900 mb-4">Lawyer ID Required</h1>
+              <p className="text-gray-600 mb-6">
+                The lawyer ID is missing from the URL. Please go back and try again.
+              </p>
+              <button
+                onClick={() => router.back()}
+                className="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                Go Back
               </button>
             </div>
           </div>

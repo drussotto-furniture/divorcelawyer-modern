@@ -331,8 +331,20 @@ export default function SubscriptionPlansAdminPage() {
   const deleteGroupOverride = async (groupId: string, planId: string) => {
     if (!confirm('Are you sure you want to remove this plan override from the group?')) return
     
-    setSaving(`${groupId}-${planId}`)
+    const savingKey = `${groupId}-${planId}`
+    setSaving(savingKey)
     setError(null)
+    
+    // Optimistically update UI first
+    setGroups(prev => prev.map(group => {
+      if (group.id === groupId) {
+        return {
+          ...group,
+          overrides: group.overrides.filter(o => o.plan_id !== planId)
+        }
+      }
+      return group
+    }))
     
     try {
       const response = await fetch(`/api/admin/subscription-plans/groups/${groupId}/overrides?plan_id=${planId}`, {
@@ -341,13 +353,21 @@ export default function SubscriptionPlansAdminPage() {
 
       if (!response.ok) {
         const err = await response.json()
+        // Revert optimistic update on error
+        await fetchGroups()
         throw new Error(err.error || 'Failed to delete group override')
       }
 
       setSuccess('Group override removed successfully!')
-      await fetchGroups()
+      // Refresh in background (non-blocking)
+      fetchGroups().catch(err => {
+        console.error('Error refreshing groups:', err)
+        // Silently fail - UI already updated optimistically
+      })
     } catch (err: any) {
       setError(err.message)
+      // Revert on error
+      await fetchGroups()
     } finally {
       setSaving(null)
     }

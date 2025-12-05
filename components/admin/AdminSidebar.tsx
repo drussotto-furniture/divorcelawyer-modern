@@ -13,7 +13,15 @@ export default function AdminSidebar({ auth }: AdminSidebarProps) {
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
-  const isActive = (path: string) => pathname === path || pathname?.startsWith(path + '/')
+  const isActive = (path: string) => {
+    // Extract base path without query params for comparison
+    const basePath = path.split('?')[0]
+    // Handle upgrade page (pathname is /admin/upgrade without query params)
+    if (pathname === '/admin/upgrade' && basePath === '/admin/upgrade') {
+      return true
+    }
+    return pathname === basePath || pathname?.startsWith(basePath + '/')
+  }
   
   // Check if any child of a nav item is active
   const isParentActive = (item: NavItem) => {
@@ -136,6 +144,7 @@ export default function AdminSidebar({ auth }: AdminSidebarProps) {
   const lawyerNav: NavItem[] = [
     { name: 'Dashboard', href: '/admin', icon: '📊' },
     { name: 'My Profile', href: `/admin/directory/lawyers/${auth.lawyerId}`, icon: '👤' },
+    { name: 'Manage Subscriptions', href: `/admin/upgrade?lawyerId=${auth.lawyerId}`, icon: '💳' },
   ]
 
   const navItems: NavItem[] = auth.isSuperAdmin 

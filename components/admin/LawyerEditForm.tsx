@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { AuthUser } from '@/lib/auth/server'
@@ -177,6 +177,13 @@ const normalizedLawyer = {
     meta_title: normalizedLawyer.meta_title || '',
     meta_description: normalizedLawyer.meta_description || '',
   })
+
+  // Store original form data for change detection (after initial render)
+  useEffect(() => {
+    if (!originalFormDataRef.current) {
+      originalFormDataRef.current = JSON.parse(JSON.stringify(formData))
+    }
+  }, [])
 
   // Check subscription limits when subscription type changes
   const checkSubscriptionLimit = async (targetSubscription: string, currentSubscription: string): Promise<{ canUpgrade: boolean; message: string }> => {
@@ -428,6 +435,14 @@ const normalizedLawyer = {
   const [loadingCities, setLoadingCities] = useState(false)
   const [loadingDmas, setLoadingDmas] = useState(false)
   const [selectedFirm, setSelectedFirm] = useState<any>(null)
+  const [savingServiceAreas, setSavingServiceAreas] = useState(false)
+  
+  // Store original form data and service areas for change detection
+  const originalFormDataRef = useRef<typeof formData | null>(null)
+  const originalServiceAreasRef = useRef<Array<{ dma_id: string; subscription_type?: string }>>([])
+  
+  // Debounce timer for auto-save
+  const serviceAreaSaveTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Load law firms on mount
   useEffect(() => {
@@ -568,7 +583,12 @@ const normalizedLawyer = {
         // Only auto-populate if no service areas exist
         setServiceAreas(prev => {
           if (prev.length === 0 || !prev.some(sa => sa.dma_id === dma.id)) {
-            return [{ dma_id: dma.id }]
+            const newServiceAreas = [{ dma_id: dma.id }]
+            // Store original if this is the initial auto-population
+            if (originalServiceAreasRef.current.length === 0) {
+              originalServiceAreasRef.current = JSON.parse(JSON.stringify(newServiceAreas))
+            }
+            return newServiceAreas
           }
           return prev
         })
@@ -637,6 +657,8 @@ const normalizedLawyer = {
             }))
             
             setServiceAreas(serviceAreasWithSubs)
+            // Store original service areas for change detection
+            originalServiceAreasRef.current = JSON.parse(JSON.stringify(serviceAreasWithSubs))
           } else {
             console.log('[LawyerEditForm] No service areas found for lawyer:', lawyer.id)
             // Auto-populate from zip code if available
@@ -661,6 +683,15 @@ const normalizedLawyer = {
       return () => clearTimeout(timer)
     }
   }, [formData.office_zip_code])
+
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (serviceAreaSaveTimerRef.current) {
+        clearTimeout(serviceAreaSaveTimerRef.current)
+      }
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -841,24 +872,419 @@ const normalizedLawyer = {
     }
   }
 
-  const addServiceArea = () => {
-    setServiceAreas([...serviceAreas, { dma_id: '', subscription_type: 'free' }])
+  const addServiceArea = async () => {
+    const newServiceAreas = [...serviceAreas, { dma_id: '', subscription_type: 'free' }]
+    setServiceAreas(newServiceAreas)
+    // Auto-save if lawyer exists (only if there are valid DMAs to save)
+    if (!isNew && lawyer?.id) {
+      // Only save if there are valid service areas (not just empty ones)
+      const hasValidServiceAreas = newServiceAreas.some(sa => sa.dma_id)
+      if (hasValidServiceAreas) {
+        await saveServiceAreasOnly()
+      }
+    }
   }
 
-  const removeServiceArea = (index: number) => {
-    setServiceAreas(serviceAreas.filter((_, i) => i !== index))
+  const removeServiceArea = async (index: number) => {
+    const newServiceAreas = serviceAreas.filter((_, i) => i !== index)
+    setServiceAreas(newServiceAreas)
+    // Auto-save if lawyer exists
+    if (!isNew && lawyer?.id) {
+      await saveServiceAreasOnly()
+    }
   }
 
   const updateServiceArea = (index: number, dma_id: string) => {
     const updated = [...serviceAreas]
     updated[index] = { ...updated[index], dma_id, subscription_type: updated[index].subscription_type || 'free' }
     setServiceAreas(updated)
+    // Debounced auto-save if lawyer exists
+    if (!isNew && lawyer?.id) {
+      debouncedSaveServiceAreas()
+    }
   }
 
   const updateServiceAreaSubscription = (index: number, subscription_type: string) => {
     const updated = [...serviceAreas]
     updated[index] = { ...updated[index], subscription_type }
     setServiceAreas(updated)
+    // Debounced auto-save if lawyer exists
+    if (!isNew && lawyer?.id) {
+      debouncedSaveServiceAreas()
+    }
+  }
+
+  // Save form data (including service areas) without redirecting
+  // Returns the lawyer ID (existing or newly created)
+  // Uses API endpoint to bypass RLS for DMA subscriptions
+  const saveFormData = async (): Promise<string | null> => {
+    if (!lawyer?.id && !isNew) {
+      console.error('Cannot save: lawyer ID is missing')
+      return null
+    }
+
+    setLoading(true)
+    setError('')
+
+    try {
+      const dataToSave: any = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        slug: formData.slug || `${formData.first_name}-${formData.last_name}`.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+        title: formData.title || null,
+        bio: formData.bio || null,
+        bio_html: lawyer?.bio_html || null,
+        email: formData.email || null,
+        phone: formData.phone || null,
+        photo_url: formData.photo_url || null,
+        photo_storage_id: formData.photo_storage_id || null,
+        video_url: formData.video_url || null,
+        video_storage_id: formData.video_storage_id || null,
+        bar_number: formData.bar_number || null,
+        years_experience: formData.years_experience ? parseInt(formData.years_experience.toString()) : null,
+        law_firm_id: formData.law_firm_id || null,
+        specializations: formData.specializations && formData.specializations.length > 0 ? formData.specializations : null,
+        education: formData.education && formData.education.length > 0 ? formData.education : null,
+        awards: formData.awards && formData.awards.length > 0 ? formData.awards : null,
+        bar_admissions: formData.bar_admissions && formData.bar_admissions.length > 0 ? formData.bar_admissions : null,
+        publications: formData.publications && formData.publications.length > 0 ? formData.publications : null,
+        professional_memberships: formData.professional_memberships && formData.professional_memberships.length > 0 ? formData.professional_memberships : null,
+        certifications: formData.certifications && formData.certifications.length > 0 ? formData.certifications : null,
+        languages: formData.languages && formData.languages.length > 0 ? formData.languages : null,
+        linkedin_url: formData.linkedin_url || null,
+        twitter_url: formData.twitter_url || null,
+        practice_focus: formData.practice_focus || null,
+        approach: formData.approach || null,
+        consultation_fee: formData.consultation_fee || null,
+        accepts_new_clients: formData.accepts_new_clients,
+        consultation_available: formData.consultation_available,
+        office_address: formData.office_address || null,
+        office_street_address: formData.office_street_address || null,
+        office_address_line_2: formData.office_address_line_2 || null,
+        office_city_id: formData.office_city_id || null,
+        office_state_id: formData.office_state_id || null,
+        office_zip_code: formData.office_zip_code || null,
+        office_hours: formData.office_hours || null,
+        credentials_summary: formData.credentials_summary || null,
+        media_mentions: formData.media_mentions && formData.media_mentions.length > 0 ? formData.media_mentions : null,
+        speaking_engagements: formData.speaking_engagements && formData.speaking_engagements.length > 0 ? formData.speaking_engagements : null,
+        rating: formData.rating ? parseFloat(formData.rating.toString()) : null,
+        review_count: formData.review_count ? parseInt(formData.review_count.toString()) : 0,
+        verified: formData.verified,
+        featured: formData.featured,
+        subscription_type: formData.subscription_type,
+        meta_title: formData.meta_title || null,
+        meta_description: formData.meta_description || null,
+      }
+
+      let lawyerId = lawyer?.id
+
+      // For new lawyers, create them first
+      if (isNew) {
+        const { data, error: insertError } = await supabase
+          .from('lawyers')
+          .insert(dataToSave)
+          .select()
+          .single()
+        
+        if (insertError) {
+          console.error('[saveFormData] Error creating lawyer:', insertError)
+          console.error('[saveFormData] Error details:', JSON.stringify(insertError, null, 2))
+          setError(insertError.message || 'Failed to create lawyer')
+          setLoading(false)
+          return null
+        }
+        
+        if (data) {
+          lawyerId = data.id
+        }
+      }
+
+      // Use API endpoint to save (bypasses RLS for DMA subscriptions)
+      if (lawyerId) {
+        const response = await fetch(`/api/lawyers/${lawyerId}/save`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            formData: dataToSave,
+            serviceAreas: serviceAreas
+          })
+        })
+
+        const result = await response.json()
+
+        if (!response.ok || result.error) {
+          console.error('[saveFormData] API save error:', result.error)
+          setError(result.error || 'Failed to save lawyer data')
+          setLoading(false)
+          return null
+        }
+
+        console.log('[saveFormData] Save successful via API')
+      }
+
+      // Update original refs after successful save so change detection works correctly
+      originalFormDataRef.current = JSON.parse(JSON.stringify(formData))
+      originalServiceAreasRef.current = JSON.parse(JSON.stringify(serviceAreas))
+
+      setLoading(false)
+      return lawyerId
+    } catch (err: any) {
+      console.error('[saveFormData] Unexpected error:', err)
+      setError(err?.message || 'An unexpected error occurred')
+      setLoading(false)
+      return null
+    }
+  }
+
+  // Auto-save service areas only (not other form fields)
+  const saveServiceAreasOnly = async (): Promise<boolean> => {
+    // Skip if new lawyer (no ID yet)
+    if (isNew || !lawyer?.id) {
+      return true // Return true to not block user, but don't save
+    }
+
+    const lawyerId = lawyer.id
+
+    // Clear any pending debounce timer
+    if (serviceAreaSaveTimerRef.current) {
+      clearTimeout(serviceAreaSaveTimerRef.current)
+      serviceAreaSaveTimerRef.current = null
+    }
+
+    setSavingServiceAreas(true)
+
+    try {
+      // Use API endpoint to save service areas (bypasses RLS)
+      const response = await fetch(`/api/lawyers/${lawyerId}/save`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          formData: null, // Don't update lawyer data, only service areas
+          serviceAreas: serviceAreas
+        })
+      })
+
+      const result = await response.json()
+
+      if (!response.ok || result.error) {
+        console.error('[saveServiceAreasOnly] API save error:', result.error)
+        setError(result.error || 'Failed to save service areas')
+        setSavingServiceAreas(false)
+        return false
+      }
+
+      // Update original refs after successful save
+      originalServiceAreasRef.current = JSON.parse(JSON.stringify(serviceAreas))
+      
+      console.log('[saveServiceAreasOnly] Service areas saved successfully via API')
+      setSavingServiceAreas(false)
+      return true
+    } catch (err: any) {
+      console.error('[saveServiceAreasOnly] Unexpected error:', err)
+      console.error('[saveServiceAreasOnly] Error stack:', err?.stack)
+      setError(`Error saving service areas: ${err?.message || 'Unknown error'}`)
+      setSavingServiceAreas(false)
+      return false
+    }
+  }
+
+  // Debounced auto-save for service areas
+  const debouncedSaveServiceAreas = () => {
+    // Clear existing timer
+    if (serviceAreaSaveTimerRef.current) {
+      clearTimeout(serviceAreaSaveTimerRef.current)
+    }
+
+    // Set new timer
+    serviceAreaSaveTimerRef.current = setTimeout(() => {
+      saveServiceAreasOnly()
+    }, 500) // Wait 500ms after last change
+  }
+
+  // Check if form data has changed
+  const hasFormChanges = (): boolean => {
+    if (!originalFormDataRef.current) {
+      return false
+    }
+
+    // Deep compare form data
+    const original = originalFormDataRef.current
+    const current = formData
+
+    // Compare all form fields
+    const formFields: (keyof typeof formData)[] = [
+      'first_name', 'last_name', 'slug', 'title', 'bio', 'email', 'phone',
+      'photo_url', 'photo_storage_id', 'video_url', 'video_storage_id',
+      'bar_number', 'years_experience', 'law_firm_id', 'linkedin_url',
+      'twitter_url', 'practice_focus', 'approach', 'consultation_fee',
+      'accepts_new_clients', 'consultation_available', 'office_address',
+      'office_street_address', 'office_address_line_2', 'office_city_id',
+      'office_state_id', 'office_zip_code', 'office_hours', 'credentials_summary',
+      'rating', 'review_count', 'verified', 'featured', 'subscription_type',
+      'meta_title', 'meta_description'
+    ]
+
+    for (const field of formFields) {
+      if (original[field] !== current[field]) {
+        return true
+      }
+    }
+
+    // Compare arrays
+    const arrayFields: (keyof typeof formData)[] = [
+      'specializations', 'education', 'awards', 'bar_admissions',
+      'publications', 'professional_memberships', 'certifications',
+      'languages', 'media_mentions', 'speaking_engagements'
+    ]
+
+    for (const field of arrayFields) {
+      const originalArray = original[field] as string[]
+      const currentArray = current[field] as string[]
+      if (JSON.stringify(originalArray?.sort()) !== JSON.stringify(currentArray?.sort())) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  // Check if service areas have changed
+  const hasServiceAreaChanges = (): boolean => {
+    const original = originalServiceAreasRef.current
+    const current = serviceAreas
+
+    // Normalize and compare
+    const normalizeServiceAreas = (areas: Array<{ dma_id: string; subscription_type?: string }>) => {
+      return areas
+        .filter(sa => sa.dma_id) // Only include valid DMAs
+        .map(sa => ({ dma_id: sa.dma_id, subscription_type: sa.subscription_type || 'free' }))
+        .sort((a, b) => a.dma_id.localeCompare(b.dma_id))
+    }
+
+    const originalNormalized = normalizeServiceAreas(original)
+    const currentNormalized = normalizeServiceAreas(current)
+
+    return JSON.stringify(originalNormalized) !== JSON.stringify(currentNormalized)
+  }
+
+  // Handle upgrade navigation with conditional save
+  const handleUpgradeNavigation = async (dmaId?: string) => {
+    try {
+      const lawyerId = lawyer?.id
+
+      // Clear any pending debounce timer and save immediately
+      if (serviceAreaSaveTimerRef.current) {
+        clearTimeout(serviceAreaSaveTimerRef.current)
+        serviceAreaSaveTimerRef.current = null
+      }
+
+      // Wait for any pending service area saves to complete
+      if (savingServiceAreas) {
+        // Wait up to 3 seconds for save to complete
+        let waitCount = 0
+        while (savingServiceAreas && waitCount < 30) {
+          await new Promise(resolve => setTimeout(resolve, 100))
+          waitCount++
+        }
+      }
+
+      // If there are unsaved service area changes, save them now
+      if (hasServiceAreaChanges() && !isNew && lawyerId) {
+        console.log('[handleUpgradeNavigation] Saving pending service area changes...')
+        await saveServiceAreasOnly()
+      }
+
+      // Check only for non-service-area form changes (service areas are auto-saved)
+      const hasOtherFormChanges = hasFormChanges()
+      console.log('[handleUpgradeNavigation] Has form changes (excluding service areas):', hasOtherFormChanges)
+
+      if (hasOtherFormChanges) {
+        console.log('[handleUpgradeNavigation] Saving form data...')
+        // Save form first if there are changes
+        try {
+          const savedLawyerId = await saveFormData()
+          console.log('[handleUpgradeNavigation] Save result:', savedLawyerId)
+          
+          if (!savedLawyerId) {
+            console.error('[handleUpgradeNavigation] Save failed, checking error state before navigation')
+            console.error('[handleUpgradeNavigation] Current error state:', error)
+            
+            // Check if there's a critical error that should prevent navigation
+            // For now, we'll still navigate but log the error clearly
+            if (!lawyerId) {
+              setError('Cannot navigate: lawyer ID is missing and save failed')
+              setLoading(false) // Make sure to clear loading state
+              return
+            }
+            
+            // Show error for 2 seconds before navigating so user can see it
+            console.warn('[handleUpgradeNavigation] Save failed but navigating anyway. Error was:', error)
+            await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2 seconds to show error
+            
+            const upgradeUrl = dmaId 
+              ? `/admin/upgrade?lawyerId=${lawyerId}&dmaId=${dmaId}`
+              : `/admin/upgrade?lawyerId=${lawyerId}`
+            
+            console.log('[handleUpgradeNavigation] Navigating despite save failure:', upgradeUrl)
+            setLoading(false) // Clear loading before navigation
+            window.location.href = upgradeUrl
+            return
+          }
+
+          // Navigate to upgrade page - use window.location for more reliable navigation
+          const upgradeUrl = dmaId 
+            ? `/admin/upgrade?lawyerId=${savedLawyerId}&dmaId=${dmaId}`
+            : `/admin/upgrade?lawyerId=${savedLawyerId}`
+          
+          console.log('[handleUpgradeNavigation] Navigating to:', upgradeUrl)
+          setLoading(false) // Clear loading before navigation
+          // Use window.location for more reliable navigation after save
+          window.location.href = upgradeUrl
+        } catch (saveError) {
+          console.error('[handleUpgradeNavigation] Exception during save:', saveError)
+          console.error('[handleUpgradeNavigation] Save error stack:', saveError instanceof Error ? saveError.stack : 'No stack trace')
+          
+          // Even if save fails, try to navigate with current lawyer ID
+          if (!lawyerId) {
+            setError(`Save failed: ${saveError instanceof Error ? saveError.message : 'Unknown error'}. Cannot navigate without lawyer ID.`)
+            setLoading(false)
+            return
+          }
+          
+          // Show error for 2 seconds before navigating
+          setError(`Save failed: ${saveError instanceof Error ? saveError.message : 'Unknown error'}. Navigating to upgrade page anyway.`)
+          await new Promise(resolve => setTimeout(resolve, 2000)) // Wait 2 seconds to show error
+          
+          const upgradeUrl = dmaId 
+            ? `/admin/upgrade?lawyerId=${lawyerId}&dmaId=${dmaId}`
+            : `/admin/upgrade?lawyerId=${lawyerId}`
+          
+          console.log('[handleUpgradeNavigation] Navigating despite save error:', upgradeUrl)
+          setLoading(false) // Clear loading before navigation
+          window.location.href = upgradeUrl
+        }
+      } else {
+        console.log('[handleUpgradeNavigation] No form changes, navigating directly')
+        // No changes, just navigate
+        if (!lawyerId) {
+          setError('Cannot navigate: lawyer ID is missing')
+          setLoading(false)
+          return
+        }
+
+        const upgradeUrl = dmaId 
+          ? `/admin/upgrade?lawyerId=${lawyerId}&dmaId=${dmaId}`
+          : `/admin/upgrade?lawyerId=${lawyerId}`
+        
+        console.log('[handleUpgradeNavigation] Navigating to:', upgradeUrl)
+        setLoading(false) // Clear loading before navigation
+        window.location.href = upgradeUrl
+      }
+    } catch (error) {
+      console.error('[handleUpgradeNavigation] Error:', error)
+      setError(`Navigation error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
   }
 
   const toggleArrayItem = (field: string, value: string) => {
@@ -955,12 +1381,14 @@ const normalizedLawyer = {
                       </p>
                     </div>
                     {serviceAreas.length > 0 && serviceAreas.some(sa => sa.dma_id) ? (
-                      <a
-                        href={`/admin/upgrade?lawyerId=${lawyer.id}`}
-                        className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 whitespace-nowrap font-bold text-sm shadow-md hover:shadow-lg transition-all"
+                      <button
+                        type="button"
+                        onClick={() => handleUpgradeNavigation()}
+                        disabled={loading || savingServiceAreas}
+                        className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 whitespace-nowrap font-bold text-sm shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        View Upgrade Options →
-                      </a>
+                        {loading || savingServiceAreas ? 'Saving...' : 'View Upgrade Options →'}
+                      </button>
                     ) : (
                       <p className="text-sm text-gray-500 italic">Add a service area below to upgrade</p>
                     )}
@@ -1006,7 +1434,7 @@ const normalizedLawyer = {
                                 value={sa.dma_id || ''}
                                 onChange={(e) => updateServiceArea(index, e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
-                                disabled={loadingDmas}
+                                disabled={loadingDmas || savingServiceAreas}
                               >
                                 <option value="">Select a DMA...</option>
                                 {dmas.map((dma) => (
@@ -1023,7 +1451,7 @@ const normalizedLawyer = {
                                   value={sa.subscription_type || 'free'}
                                   onChange={(e) => updateServiceAreaSubscription(index, e.target.value)}
                                   className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary ${!auth.isSuperAdmin ? 'bg-gray-100 text-gray-600' : ''}`}
-                                  disabled={!auth.isSuperAdmin}
+                                  disabled={!auth.isSuperAdmin || savingServiceAreas}
                                 >
                                   {subscriptionTypes.map((st) => (
                                     <option key={st.name} value={st.name}>
@@ -1035,19 +1463,22 @@ const normalizedLawyer = {
                             )}
                             {selectedDma && !auth.isSuperAdmin && (
                               <div className="pt-6">
-                                <a
-                                  href={`/admin/upgrade?lawyerId=${lawyer.id}&dmaId=${sa.dma_id}`}
-                                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 whitespace-nowrap font-medium text-sm"
+                                <button
+                                  type="button"
+                                  onClick={() => handleUpgradeNavigation(sa.dma_id)}
+                                  disabled={loading || savingServiceAreas}
+                                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 whitespace-nowrap font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                  Upgrade
-                                </a>
+                                  {loading || savingServiceAreas ? 'Saving...' : 'Upgrade'}
+                                </button>
                               </div>
                             )}
                             <div className="pt-6">
                               <button
                                 type="button"
                                 onClick={() => removeServiceArea(index)}
-                                className="px-3 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200"
+                                disabled={savingServiceAreas}
+                                className="px-3 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200 disabled:opacity-50 disabled:cursor-not-allowed"
                               >
                                 Remove
                               </button>
@@ -1068,13 +1499,19 @@ const normalizedLawyer = {
                       )
                     })
                   )}
-                  <button
-                    type="button"
-                    onClick={addServiceArea}
-                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
-                  >
-                    + Add Service Area
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={addServiceArea}
+                      disabled={savingServiceAreas}
+                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      + Add Service Area
+                    </button>
+                    {savingServiceAreas && (
+                      <span className="text-xs text-gray-500">Saving...</span>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -1189,6 +1626,48 @@ const normalizedLawyer = {
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
               />
+            </div>
+
+            <div>
+              <label htmlFor="claimed_profile" className="block text-sm font-medium text-gray-700 mb-1">
+                Profile Claimed
+              </label>
+              <div className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50">
+                {(() => {
+                  const profile = Array.isArray((lawyer as any)?.profiles) && (lawyer as any).profiles.length > 0 
+                    ? (lawyer as any).profiles[0] 
+                    : null
+                  const claimedAt = profile?.claimed_at
+                  
+                  if (claimedAt) {
+                    const date = new Date(claimedAt)
+                    const formattedDate = date.toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      timeZoneName: 'short'
+                    })
+                    return (
+                      <div className="space-y-1">
+                        <span className="inline-block px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded">
+                          Yes - Claimed via Self-Service
+                        </span>
+                        <div className="text-sm text-gray-600 mt-1">
+                          Claimed on: {formattedDate}
+                        </div>
+                      </div>
+                    )
+                  }
+                  return (
+                    <span className="text-sm text-gray-500">Not claimed</span>
+                  )
+                })()}
+              </div>
+              <p className="mt-1 text-xs text-gray-500">
+                This field shows whether the lawyer has claimed their profile using the self-service claim feature.
+              </p>
             </div>
 
             {/* Media Uploads */}

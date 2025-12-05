@@ -26,6 +26,9 @@ interface Lawyer {
       code: number
     } | null
   }>
+  profiles?: Array<{
+    claimed_at: string | null
+  }> | null
 }
 
 interface LawyersGridClientProps {
@@ -530,6 +533,9 @@ export default function LawyersGridClient({ initialLawyers, isSuperAdmin }: Lawy
                 </th>
               )}
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Claimed Profile
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -646,6 +652,40 @@ export default function LawyersGridClient({ initialLawyers, isSuperAdmin }: Lawy
                       })()}
                     </td>
                   )}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {(() => {
+                      const profile = Array.isArray(lawyer.profiles) && lawyer.profiles.length > 0 
+                        ? lawyer.profiles[0] 
+                        : null
+                      const claimedAt = profile?.claimed_at
+                      
+                      if (claimedAt) {
+                        const date = new Date(claimedAt)
+                        const formattedDate = date.toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })
+                        return (
+                          <div className="space-y-1">
+                            <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded">
+                              Yes
+                            </span>
+                            <div className="text-xs text-gray-400">
+                              {formattedDate}
+                            </div>
+                          </div>
+                        )
+                      }
+                      return (
+                        <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded">
+                          No
+                        </span>
+                      )
+                    })()}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded">
                       Active
@@ -663,7 +703,7 @@ export default function LawyersGridClient({ initialLawyers, isSuperAdmin }: Lawy
               ))
             ) : (
               <tr>
-                <td colSpan={isSuperAdmin ? 7 : 6} className="px-6 py-4 text-center text-gray-500">
+                <td colSpan={isSuperAdmin ? 8 : 7} className="px-6 py-4 text-center text-gray-500">
                   {searchQuery || subscriptionFilter !== 'all' || firmFilter !== 'all' || dmaFilter !== 'all'
                     ? 'No lawyers match your filters'
                     : 'No lawyers found'}

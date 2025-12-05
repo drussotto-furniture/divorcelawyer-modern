@@ -195,6 +195,7 @@ export async function POST(request: Request) {
         role: 'lawyer',
         name: `${lawyer.first_name} ${lawyer.last_name}`,
         lawyer_id: lawyer.id,
+        claimed_at: new Date().toISOString(),
       } as any, {
         onConflict: 'id',
       })

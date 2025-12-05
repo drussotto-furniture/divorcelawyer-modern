@@ -27,6 +27,19 @@ export default async function LawyerEditPage({ params }: PageProps) {
     `)
     .eq('id', id)
     .single()
+  
+  // Fetch profile separately
+  if (lawyer) {
+    const { data: profile } = await supabase
+      .from('profiles' as any)
+      .select('claimed_at')
+      .eq('lawyer_id', id)
+      .maybeSingle()
+    
+    if (profile) {
+      (lawyer as any).profiles = [profile]
+    }
+  }
 
   // Type assertion for lawyer with all possible fields
   const typedLawyer = lawyer as any
