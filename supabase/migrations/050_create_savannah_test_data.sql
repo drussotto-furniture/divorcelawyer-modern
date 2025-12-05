@@ -35,6 +35,20 @@ DECLARE
   -- Specializations
   specializations TEXT[] := ARRAY['Divorce', 'Family Law', 'Child Custody', 'Child Support', 'Alimony/Spousal Support', 'Property Division', 'High Asset Divorce', 'Prenuptial Agreements', 'Postnuptial Agreements', 'Mediation', 'Collaborative Divorce', 'Domestic Violence', 'Adoption', 'Guardianship'];
   
+  -- Professional headshot photo IDs from Unsplash
+  headshot_photo_ids TEXT[] := ARRAY[
+    '1507003211169-0a1dd7228f2d',
+    '1494790108377-be9c29b29330',
+    '1500648767791-00dcc994a43e',
+    '1506794778202-cad84cf45f1d',
+    '1438761681033-6461ffad8d80',
+    '1472099645785-5658abf4ff4e',
+    '1508214751196-bcfd4ca60f91',
+    '1519085360753-af0119f7cbe7',
+    '1534528741775-53994a69daeb',
+    '1517841905240-472988bdfe0b'
+  ];
+  
   -- Counter
   i INTEGER;
   j INTEGER;
@@ -171,7 +185,7 @@ BEGIN
         ELSE 'Associate Attorney'
       END,
       random_first_name || ' ' || random_last_name || ' is an experienced family law attorney with ' || random_years || ' years of practice. Specializing in family law matters including divorce, child custody, and property division. Known for compassionate client service and strong courtroom advocacy.',
-      'https://picsum.photos/seed/' || slug_base || '/300/400',
+      'https://images.unsplash.com/photo-' || headshot_photo_ids[LEAST(1 + ((i - 1) % array_length(headshot_photo_ids, 1))::int, array_length(headshot_photo_ids, 1))] || '?w=400&h=500&fit=crop&crop=face',
       email_base,
       '(912) 555-' || lpad((4000 + i)::text, 4, '0'),
       random_years,

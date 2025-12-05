@@ -66,12 +66,13 @@ export function LawyerImageWithBlur({
         )}
 
         {/* Main image */}
-        <div className="relative z-20 w-full h-full">
+        <div className="relative z-20 w-full h-full flex items-center justify-center">
           <Image
             src={src}
             alt={alt}
             fill
-            className={`object-contain ${className}`}
+            className={`object-contain object-center ${className}`}
+            style={{ objectPosition: 'center' }}
           />
         </div>
       </div>
@@ -113,13 +114,14 @@ export function LawyerImageWithBlur({
       )}
 
       {/* Main image */}
-      <div className="relative z-20">
+      <div className="relative z-20 flex items-center justify-center">
         <Image
           src={src}
           alt={alt}
           width={width}
           height={height}
-          className={`object-contain ${className}`}
+          className={`object-contain object-center ${className}`}
+          style={{ objectPosition: 'center' }}
         />
       </div>
     </div>

@@ -1258,8 +1258,8 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
         </div>
       </section>
 
-      {/* Lawyers Grid */}
-      <section className="py-12 lg:py-20 px-4">
+      {/* Lawyers Display */}
+      <section className="py-12 lg:py-20 px-4 bg-white">
         <div className="container mx-auto max-w-6xl">
           {isLoading ? (
             <div className="text-center py-20">
@@ -1291,119 +1291,134 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
                 Clear All
               </button>
             </div>
-          ) : (() => {
-            return Object.keys(filteredGroupedBySubscription).length > 0 && subscriptionTypes.length > 0
-          })() ? (
-            // Display grouped by subscription type
+          ) : (
             <>
-              <div className="mb-8">
-                <p className="text-gray-600">
-                  Showing {filteredLawyers.length} lawyer{filteredLawyers.length !== 1 ? 's' : ''} organized by subscription type
-                  {dma && (
-                    <span className="ml-2">
-                      in <span className="font-semibold">{dma.name} (DMA {dma.code})</span>
-                    </span>
-                  )}
-                </p>
-              </div>
+              {/* Get lawyers by subscription type */}
               {(() => {
-                const groupsWithLawyers = subscriptionTypes
-                  .filter(subType => {
-                    const lawyersInGroup = filteredGroupedBySubscription[subType.name] || []
-                    return lawyersInGroup.length > 0
-                  })
+                // Group lawyers by subscription type
+                const premiumLawyers = (filteredGroupedBySubscription['premium'] || []).slice(0, 3)
+                const enhancedLawyers = (filteredGroupedBySubscription['enhanced'] || []).slice(0, 8)
+                const basicLawyers = filteredGroupedBySubscription['basic'] || []
+                const freeLawyers = filteredGroupedBySubscription['free'] || []
                 
-                if (groupsWithLawyers.length === 0) {
-                  console.warn('⚠️ No subscription groups have lawyers. Checking if we can match by subscription_type field...')
-                  
-                  // Try to group by subscription_type field directly from lawyers
+                // Fallback: if no grouped data, try to group by subscription_type field
+                if (premiumLawyers.length === 0 && enhancedLawyers.length === 0 && basicLawyers.length === 0 && freeLawyers.length === 0) {
                   const directGrouped: Record<string, Lawyer[]> = {}
                   filteredLawyers.forEach(lawyer => {
-                    const subType = lawyer.subscription_type
-                    if (subType) {
-                      if (!directGrouped[subType]) {
-                        directGrouped[subType] = []
-                      }
-                      directGrouped[subType].push(lawyer)
+                    const subType = lawyer.subscription_type || 'free'
+                    if (!directGrouped[subType]) {
+                      directGrouped[subType] = []
                     }
+                    directGrouped[subType].push(lawyer)
                   })
                   
-                  if (Object.keys(directGrouped).length > 0) {
-                    console.log('✅ Found groups by subscription_type field:', Object.keys(directGrouped))
-                    // Try to match with subscription types
-                    return subscriptionTypes
-                      .filter(subType => directGrouped[subType.name] && directGrouped[subType.name].length > 0)
-                      .map((subType) => {
-                        const lawyersInGroup = directGrouped[subType.name] || []
-                        return (
-                          <div key={subType.name} className="mb-12">
-                            <h2 className="text-2xl lg:text-3xl font-serif text-bluish mb-6 capitalize">
-                              {subType.display_name} Lawyers
-                              <span className="ml-2 text-lg text-gray-500 font-normal">
-                                ({lawyersInGroup.length})
-                              </span>
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                              {lawyersInGroup.map((lawyer) => (
-                                <LawyerCard key={lawyer.id} lawyer={lawyer} />
-                              ))}
-                            </div>
-                          </div>
-                        )
-                      })
-                  }
-                  
-                  console.warn('⚠️ Still no groups found. Showing regular grid instead.')
                   return (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {filteredLawyers.map((lawyer) => (
-                        <LawyerCard key={lawyer.id} lawyer={lawyer} />
-                      ))}
-                    </div>
+                    <>
+                      {/* Premium Lawyers - 3 Pack */}
+                      {directGrouped['premium'] && directGrouped['premium'].length > 0 && (
+                        <div className="mb-16">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {directGrouped['premium'].slice(0, 3).map((lawyer) => (
+                              <PremiumLawyerCard key={lawyer.id} lawyer={lawyer} />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
+                      {/* Enhanced Lawyers - Carousel */}
+                      {directGrouped['enhanced'] && directGrouped['enhanced'].length > 0 && (
+                        <div className="mb-16">
+                          <EnhancedLawyerCarousel lawyers={directGrouped['enhanced'].slice(0, 8)} />
+                        </div>
+                      )}
+                      
+                      {/* Basic & Free Lawyers - Compact List */}
+                      {(directGrouped['basic'] && directGrouped['basic'].length > 0) || (directGrouped['free'] && directGrouped['free'].length > 0) ? (
+                        <div className="mb-8">
+                          <h2 className="text-2xl lg:text-3xl font-serif text-bluish mb-6">
+                            {dma ? `${dma.name} Divorce Lawyers` : 'Divorce Lawyers'}
+                          </h2>
+                          <div className="space-y-4">
+                            {/* Basic Lawyers */}
+                            {directGrouped['basic'] && directGrouped['basic'].map((lawyer) => (
+                              <BasicLawyerCard key={lawyer.id} lawyer={lawyer} />
+                            ))}
+                            {/* Free Lawyers (no photos) */}
+                            {directGrouped['free'] && directGrouped['free'].map((lawyer) => (
+                              <FreeLawyerCard key={lawyer.id} lawyer={lawyer} />
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
+                    </>
                   )
                 }
                 
-                const renderedGroups = groupsWithLawyers.map((subType) => {
-                  const lawyersInGroup = filteredGroupedBySubscription[subType.name] || []
-                  
-                  // Safety check - if display_name is missing, use name
-                  const displayName = subType.display_name || subType.name || 'Unknown'
-                  
-                  return (
-                    <div key={subType.name} className="mb-12">
-                      <h2 className="text-2xl lg:text-3xl font-serif text-bluish mb-6 capitalize">
-                        {displayName} Lawyers
-                        <span className="ml-2 text-lg text-gray-500 font-normal">
-                          ({lawyersInGroup.length})
-                        </span>
-                      </h2>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {lawyersInGroup.map((lawyer) => (
-                          <LawyerCard key={lawyer.id} lawyer={lawyer} />
-                        ))}
+                return (
+                  <>
+                    {/* Premium Lawyers - 3 Pack */}
+                    {premiumLawyers.length > 0 && (
+                      <div className="mb-16">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          {premiumLawyers.map((lawyer) => (
+                            <PremiumLawyerCard key={lawyer.id} lawyer={lawyer} />
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )
-                })
-                
-                return renderedGroups
+                    )}
+                    
+                    {/* Enhanced Lawyers - Carousel */}
+                    {enhancedLawyers.length > 0 && (
+                      <div className="mb-16">
+                        <EnhancedLawyerCarousel lawyers={enhancedLawyers} />
+                      </div>
+                    )}
+                    
+                    {/* Basic & Free Lawyers - Compact List */}
+                    {(basicLawyers.length > 0 || freeLawyers.length > 0) && (
+                      <div className="mb-8">
+                        <h2 className="text-2xl lg:text-3xl font-serif text-bluish mb-6">
+                          {dma ? `${dma.name} Divorce Lawyers` : 'Divorce Lawyers'}
+                        </h2>
+                        <div className="space-y-4">
+                          {/* Basic Lawyers */}
+                          {basicLawyers.map((lawyer) => (
+                            <BasicLawyerCard key={lawyer.id} lawyer={lawyer} />
+                          ))}
+                          {/* Free Lawyers (no photos) */}
+                          {freeLawyers.map((lawyer) => (
+                            <FreeLawyerCard key={lawyer.id} lawyer={lawyer} />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )
               })()}
             </>
-          ) : (
-            // Regular display (not grouped)
-            <>
-              <div className="mb-8">
-                <p className="text-gray-600">
-                  Showing {filteredLawyers.length} of {lawyers.length} lawyers
-                </p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredLawyers.map((lawyer) => (
-                  <LawyerCard key={lawyer.id} lawyer={lawyer} />
-                ))}
-              </div>
-            </>
           )}
+        </div>
+      </section>
+
+      {/* Content Library & Podcast Section - Compact Buttons */}
+      <section className="py-8 px-4 bg-subtlesand">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link
+              href="/learning-center"
+              className="bg-white rounded-full px-6 py-3 hover:bg-primary hover:text-black transition-colors text-bluish font-semibold flex items-center gap-2 shadow-md"
+            >
+              <span className="text-xl">📚</span>
+              <span>Content Library</span>
+            </Link>
+            <Link
+              href="/podcast"
+              className="bg-white rounded-full px-6 py-3 hover:bg-primary hover:text-black transition-colors text-bluish font-semibold flex items-center gap-2 shadow-md"
+            >
+              <span className="text-xl">🎙️</span>
+              <span>Podcast</span>
+            </Link>
+          </div>
         </div>
       </section>
     </div>
@@ -1461,6 +1476,308 @@ function LawyerCard({ lawyer }: { lawyer: Lawyer }) {
         >
           View Profile
         </Link>
+      </div>
+    </div>
+  )
+}
+
+// Premium Lawyer Card - Large featured card
+function PremiumLawyerCard({ lawyer }: { lawyer: Lawyer }) {
+  const firm = lawyer.law_firms as any
+  const fullName = `${lawyer.first_name} ${lawyer.last_name}`
+  const phoneNumber = (lawyer as any).phone_number || firm?.phone_number || ''
+
+  return (
+    <div className="bg-subtlesand rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+      <div className="p-6">
+        <h3 className="text-2xl lg:text-3xl font-serif text-bluish mb-4">
+          {fullName}
+        </h3>
+        {firm && (
+          <p className="text-lg text-bluish mb-4 font-semibold">
+            {firm.name}
+          </p>
+        )}
+        {lawyer.years_experience && (
+          <p className="text-sm text-gray-600 mb-4">
+            {lawyer.years_experience} years of experience
+          </p>
+        )}
+        <div className="flex flex-col gap-3 mb-4">
+          <Link
+            href={`/lawyers/${lawyer.slug}`}
+            className="bg-primary text-black font-bold py-3 px-6 rounded-full text-center hover:bg-primary/90 transition-colors uppercase tracking-wide text-sm"
+          >
+            LET'S CONNECT
+          </Link>
+          {phoneNumber && (
+            <a
+              href={`tel:${phoneNumber.replace(/\D/g, '')}`}
+              className="bg-primary text-black font-bold py-3 px-6 rounded-full text-center hover:bg-primary/90 transition-colors uppercase tracking-wide text-sm"
+            >
+              CALL {phoneNumber}
+            </a>
+          )}
+        </div>
+        {lawyer.photo_url && (
+          <div className="relative h-80 w-full mb-4 bg-gray-100 rounded-lg overflow-hidden">
+            <LawyerImageWithBlur
+              src={lawyer.photo_url}
+              alt={fullName}
+              fill
+              className="object-contain object-center"
+            />
+          </div>
+        )}
+        <Link
+          href={`/lawyers/${lawyer.slug}`}
+          className="block w-full bg-bluish text-white font-bold py-2 px-4 rounded text-center hover:bg-bluish/90 transition-colors text-sm"
+        >
+          VIEW PROFILE
+        </Link>
+        {firm && firm.name && (
+          <p className="text-sm text-gray-600 mt-2 text-center">
+            Serving your area
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// Enhanced Lawyer Carousel - Horizontal scrolling
+function EnhancedLawyerCarousel({ lawyers }: { lawyers: Lawyer[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = 300
+      const currentScroll = scrollRef.current.scrollLeft
+      const newPosition = direction === 'left' 
+        ? currentScroll - scrollAmount 
+        : currentScroll + scrollAmount
+      scrollRef.current.scrollTo({ left: newPosition, behavior: 'smooth' })
+    }
+  }
+
+  return (
+    <div className="relative">
+      <div className="mb-4">
+        <h2 className="text-2xl lg:text-3xl font-serif text-bluish">
+          Featured Lawyers
+        </h2>
+      </div>
+      <div className="relative">
+        {/* Left Arrow - Large prominent chevron */}
+        <button
+          onClick={() => scroll('left')}
+          className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-primary text-black p-5 rounded-full hover:bg-primary/90 transition-colors shadow-xl"
+          aria-label="Scroll left"
+        >
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M15 18l-6-6 6-6" />
+          </svg>
+        </button>
+        
+        {/* Carousel Container */}
+        <div
+          ref={scrollRef}
+          className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar px-16"
+        >
+          {lawyers.map((lawyer) => (
+            <EnhancedLawyerCard key={lawyer.id} lawyer={lawyer} />
+          ))}
+        </div>
+        
+        {/* Right Arrow - Large prominent chevron */}
+        <button
+          onClick={() => scroll('right')}
+          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-primary text-black p-5 rounded-full hover:bg-primary/90 transition-colors shadow-xl"
+          aria-label="Scroll right"
+        >
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// Enhanced Lawyer Card - For carousel
+function EnhancedLawyerCard({ lawyer }: { lawyer: Lawyer }) {
+  const fullName = `${lawyer.first_name} ${lawyer.last_name}`
+
+  return (
+    <div className="flex-shrink-0 w-64 bg-subtlesand rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+      {lawyer.photo_url && (
+        <div className="relative h-64 w-full bg-gray-100 overflow-hidden">
+          <LawyerImageWithBlur
+            src={lawyer.photo_url}
+            alt={fullName}
+            fill
+            className="object-contain object-center"
+          />
+        </div>
+      )}
+      <div className="p-4">
+        <h3 className="text-lg font-serif text-bluish mb-2">
+          {fullName}
+        </h3>
+        <p className="text-sm text-gray-600 mb-4">
+          {lawyer.title || 'Divorce Lawyer'}
+        </p>
+        <div className="flex flex-col gap-2">
+          <Link
+            href={`/lawyers/${lawyer.slug}`}
+            className="bg-primary text-black font-bold py-2 px-4 rounded text-center hover:bg-primary/90 transition-colors text-xs uppercase"
+          >
+            View Profile
+          </Link>
+          <Link
+            href={`/lawyers/${lawyer.slug}?contact=true`}
+            className="bg-bluish text-white font-bold py-2 px-4 rounded text-center hover:bg-bluish/90 transition-colors text-xs uppercase flex items-center justify-center gap-2"
+          >
+            <span>Contact</span>
+            <span>✉️</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Basic Lawyer Card - Compact list format
+function BasicLawyerCard({ lawyer }: { lawyer: Lawyer }) {
+  const firm = lawyer.law_firms as any
+  const fullName = `${lawyer.first_name} ${lawyer.last_name}`
+  const phoneNumber = (lawyer as any).phone_number || firm?.phone_number || ''
+
+  return (
+    <div className="bg-subtlesand rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-bluishlight">
+      <div className="flex flex-col md:flex-row gap-6 items-center">
+        {lawyer.photo_url && (
+          <div className="relative h-32 w-32 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
+            <LawyerImageWithBlur
+              src={lawyer.photo_url}
+              alt={fullName}
+              fill
+              className="object-contain object-center"
+            />
+          </div>
+        )}
+        <div className="flex-1">
+          <h3 className="text-xl lg:text-2xl font-serif text-bluish mb-2">
+            {fullName}
+          </h3>
+          {lawyer.years_experience && (
+            <p className="text-sm text-gray-600 mb-2">
+              Divorce & Separation Lawyer Licensed for {lawyer.years_experience} years
+            </p>
+          )}
+          {lawyer.specializations && lawyer.specializations.length > 0 && (
+            <p className="text-sm text-gray-600 mb-2">
+              Practice Areas: {lawyer.specializations.slice(0, 3).join(', ')}
+              {lawyer.specializations.length > 3 && ' and more'}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col gap-2">
+          {phoneNumber && (
+            <a
+              href={`tel:${phoneNumber.replace(/\D/g, '')}`}
+              className="bg-bluish text-white font-bold py-2 px-4 rounded text-center hover:bg-bluish/90 transition-colors text-sm whitespace-nowrap"
+            >
+              Call for a FREE consultation {phoneNumber}
+            </a>
+          )}
+          <div className="flex gap-2">
+            <Link
+              href={`/lawyers/${lawyer.slug}`}
+              className="bg-bluish text-white font-bold py-2 px-3 rounded text-center hover:bg-bluish/90 transition-colors text-xs flex items-center gap-1"
+            >
+              <span>👤</span> Profile
+            </Link>
+            <Link
+              href={`/lawyers/${lawyer.slug}?contact=true`}
+              className="bg-bluish text-white font-bold py-2 px-3 rounded text-center hover:bg-bluish/90 transition-colors text-xs flex items-center gap-1"
+            >
+              <span>💬</span> Message
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Free Lawyer Card - Compact list format without photo
+function FreeLawyerCard({ lawyer }: { lawyer: Lawyer }) {
+  const firm = lawyer.law_firms as any
+  const fullName = `${lawyer.first_name} ${lawyer.last_name}`
+  const phoneNumber = (lawyer as any).phone_number || firm?.phone_number || ''
+
+  return (
+    <div className="bg-subtlesand rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-bluishlight">
+      <div className="flex flex-col md:flex-row gap-6 items-center">
+        <div className="flex-1">
+          <h3 className="text-xl lg:text-2xl font-serif text-bluish mb-2">
+            {fullName}
+          </h3>
+          {lawyer.years_experience && (
+            <p className="text-sm text-gray-600 mb-2">
+              Divorce & Separation Lawyer Licensed for {lawyer.years_experience} years
+            </p>
+          )}
+          {lawyer.specializations && lawyer.specializations.length > 0 && (
+            <p className="text-sm text-gray-600 mb-2">
+              Practice Areas: {lawyer.specializations.slice(0, 3).join(', ')}
+              {lawyer.specializations.length > 3 && ' and more'}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col gap-2">
+          {phoneNumber && (
+            <a
+              href={`tel:${phoneNumber.replace(/\D/g, '')}`}
+              className="bg-bluish text-white font-bold py-2 px-4 rounded text-center hover:bg-bluish/90 transition-colors text-sm whitespace-nowrap"
+            >
+              Call for a FREE consultation {phoneNumber}
+            </a>
+          )}
+          <div className="flex gap-2">
+            <Link
+              href={`/lawyers/${lawyer.slug}`}
+              className="bg-bluish text-white font-bold py-2 px-3 rounded text-center hover:bg-bluish/90 transition-colors text-xs flex items-center gap-1"
+            >
+              <span>👤</span> Profile
+            </Link>
+            <Link
+              href={`/lawyers/${lawyer.slug}?contact=true`}
+              className="bg-bluish text-white font-bold py-2 px-3 rounded text-center hover:bg-bluish/90 transition-colors text-xs flex items-center gap-1"
+            >
+              <span>💬</span> Message
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   )

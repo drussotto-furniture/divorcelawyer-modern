@@ -90,7 +90,7 @@ BEGIN
     test_firm_id,
     'Senior Partner & Divorce Attorney',
     'TEST Lawyer is a highly experienced family law attorney with over 15 years of practice. Specializing in complex divorce cases, high-net-worth divorces, and child custody disputes. TEST Lawyer has successfully represented hundreds of clients and is known for a collaborative yet assertive approach to family law matters. With a strong track record of favorable outcomes, TEST Lawyer combines legal expertise with compassionate client service.',
-    'https://via.placeholder.com/300x400?text=TEST+Lawyer',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop&crop=face',
     'test.lawyer@testlawfirm.com',
     '(555) 987-6543',
     'GA-12345',
