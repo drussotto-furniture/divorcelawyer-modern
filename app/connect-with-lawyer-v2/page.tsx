@@ -7,7 +7,7 @@ import { getStates } from '@/lib/supabase'
 
 // SEO Metadata
 export const metadata: Metadata = {
-  title: 'Connect with a Divorce Lawyer | DivorceLawyer.com',
+  title: 'Connect with a Divorce Lawyer (v2) | DivorceLawyer.com',
   description: 'Find and connect with vetted divorce lawyers in your area. Search by location, filter by experience, specializations, and more. Get matched with the right attorney for your needs.',
   keywords: [
     'divorce lawyer',
@@ -21,9 +21,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://divorcelawyer.com/connect-with-lawyer',
+    url: 'https://divorcelawyer.com/connect-with-lawyer-v2',
     siteName: 'DivorceLawyer.com',
-    title: 'Connect with a Divorce Lawyer | DivorceLawyer.com',
+    title: 'Connect with a Divorce Lawyer (v2) | DivorceLawyer.com',
     description: 'Find and connect with vetted divorce lawyers in your area.',
     images: [{
       url: 'https://divorcelawyer.com/media/connect-lawyer-og.jpg',
@@ -32,21 +32,13 @@ export const metadata: Metadata = {
       alt: 'Connect with Divorce Lawyers',
     }],
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Connect with a Divorce Lawyer',
-    description: 'Find and connect with vetted divorce lawyers in your area.',
-  },
   robots: {
-    index: true,
-    follow: true,
-  },
-  alternates: {
-    canonical: 'https://divorcelawyer.com/connect-with-lawyer',
+    index: false, // Don't index test page
+    follow: false,
   },
 }
 
-export default async function ConnectWithLawyerPage() {
+export default async function ConnectWithLawyerV2Page() {
   // Fetch states for location dropdown - use empty array if it fails or hangs
   let states: any[] = []
   try {
@@ -67,7 +59,7 @@ export default async function ConnectWithLawyerPage() {
       <main className="min-h-screen bg-white">
         <ConnectWithLawyerClientV2 states={states} />
       </main>
-      <TagDisplayServer contentType="page" contentId="connect-with-lawyer" />
+      <TagDisplayServer contentType="page" contentId="connect-with-lawyer-v2" />
       <Footer />
     </>
   )

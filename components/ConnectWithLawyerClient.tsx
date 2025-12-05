@@ -1295,9 +1295,9 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
             <>
               {/* Get lawyers by subscription type */}
               {(() => {
-                // Group lawyers by subscription type
-                const premiumLawyers = (filteredGroupedBySubscription['premium'] || []).slice(0, 3)
-                const enhancedLawyers = (filteredGroupedBySubscription['enhanced'] || []).slice(0, 8)
+                // Use the limits already applied by the backend (scaled by number of DMAs)
+                const premiumLawyers = filteredGroupedBySubscription['premium'] || []
+                const enhancedLawyers = filteredGroupedBySubscription['enhanced'] || []
                 const basicLawyers = filteredGroupedBySubscription['basic'] || []
                 const freeLawyers = filteredGroupedBySubscription['free'] || []
                 
@@ -1314,11 +1314,11 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
                   
                   return (
                     <>
-                      {/* Premium Lawyers - 3 Pack */}
+                      {/* Premium Lawyers */}
                       {directGrouped['premium'] && directGrouped['premium'].length > 0 && (
                         <div className="mb-16">
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {directGrouped['premium'].slice(0, 3).map((lawyer) => (
+                            {directGrouped['premium'].map((lawyer) => (
                               <PremiumLawyerCard key={lawyer.id} lawyer={lawyer} />
                             ))}
                           </div>
@@ -1328,7 +1328,7 @@ export default function ConnectWithLawyerClient({ states }: ConnectWithLawyerCli
                       {/* Enhanced Lawyers - Carousel */}
                       {directGrouped['enhanced'] && directGrouped['enhanced'].length > 0 && (
                         <div className="mb-16">
-                          <EnhancedLawyerCarousel lawyers={directGrouped['enhanced'].slice(0, 8)} />
+                          <EnhancedLawyerCarousel lawyers={directGrouped['enhanced']} />
                         </div>
                       )}
                       

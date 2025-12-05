@@ -406,7 +406,9 @@ async function getLawyersByDMAsWithSubscriptionLimits(
   })
 
   // Step 10: Get subscription limits (DMA-specific if available, otherwise global)
+  // Scale limits by the number of DMAs (e.g., 2 DMAs = 2x the limit)
   const limitsMap = new Map<string, number | null>()
+  const dmaCount = dmaIds.length
 
   // Get global limits as baseline
   const { data: globalLimits } = await (supabase as any)
@@ -415,13 +417,8 @@ async function getLawyersByDMAsWithSubscriptionLimits(
     .eq('location_type', 'global')
     .eq('location_value', 'default')
 
-  if (globalLimits) {
-    (globalLimits as any[]).forEach((limit: any) => {
-      limitsMap.set(limit.subscription_type, limit.max_lawyers)
-    })
-  }
-
-  // Get DMA-specific limits and use the most restrictive
+  // Get DMA-specific limits (most restrictive across all DMAs)
+  const dmaSpecificLimits = new Map<string, number | null>()
   for (const dmaId of dmaIds) {
     const { data: dmaLimits } = await (supabase as any)
       .from('subscription_limits')
@@ -431,17 +428,43 @@ async function getLawyersByDMAsWithSubscriptionLimits(
 
     if (dmaLimits) {
       (dmaLimits as any[]).forEach((limit: any) => {
-        const existing = limitsMap.get(limit.subscription_type)
+        const existing = dmaSpecificLimits.get(limit.subscription_type)
         const newLimit = limit.max_lawyers
         // Use the most restrictive (lowest) limit, or null if any is unlimited
         if (existing === null || newLimit === null) {
-          limitsMap.set(limit.subscription_type, null) // Unlimited if any DMA is unlimited
+          dmaSpecificLimits.set(limit.subscription_type, null) // Unlimited if any DMA is unlimited
         } else if (existing === undefined || newLimit < existing) {
-          limitsMap.set(limit.subscription_type, newLimit)
+          dmaSpecificLimits.set(limit.subscription_type, newLimit)
         }
       })
     }
   }
+
+  // Determine final limits: use DMA-specific if available (scaled), otherwise use global (scaled)
+  subscriptionTypes?.forEach((subType: any) => {
+    const subTypeName = subType.name
+    const dmaSpecific = dmaSpecificLimits.get(subTypeName)
+    const globalLimit = globalLimits?.find((l: any) => l.subscription_type === subTypeName)?.max_lawyers
+
+    if (dmaSpecific !== undefined) {
+      // Use DMA-specific limit, scaled by number of DMAs
+      if (dmaSpecific === null) {
+        limitsMap.set(subTypeName, null) // Unlimited
+      } else {
+        limitsMap.set(subTypeName, dmaSpecific * dmaCount)
+      }
+    } else if (globalLimit !== undefined) {
+      // Use global limit, scaled by number of DMAs
+      if (globalLimit === null) {
+        limitsMap.set(subTypeName, null) // Unlimited
+      } else {
+        limitsMap.set(subTypeName, globalLimit * dmaCount)
+      }
+    }
+  })
+
+  console.log(`📊 Scaled subscription limits for ${dmaCount} DMA(s):`, 
+    Array.from(limitsMap.entries()).map(([type, limit]) => `${type}: ${limit === null ? 'unlimited' : limit}`).join(', '))
 
   // Step 11: Apply limits to each subscription type
   const limitedGroups: Record<string, Lawyer[]> = {}
